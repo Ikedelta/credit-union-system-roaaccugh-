@@ -120,7 +120,7 @@ export function Home() {
         <div className="container">
           <div className="home-split">
             <RevealOnScroll direction="right">
-              <div className="home-split-image" style={{ background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '3rem' }}>
+              <div className="home-split-image" style={{ background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'clamp(1rem, 5vw, 3rem)' }}>
                 <img
                   src="/logo.png"
                   alt="ROAACCU Logo"
@@ -232,7 +232,7 @@ export function Home() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="home-cta-section" style={{ position: 'relative', padding: '6rem 0', backgroundImage: 'url(/slider2.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'fixed', marginTop: '0' }}>
+      <section className="home-cta-section" style={{ position: 'relative', padding: 'clamp(3rem, 8vw, 6rem) 0', backgroundImage: 'url(/slider2.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', marginTop: '0' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'rgba(28, 16, 94, 0.92)' }}></div>
         <div className="container" style={{ position: 'relative', zIndex: 1, textAlign: 'center' }}>
           <RevealOnScroll>
@@ -244,10 +244,10 @@ export function Home() {
               Membership takes less than 5 minutes. Start with as little as GHS 50 and unlock access to savings, loans, and comprehensive welfare benefits designed for your peace of mind.
             </p>
             <div style={{ display: 'flex', gap: '1.25rem', justifyContent: 'center', flexWrap: 'wrap' }} className="cta-button-group">
-              <Link to="/join-now" className="btn btn-secondary" style={{ padding: '1rem 2.5rem', fontSize: '1.1rem', minWidth: '220px', justifyContent: 'center' }}>
+              <Link to="/join-now" className="btn btn-secondary" style={{ padding: '1rem 2rem', fontSize: 'clamp(0.95rem, 2vw, 1.1rem)', width: 'clamp(180px, 50%, 240px)', justifyContent: 'center' }}>
                 Open Membership <ArrowRight size={18} />
               </Link>
-              <Link to="/apply-loan" className="btn btn-ghost" style={{ padding: '1rem 2.5rem', fontSize: '1.1rem', border: '2px solid rgba(255,255,255,0.3)', background: 'transparent', minWidth: '220px', justifyContent: 'center' }}>
+              <Link to="/apply-loan" className="btn btn-ghost" style={{ padding: '1rem 2rem', fontSize: 'clamp(0.95rem, 2vw, 1.1rem)', border: '2px solid rgba(255,255,255,0.3)', background: 'transparent', width: 'clamp(180px, 50%, 240px)', justifyContent: 'center' }}>
                 Apply for a Loan
               </Link>
             </div>

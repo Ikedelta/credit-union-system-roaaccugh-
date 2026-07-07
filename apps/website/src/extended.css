@@ -24,7 +24,7 @@
   width: 100%;
   text-align: left;
   padding: 1.5rem;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--primary-color);
   background: transparent;
@@ -33,6 +33,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 0.75rem;
+  line-height: 1.4;
 }
 .faq-answer {
   padding: 0 1.5rem 1.5rem;
@@ -148,4 +150,71 @@ textarea.form-control {
 }
 .modal-close:hover {
   color: var(--primary-color);
+}
+
+/* ── Additional Mobile Overrides ── */
+@media (max-width: 768px) {
+  /* About page: image responsive */
+  .about-panels > div {
+    padding: 1.75rem 1.5rem !important;
+  }
+  /* FAQ: smaller question font on mobile */
+  .faq-question {
+    font-size: 0.95rem;
+    padding: 1.25rem;
+  }
+  .faq-answer {
+    padding: 0 1.25rem 1.25rem;
+    font-size: 0.9rem;
+  }
+  /* Footer: 2-col on tablet instead of stacking all 4 to 1 */
+  .footer .grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem 2rem;
+  }
+  /* Team grid: ensure images aren't too tall on mobile */
+  .team-card-image {
+    aspect-ratio: 4/5;
+  }
+  /* Map iframe: reduce height on mobile */
+  iframe[title="Google Maps Location of ROAACCU"] {
+    height: 250px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  /* FAQ: even smaller on tiny screens */
+  .faq-question {
+    font-size: 0.88rem;
+    padding: 1rem;
+  }
+  /* Footer: 1-col on phones */
+  .footer .grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  /* Team grid: 2 col on small phones */
+  .team-modern-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1rem !important;
+  }
+  .team-card-info h3 {
+    font-size: 0.8rem;
+  }
+  .team-card-info p {
+    font-size: 0.65rem;
+  }
+  /* Products: 2-col grid on mobile */
+  .grid.lg\:grid-cols-4 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  /* About panels: reduce padding on tiny screens */
+  .about-panels > div {
+    padding: 1.25rem 1rem !important;
+  }
+  /* Reduce section margins for tiny screens */
+  .about-panels {
+    margin-top: 2rem !important;
+  }
 }
