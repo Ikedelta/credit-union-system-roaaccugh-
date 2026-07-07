@@ -1563,6 +1563,9 @@ textarea.form-control {
   font-size: 0.85rem;
   font-weight: 600;
   color: var(--text-light);
+  text-align: center;
+  max-width: 80px;
+  line-height: 1.2;
 }
 
 .wizard-step-indicator.active .wizard-step-label,
