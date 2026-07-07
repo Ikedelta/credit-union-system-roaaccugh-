@@ -6,11 +6,17 @@ interface PageHeaderProps {
   description?: string;
   badge?: string;
   badgeColor?: 'primary' | 'gold' | 'emerald';
+  bgImage?: string;
 }
 
-export function PageHeader({ title, description }: PageHeaderProps) {
+export function PageHeader({ title, description, bgImage }: PageHeaderProps) {
+  const defaultBg = '/slider1.jpg';
+  const backgroundStyle = {
+    backgroundImage: `linear-gradient(135deg, rgba(28, 16, 94, 0.92) 0%, rgba(28, 16, 94, 0.85) 100%), url(${bgImage || defaultBg})`
+  };
+
   return (
-    <section className="page-header">
+    <section className="page-header" style={backgroundStyle}>
       <div className="container" style={{ position: 'relative', zIndex: 1 }}>
         {/* Breadcrumb */}
         <nav className="page-header-breadcrumb">

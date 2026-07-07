@@ -37,6 +37,7 @@ export function Contact() {
       <PageHeader 
         title="Contact Us" 
         description="We are always here to help. Reach out to us for any inquiries or support." 
+        bgImage="/slider2.jpg"
       />
       <main className="section container">
         <div className="grid md:grid-cols-2 gap-8" style={{ marginBottom: '3rem' }}>

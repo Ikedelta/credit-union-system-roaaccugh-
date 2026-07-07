@@ -1,4 +1,5 @@
 import { useLocation } from 'react-router-dom';
+import { PageHeader } from '../components/PageHeader';
 
 export function Gallery() {
   const location = useLocation();
@@ -6,20 +7,21 @@ export function Gallery() {
   const code = searchParams.get('code') || 'General';
 
   const images = [
-    "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80",
-    "https://images.unsplash.com/photo-1556761175-5973dc0f32d7?auto=format&fit=crop&q=80",
-    "https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&q=80",
-    "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80",
-    "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80",
-    "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?auto=format&fit=crop&q=80"
+    "/slider1.jpg",
+    "/slider2.jpg",
+    "/slider3.jpg",
+    "/slider1.jpg",
+    "/slider2.jpg",
+    "/slider3.jpg"
   ];
 
   return (
     <main className="section container text-center" style={{ minHeight: '60vh' }}>
-      <h2 style={{ color: 'var(--primary-color)', marginBottom: '1rem', textTransform: 'uppercase' }}>
-        {code} Gallery
-      </h2>
-      <p className="card-text">A collection of moments from our {code} archives.</p>
+      <PageHeader 
+        title={`${code} Gallery`} 
+        description={`A collection of moments from our ${code} archives.`}
+        bgImage="/slider2.jpg"
+      />
       
       <div className="grid md:grid-cols-3 gap-6" style={{ marginTop: '3rem' }}>
         {images.map((url, i) => (

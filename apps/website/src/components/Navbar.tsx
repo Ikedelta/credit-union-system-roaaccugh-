@@ -56,16 +56,19 @@ export function Navbar({ setActiveModal }: NavbarProps) {
 
             <nav className={`nav-links ${isMobileMenuOpen ? 'active' : ''}`}>
               <Link to="/" className="nav-link">Home</Link>
-              <Link to="/about" className="nav-link">About</Link>
+              <div className={`dropdown ${activeDropdown === 'about' ? 'open' : ''}`}>
+                <div className="nav-link dropdown-toggle" onClick={(e) => toggleDropdown('about', e)}>
+                  About <ChevronDown size={16} className={`dropdown-icon ${activeDropdown === 'about' ? 'rotate' : ''}`} />
+                </div>
+                <div className="dropdown-content">
+                  <Link to="/about" className="nav-link">About Us</Link>
+                  <Link to="/team" className="nav-link">Board of Directors</Link>
+                </div>
+              </div>
               <Link to="/services" className="nav-link">Services</Link>
               <Link to="/products" className="nav-link">Products</Link>
-              <Link to="/team" className="nav-link">BOD</Link>
               
-              <div 
-                className={`dropdown ${activeDropdown === 'gallery' ? 'open' : ''}`}
-                onMouseEnter={() => window.innerWidth > 768 && setActiveDropdown('gallery')}
-                onMouseLeave={() => window.innerWidth > 768 && setActiveDropdown(null)}
-              >
+              <div className={`dropdown ${activeDropdown === 'gallery' ? 'open' : ''}`}>
                 <div className="nav-link dropdown-toggle" onClick={(e) => toggleDropdown('gallery', e)}>
                   Gallery <ChevronDown size={16} className={`dropdown-icon ${activeDropdown === 'gallery' ? 'rotate' : ''}`} />
                 </div>
@@ -75,11 +78,7 @@ export function Navbar({ setActiveModal }: NavbarProps) {
                 </div>
               </div>
 
-              <div 
-                className={`dropdown ${activeDropdown === 'member' ? 'open' : ''}`}
-                onMouseEnter={() => window.innerWidth > 768 && setActiveDropdown('member')}
-                onMouseLeave={() => window.innerWidth > 768 && setActiveDropdown(null)}
-              >
+              <div className={`dropdown ${activeDropdown === 'member' ? 'open' : ''}`}>
                 <div className="nav-link dropdown-toggle" onClick={(e) => toggleDropdown('member', e)}>
                   Member <ChevronDown size={16} className={`dropdown-icon ${activeDropdown === 'member' ? 'rotate' : ''}`} />
                 </div>

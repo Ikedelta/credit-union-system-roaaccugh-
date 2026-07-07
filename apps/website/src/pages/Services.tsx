@@ -1,12 +1,11 @@
 import { Phone, Zap, Banknote, Building2, ShieldCheck } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
 import { PageHeader } from '../components/PageHeader';
 import { RevealOnScroll } from '../components/RevealOnScroll';
 
 const iconColors = ['', 'gold'];
 
 export function Services() {
-  const services: { title: string; desc: string; icon: LucideIcon }[] = [
+  const services = [
     { title: 'USSD *889*55#', desc: 'Check your account balance and deposit into your account anywhere, anytime.', icon: Phone },
     { title: 'Mobile Money', desc: 'Seamlessly deposit, withdraw & send funds across all major networks.', icon: Zap },
     { title: 'Ezwich', desc: 'Enjoy reliable and convenient ezwich services at all our branches.', icon: Banknote },
@@ -21,6 +20,7 @@ export function Services() {
         title="Our Services" 
         description="Enjoy countless financial services designed specifically for your convenience and business growth."
         badge="What We Offer"
+        bgImage="/slider3.jpg"
       />
       <main className="section container">
         <RevealOnScroll>

@@ -7,7 +7,8 @@ export function About() {
     <>
       <PageHeader 
         title="About ROAACCU" 
-        description="Me Daakye Anidaso. We are your preferred Financial Co-operative Credit Union in Ghana." 
+        description="Learn about our history, our mission, and the core values that drive us to serve the Road Officers and Allies community."
+        bgImage="/slider2.jpg"
       />
       <main className="section container">
       

@@ -3,9 +3,10 @@ import { PageHeader } from '../components/PageHeader';
 import { RevealOnScroll } from '../components/RevealOnScroll';
 
 const typeConfig: Record<string, { label: string; badgeClass: string; bg: string }> = {
-  Loan:       { label: 'Loan', badgeClass: 'type-badge type-badge-loan',       bg: 'rgba(11, 63, 143, 0.04)' },
-  Savings:    { label: 'Savings', badgeClass: 'type-badge type-badge-savings', bg: 'rgba(245, 158, 11, 0.04)' },
-  Investment: { label: 'Investment', badgeClass: 'type-badge type-badge-investment', bg: 'rgba(11, 63, 143, 0.04)' },
+  Savings:    { label: 'Savings',    badgeClass: 'type-badge type-badge-savings',    bg: '#f8fafc' },
+  Loan:       { label: 'Loan',       badgeClass: 'type-badge type-badge-loan',       bg: 'rgba(28, 16, 94, 0.04)' },
+  Welfare:    { label: 'Welfare',    badgeClass: 'type-badge type-badge-welfare',    bg: '#f8fafc' },
+  Investment: { label: 'Investment', badgeClass: 'type-badge type-badge-investment', bg: 'rgba(28, 16, 94, 0.04)' },
 };
 
 export function Products() {
@@ -26,6 +27,7 @@ export function Products() {
         title="Our Products" 
         description="Feel free to patronize our varieties of tailored financial products designed for every stage of your life."
         badge="Products"
+        bgImage="/slider1.jpg"
       />
       <main className="section container">
         <RevealOnScroll>

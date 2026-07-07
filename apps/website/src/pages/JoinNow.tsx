@@ -1,13 +1,20 @@
-import { useState } from 'react';
-import { ShieldCheck, Clock, CheckCircle } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { ShieldCheck, Clock, CheckCircle, ArrowRight, ArrowLeft } from 'lucide-react';
 import { PageHeader } from '../components/PageHeader';
 import { RevealOnScroll } from '../components/RevealOnScroll';
 
 export function JoinNow() {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [step, setStep] = useState(1);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (step < 3) {
+      nextStep();
+      return;
+    }
+
     setStatus('loading');
     
     try {
@@ -22,6 +29,7 @@ export function JoinNow() {
       if (response.ok) {
         setStatus('success');
         form.reset();
+        setStep(1);
       } else {
         setStatus('error');
       }
@@ -31,15 +39,30 @@ export function JoinNow() {
     }
   };
 
+  const nextStep = () => {
+    if (formRef.current) {
+      if (formRef.current.checkValidity()) {
+        setStep(s => Math.min(3, s + 1));
+      } else {
+        formRef.current.reportValidity();
+      }
+    }
+  };
+
+  const prevStep = () => {
+    setStep(s => Math.max(1, s - 1));
+  };
+
   return (
     <>
       <PageHeader 
         title="Join ROAACCU" 
         description="Become a member today and unlock a world of financial opportunities and growth." 
+        bgImage="/slider2.jpg"
       />
       <main className="section container">
         <RevealOnScroll>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '3rem' }} className="split-layout">
+          <div className="split-layout">
             
             {/* Sticky Sidebar - Left Column */}
             <div className="split-sidebar">
@@ -48,32 +71,29 @@ export function JoinNow() {
                   Unlock a world of financial opportunities. By joining us, you aren't just opening an account—you are becoming a shareholder in a thriving co-operative.
                 </p>
 
-                <img 
-                  src="https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-                  alt="Happy ROAACCU Members" 
-                  style={{ width: '100%', borderRadius: 'var(--border-radius-xl)', boxShadow: 'var(--shadow-md)', marginBottom: '2.5rem', objectFit: 'cover', maxHeight: '240px' }} 
-                />
-                
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', marginTop: '2.5rem' }}>
-                  <div className="flex gap-4">
-                    <div style={{ background: 'rgba(245, 158, 11, 0.1)', color: 'var(--secondary-color)', padding: '1rem', borderRadius: '12px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ShieldCheck size={28} /></div>
-                    <div>
-                      <h4 style={{ fontSize: '1.15rem', marginBottom: '0.35rem', color: 'var(--primary-color)' }}>Secure Deposits</h4>
-                      <p className="card-text" style={{ fontSize: '0.95rem', lineHeight: 1.6 }}>Your savings are protected with top-tier security standards and encrypted infrastructure.</p>
+                <div className="premium-card" style={{ padding: '2rem', background: '#f8fafc', borderColor: 'rgba(28, 16, 94, 0.05)', boxShadow: 'none' }}>
+                  <h3 style={{ fontSize: '1.1rem', marginBottom: '1.5rem', color: 'var(--primary-color)' }}>Why Choose ROAACCU?</h3>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                    <div className="flex gap-4">
+                      <div style={{ background: 'rgba(245, 158, 11, 0.1)', color: 'var(--secondary-color)', padding: '0.8rem', borderRadius: '12px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ShieldCheck size={24} /></div>
+                      <div>
+                        <h4 style={{ fontSize: '1.05rem', marginBottom: '0.25rem', color: 'var(--primary-color)' }}>Secure Deposits</h4>
+                        <p className="card-text" style={{ fontSize: '0.9rem', lineHeight: 1.5, margin: 0 }}>Your savings are protected with top-tier security standards and encrypted infrastructure.</p>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex gap-4">
-                    <div style={{ background: 'rgba(11, 63, 143, 0.1)', color: 'var(--primary-color)', padding: '1rem', borderRadius: '12px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Clock size={28} /></div>
-                    <div>
-                      <h4 style={{ fontSize: '1.15rem', marginBottom: '0.35rem', color: 'var(--primary-color)' }}>Fast Processing</h4>
-                      <p className="card-text" style={{ fontSize: '0.95rem', lineHeight: 1.6 }}>Membership approval is seamlessly processed and typically completed within 24 hours.</p>
+                    <div className="flex gap-4">
+                      <div style={{ background: 'rgba(28, 16, 94, 0.1)', color: 'var(--primary-color)', padding: '0.8rem', borderRadius: '12px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Clock size={24} /></div>
+                      <div>
+                        <h4 style={{ fontSize: '1.05rem', marginBottom: '0.25rem', color: 'var(--primary-color)' }}>Fast Processing</h4>
+                        <p className="card-text" style={{ fontSize: '0.9rem', lineHeight: 1.5, margin: 0 }}>Membership approval is seamlessly processed and typically completed within 24 hours.</p>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex gap-4">
-                    <div style={{ background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', padding: '1rem', borderRadius: '12px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><CheckCircle size={28} /></div>
-                    <div>
-                      <h4 style={{ fontSize: '1.15rem', marginBottom: '0.35rem', color: 'var(--primary-color)' }}>Instant Loan Eligibility</h4>
-                      <p className="card-text" style={{ fontSize: '0.95rem', lineHeight: 1.6 }}>Start building your financial credit immediately to secure future loans for your business.</p>
+                    <div className="flex gap-4">
+                      <div style={{ background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', padding: '0.8rem', borderRadius: '12px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><CheckCircle size={24} /></div>
+                      <div>
+                        <h4 style={{ fontSize: '1.05rem', marginBottom: '0.25rem', color: 'var(--primary-color)' }}>Instant Loan Eligibility</h4>
+                        <p className="card-text" style={{ fontSize: '0.9rem', lineHeight: 1.5, margin: 0 }}>Start building your financial credit immediately to secure future loans for your business.</p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -81,103 +101,156 @@ export function JoinNow() {
 
             {/* Form Area - Right Column */}
             <div className="split-form">
-              <div className="premium-card">
-                <form onSubmit={handleSubmit}>
+              <div className="premium-card form-wizard-card">
+                
+                {/* Wizard Header Progress */}
+                <div className="wizard-header">
+                  <div className="wizard-progress-track">
+                    <div className="wizard-progress-fill" style={{ width: `${((step - 1) / 2) * 100}%` }}></div>
+                  </div>
+                  {[1, 2, 3].map((num) => (
+                    <div key={num} className={`wizard-step-indicator ${step === num ? 'active' : ''} ${step > num ? 'completed' : ''}`}>
+                      <div className="wizard-step-circle">
+                        {step > num ? <CheckCircle size={20} /> : num}
+                      </div>
+                      <span className="wizard-step-label">
+                        {num === 1 ? 'Personal' : num === 2 ? 'Beneficiaries' : 'Identity'}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                <form ref={formRef} onSubmit={handleSubmit}>
                   {status === 'success' && <div style={{ padding: '1rem', background: '#dcfce7', color: '#166534', borderRadius: '8px', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><CheckCircle size={20} /> Membership application submitted successfully!</div>}
                   {status === 'error' && <div style={{ padding: '1rem', background: '#fee2e2', color: '#991b1b', borderRadius: '8px', marginBottom: '1.5rem' }}>Failed to submit application. Please try again.</div>}
                   
-                  <h3 style={{ color: 'var(--primary-color)', marginBottom: '1.5rem', paddingBottom: '0.75rem', borderBottom: '2px solid rgba(11, 63, 143, 0.1)', fontSize: '1.2rem' }}>1. Personal Information</h3>
-                  
-                  <div className="grid md:grid-cols-2 gap-5">
-                    <div className="form-group">
-                      <label className="form-label">First Name</label>
-                      <input type="text" name="firstName" className="form-control" required />
-                    </div>
-                    <div className="form-group">
-                      <label className="form-label">Last Name</label>
-                      <input type="text" name="lastName" className="form-control" required />
-                    </div>
-                    <div className="form-group">
-                      <label className="form-label">Mobile Number</label>
-                      <input type="tel" name="telNo" className="form-control" required />
-                    </div>
-                    <div className="form-group">
-                      <label className="form-label">Marital Status</label>
-                      <select name="maritalStatus" className="form-control" required>
-                        <option value="">Select Status</option>
-                        <option value="Single">Single</option>
-                        <option value="Married">Married</option>
-                        <option value="Divorced">Divorced</option>
-                        <option value="Widowed">Widowed</option>
-                      </select>
-                    </div>
-                    <div className="form-group">
-                      <label className="form-label">Date of Birth</label>
-                      <input type="date" name="dateOfBirth" className="form-control" required />
-                    </div>
-                    <div className="form-group">
-                      <label className="form-label">Occupation</label>
-                      <input type="text" name="occupation" className="form-control" required />
-                    </div>
-                    <div className="form-group">
-                      <label className="form-label">Town / Location</label>
-                      <input type="text" name="residentialAddress" className="form-control" required />
-                    </div>
-                    <div className="form-group">
-                      <label className="form-label">Email Address</label>
-                      <input type="email" name="email" className="form-control" required />
-                    </div>
-                  </div>
-                  <div className="form-group" style={{ marginTop: '0.5rem' }}>
-                    <label className="form-label">Postal Address</label>
-                    <textarea name="postalAddress" className="form-control" style={{ minHeight: '100px' }} required></textarea>
-                  </div>
-
-                  <h3 style={{ color: 'var(--primary-color)', marginBottom: '1.5rem', marginTop: '3rem', paddingBottom: '0.75rem', borderBottom: '2px solid rgba(11, 63, 143, 0.1)', fontSize: '1.2rem' }}>2. Beneficiaries</h3>
-                  
-                  <div className="grid md:grid-cols-3 gap-5" style={{ marginBottom: '1rem' }}>
-                    <div className="form-group">
-                      <label className="form-label">Beneficiary 1 Name</label>
-                      <input type="text" className="form-control" required />
-                    </div>
-                    <div className="form-group">
-                      <label className="form-label">Relationship</label>
-                      <input type="text" className="form-control" required />
-                    </div>
-                    <div className="form-group">
-                      <label className="form-label">Share (%)</label>
-                      <input type="number" className="form-control" required />
-                    </div>
-                  </div>
-
-                  <h3 style={{ color: 'var(--primary-color)', marginBottom: '1.5rem', marginTop: '3rem', paddingBottom: '0.75rem', borderBottom: '2px solid rgba(11, 63, 143, 0.1)', fontSize: '1.2rem' }}>3. Identification</h3>
-                  
-                  <div className="form-group">
-                    <label className="form-label">Ghana Card Number</label>
-                    <input type="text" className="form-control" required />
-                  </div>
-                  <div className="grid md:grid-cols-2 gap-5" style={{ marginTop: '0.5rem' }}>
-                    <div className="form-group">
-                      <label className="form-label">Upload Card (Front)</label>
-                      <div style={{ border: '2px dashed rgba(11, 63, 143, 0.2)', padding: '2rem', borderRadius: '12px', textAlign: 'center', backgroundColor: '#f8fafc', transition: 'var(--transition)' }}>
-                        <input type="file" name="ghanaCardFront" style={{ width: '100%' }} accept=".jpg,.png,.jpeg,.webp" required />
+                  {/* STEP 1: Personal Info */}
+                  <div style={{ display: step === 1 ? 'block' : 'none' }} className="wizard-step-content">
+                    <h3 style={{ color: 'var(--primary-color)', marginBottom: '1.5rem', fontSize: '1.4rem' }}>Personal Information</h3>
+                    <div className="grid md:grid-cols-2 gap-5">
+                      <div className="form-group">
+                        <label className="form-label">First Name</label>
+                        <input type="text" name="firstName" className="form-control" required={step === 1} />
+                      </div>
+                      <div className="form-group">
+                        <label className="form-label">Last Name</label>
+                        <input type="text" name="lastName" className="form-control" required={step === 1} />
+                      </div>
+                      <div className="form-group">
+                        <label className="form-label">Mobile Number</label>
+                        <input type="tel" name="telNo" className="form-control" required={step === 1} />
+                      </div>
+                      <div className="form-group">
+                        <label className="form-label">Marital Status</label>
+                        <select name="maritalStatus" className="form-control" required={step === 1}>
+                          <option value="">Select Status</option>
+                          <option value="Single">Single</option>
+                          <option value="Married">Married</option>
+                          <option value="Divorced">Divorced</option>
+                          <option value="Widowed">Widowed</option>
+                        </select>
+                      </div>
+                      <div className="form-group">
+                        <label className="form-label">Date of Birth</label>
+                        <input type="date" name="dateOfBirth" className="form-control" required={step === 1} />
+                      </div>
+                      <div className="form-group">
+                        <label className="form-label">Occupation</label>
+                        <input type="text" name="occupation" className="form-control" required={step === 1} />
+                      </div>
+                      <div className="form-group">
+                        <label className="form-label">Town / Location</label>
+                        <input type="text" name="residentialAddress" className="form-control" required={step === 1} />
+                      </div>
+                      <div className="form-group">
+                        <label className="form-label">Email Address</label>
+                        <input type="email" name="email" className="form-control" required={step === 1} />
                       </div>
                     </div>
-                    <div className="form-group">
-                      <label className="form-label">Upload Card (Back)</label>
-                      <div style={{ border: '2px dashed rgba(11, 63, 143, 0.2)', padding: '2rem', borderRadius: '12px', textAlign: 'center', backgroundColor: '#f8fafc', transition: 'var(--transition)' }}>
-                        <input type="file" name="ghanaCardBack" style={{ width: '100%' }} accept=".jpg,.png,.jpeg,.webp" required />
+                    <div className="form-group" style={{ marginTop: '0.5rem' }}>
+                      <label className="form-label">Postal Address</label>
+                      <textarea name="postalAddress" className="form-control" style={{ minHeight: '100px' }} required={step === 1}></textarea>
+                    </div>
+                  </div>
+
+                  {/* STEP 2: Beneficiaries */}
+                  <div style={{ display: step === 2 ? 'block' : 'none' }} className="wizard-step-content">
+                    <h3 style={{ color: 'var(--primary-color)', marginBottom: '1.5rem', fontSize: '1.4rem' }}>Beneficiaries</h3>
+                    <div className="grid md:grid-cols-3 gap-5" style={{ marginBottom: '1rem' }}>
+                      <div className="form-group">
+                        <label className="form-label">Beneficiary 1 Name</label>
+                        <input type="text" name="beneficiary1Name" className="form-control" required={step === 2} />
+                      </div>
+                      <div className="form-group">
+                        <label className="form-label">Relationship</label>
+                        <input type="text" name="beneficiary1Rel" className="form-control" required={step === 2} />
+                      </div>
+                      <div className="form-group">
+                        <label className="form-label">Share (%)</label>
+                        <input type="number" name="beneficiary1Share" className="form-control" required={step === 2} />
                       </div>
                     </div>
                   </div>
 
-                  <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '2rem', padding: '1rem' }} disabled={status === 'loading'}>
-                    {status === 'loading' ? 'Submitting Application...' : 'Submit Membership Application'}
-                  </button>
-                  <p style={{ textAlign: 'center', marginTop: '1.25rem', fontSize: '0.85rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-                    <ShieldCheck size={16} style={{ color: 'var(--primary-light)' }} />
-                    Your information is securely encrypted and strictly confidential.
-                  </p>
+                  {/* STEP 3: Identification */}
+                  <div style={{ display: step === 3 ? 'block' : 'none' }} className="wizard-step-content">
+                    <h3 style={{ color: 'var(--primary-color)', marginBottom: '1.5rem', fontSize: '1.4rem' }}>Identification</h3>
+                    <div className="form-group">
+                      <label className="form-label">Ghana Card Number</label>
+                      <input type="text" name="ghanaCardNo" className="form-control" required={step === 3} />
+                    </div>
+                    <div className="grid md:grid-cols-2 gap-5" style={{ marginTop: '0.5rem' }}>
+                      <div className="form-group">
+                        <label className="form-label">Upload Card (Front)</label>
+                        <div style={{ border: '2px dashed rgba(28, 16, 94, 0.2)', padding: '2rem', borderRadius: '12px', textAlign: 'center', backgroundColor: '#f8fafc', transition: 'var(--transition)' }}>
+                          <input type="file" name="ghanaCardFront" style={{ width: '100%' }} accept=".jpg,.png,.jpeg,.webp" required={step === 3} />
+                        </div>
+                      </div>
+                      <div className="form-group">
+                        <label className="form-label">Upload Card (Back)</label>
+                        <div style={{ border: '2px dashed rgba(28, 16, 94, 0.2)', padding: '2rem', borderRadius: '12px', textAlign: 'center', backgroundColor: '#f8fafc', transition: 'var(--transition)' }}>
+                          <input type="file" name="ghanaCardBack" style={{ width: '100%' }} accept=".jpg,.png,.jpeg,.webp" required={step === 3} />
+                        </div>
+                      </div>
+                    </div>
+                    <p style={{ textAlign: 'center', marginTop: '1.25rem', fontSize: '0.85rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+                      <ShieldCheck size={16} style={{ color: 'var(--primary-light)' }} />
+                      Your information is securely encrypted and strictly confidential.
+                    </p>
+                  </div>
+
+                  {/* Navigation Actions */}
+                  <div className="wizard-actions">
+                    <button 
+                      type="button" 
+                      className="btn btn-ghost" 
+                      onClick={prevStep} 
+                      style={{ visibility: step > 1 ? 'visible' : 'hidden', gap: '0.5rem' }}
+                    >
+                      <ArrowLeft size={18} /> Back
+                    </button>
+                    
+                    {step < 3 ? (
+                      <button 
+                        type="button" 
+                        className="btn btn-primary" 
+                        onClick={nextStep}
+                        style={{ gap: '0.5rem' }}
+                      >
+                        Next Step <ArrowRight size={18} />
+                      </button>
+                    ) : (
+                      <button 
+                        type="submit" 
+                        className="btn btn-primary" 
+                        disabled={status === 'loading'}
+                        style={{ paddingLeft: '2rem', paddingRight: '2rem' }}
+                      >
+                        {status === 'loading' ? 'Submitting...' : 'Complete Application'}
+                      </button>
+                    )}
+                  </div>
+                  
                 </form>
               </div>
             </div>

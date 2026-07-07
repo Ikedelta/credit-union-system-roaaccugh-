@@ -1,10 +1,32 @@
-import { useState } from 'react';
-import { ShieldCheck, CalendarCheck, TrendingDown, CheckCircle } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { ShieldCheck, CalendarCheck, TrendingDown, CheckCircle, ArrowRight, ArrowLeft } from 'lucide-react';
 import { PageHeader } from '../components/PageHeader';
 import { RevealOnScroll } from '../components/RevealOnScroll';
 
 export function ApplyLoan() {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [step, setStep] = useState(1);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  const nextStep = () => {
+    if (formRef.current) {
+      const inputs = Array.from(formRef.current.querySelectorAll(`input[required]:not([disabled]), select[required]:not([disabled]), textarea[required]:not([disabled])`)) as HTMLInputElement[];
+      const currentStepInputs = inputs.filter(input => input.closest('.wizard-step-content[style*="display: block"]'));
+      
+      let isValid = true;
+      currentStepInputs.forEach(input => {
+        if (!input.checkValidity()) {
+          input.reportValidity();
+          isValid = false;
+        }
+      });
+      if (isValid) setStep(s => Math.min(3, s + 1));
+    }
+  };
+
+  const prevStep = () => {
+    setStep(s => Math.max(1, s - 1));
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -34,6 +56,7 @@ export function ApplyLoan() {
         title="Apply for a Loan"
         description="Experience flexible repayment terms and low-interest rates designed to help you succeed."
         badge="Member Loans"
+        bgImage="/slider3.jpg"
       />
       <main className="section container">
         <RevealOnScroll>
@@ -84,8 +107,26 @@ export function ApplyLoan() {
 
             {/* ── Right Form ── */}
             <div className="split-form">
-              <div className="premium-card">
-                <form onSubmit={handleSubmit}>
+              <div className="premium-card form-wizard-card">
+                
+                {/* Wizard Header Progress */}
+                <div className="wizard-header">
+                  <div className="wizard-progress-track">
+                    <div className="wizard-progress-fill" style={{ width: `${((step - 1) / 2) * 100}%` }}></div>
+                  </div>
+                  {[1, 2, 3].map((num) => (
+                    <div key={num} className={`wizard-step-indicator ${step === num ? 'active' : ''} ${step > num ? 'completed' : ''}`}>
+                      <div className="wizard-step-circle">
+                        {step > num ? <CheckCircle size={20} /> : num}
+                      </div>
+                      <span className="wizard-step-label">
+                        {num === 1 ? 'Personal' : num === 2 ? 'Loan Details' : 'Identity'}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                <form ref={formRef} onSubmit={handleSubmit}>
 
                   {status === 'success' && (
                     <div style={{ padding: '1rem', background: '#dcfce7', color: '#166534', borderRadius: '12px', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -99,102 +140,117 @@ export function ApplyLoan() {
                   )}
 
                   {/* Section 1 */}
-                  <h3 style={{ color: 'var(--primary-color)', marginBottom: '1.5rem', paddingBottom: '0.5rem', borderBottom: '2px solid var(--border-color)' }}>
-                    1. Personal Information
-                  </h3>
-                  <div className="grid md:grid-cols-2 gap-4">
+                  <div style={{ display: step === 1 ? 'block' : 'none' }} className="wizard-step-content">
+                    <h3 style={{ color: 'var(--primary-color)', marginBottom: '1.5rem', fontSize: '1.4rem' }}>Personal Information</h3>
+                    <div className="grid md:grid-cols-2 gap-4">
                     <div className="form-group">
                       <label className="form-label">Account Number</label>
-                      <input type="number" name="accountNumber" className="form-control" required />
+                      <input type="number" name="accountNumber" className="form-control" required={step === 1} />
                     </div>
                     <div className="form-group">
                       <label className="form-label">Full Name</label>
-                      <input type="text" name="fullName" className="form-control" required />
+                      <input type="text" name="fullName" className="form-control" required={step === 1} />
                     </div>
                     <div className="form-group">
                       <label className="form-label">Contact Number</label>
-                      <input type="text" name="telNo" className="form-control" required />
+                      <input type="text" name="telNo" className="form-control" required={step === 1} />
                     </div>
                     <div className="form-group">
                       <label className="form-label">Marital Status</label>
-                      <input type="text" name="maritalStatus" className="form-control" required />
+                      <input type="text" name="maritalStatus" className="form-control" required={step === 1} />
                     </div>
                     <div className="form-group">
                       <label className="form-label">Occupation</label>
-                      <input type="text" name="occupation" className="form-control" required />
+                      <input type="text" name="occupation" className="form-control" required={step === 1} />
                     </div>
                     <div className="form-group">
                       <label className="form-label">Town / Location</label>
-                      <input type="text" name="townLocation" className="form-control" required />
+                      <input type="text" name="townLocation" className="form-control" required={step === 1} />
                     </div>
                     <div className="form-group" style={{ gridColumn: '1 / -1' }}>
                       <label className="form-label">GPS Address</label>
-                      <input type="text" name="gpsAddress" className="form-control" required />
+                      <input type="text" name="gpsAddress" className="form-control" required={step === 1} />
                     </div>
                   </div>
                   <div className="form-group" style={{ marginTop: '1rem' }}>
                     <label className="form-label">Direction to House</label>
-                    <textarea name="directionToHouse" className="form-control" style={{ minHeight: '80px' }} required></textarea>
+                    <textarea name="directionToHouse" className="form-control" style={{ minHeight: '80px' }} required={step === 1}></textarea>
+                    </div>
+                    
+                    <div className="wizard-actions" style={{ justifyContent: 'flex-end' }}>
+                      <button type="button" className="btn btn-primary" onClick={nextStep}>
+                        Next Step <ArrowRight size={16} />
+                      </button>
+                    </div>
                   </div>
 
                   {/* Section 2 */}
-                  <h3 style={{ color: 'var(--primary-color)', marginBottom: '1.5rem', marginTop: '2.5rem', paddingBottom: '0.5rem', borderBottom: '2px solid var(--border-color)' }}>
-                    2. Loan Details
-                  </h3>
-                  <div className="grid md:grid-cols-2 gap-4">
+                  <div style={{ display: step === 2 ? 'block' : 'none' }} className="wizard-step-content">
+                    <h3 style={{ color: 'var(--primary-color)', marginBottom: '1.5rem', fontSize: '1.4rem' }}>Loan Details</h3>
+                    <div className="grid md:grid-cols-2 gap-4">
                     <div className="form-group">
                       <label className="form-label">Loan Amount (GHS)</label>
-                      <input type="number" name="amount" className="form-control" required />
+                      <input type="number" name="amount" className="form-control" required={step === 2} />
                     </div>
                     <div className="form-group">
                       <label className="form-label">Duration (in months)</label>
-                      <input type="number" name="durationMonths" className="form-control" required />
+                      <input type="number" name="durationMonths" className="form-control" required={step === 2} />
                     </div>
                     <div className="form-group">
                       <label className="form-label">Monthly Payment Capability</label>
-                      <input type="number" name="monthlyPayment" className="form-control" required />
+                      <input type="number" name="monthlyPayment" className="form-control" required={step === 2} />
                     </div>
                     <div className="form-group">
                       <label className="form-label">When do you need it?</label>
-                      <input type="date" name="dateNeeded" className="form-control" />
+                      <input type="date" name="dateNeeded" className="form-control" required={step === 2} />
                     </div>
                   </div>
                   <div className="form-group" style={{ marginTop: '1rem' }}>
                     <label className="form-label">Purpose of the Loan</label>
-                    <textarea name="purpose" className="form-control" style={{ minHeight: '80px' }} required></textarea>
+                    <textarea name="purpose" className="form-control" style={{ minHeight: '80px' }} required={step === 2}></textarea>
+                    </div>
+                    
+                    <div className="wizard-actions">
+                      <button type="button" className="btn btn-outline" onClick={prevStep}>
+                        <ArrowLeft size={16} /> Previous
+                      </button>
+                      <button type="button" className="btn btn-primary" onClick={nextStep}>
+                        Next Step <ArrowRight size={16} />
+                      </button>
+                    </div>
                   </div>
 
                   {/* Section 3 */}
-                  <h3 style={{ color: 'var(--primary-color)', marginBottom: '1.5rem', marginTop: '2.5rem', paddingBottom: '0.5rem', borderBottom: '2px solid var(--border-color)' }}>
-                    3. Identification
-                  </h3>
-                  <div className="form-group">
-                    <label className="form-label">Ghana Card Number</label>
-                    <input type="text" name="ghanaCardNumber" className="form-control" required />
-                  </div>
-                  <div className="grid md:grid-cols-2 gap-4" style={{ marginTop: '1rem' }}>
+                  <div style={{ display: step === 3 ? 'block' : 'none' }} className="wizard-step-content">
+                    <h3 style={{ color: 'var(--primary-color)', marginBottom: '1.5rem', fontSize: '1.4rem' }}>Identification</h3>
                     <div className="form-group">
-                      <label className="form-label">Upload Card (Front)</label>
-                      <div style={{ border: '2px dashed #cbd5e1', padding: '1.5rem', borderRadius: '12px', textAlign: 'center', backgroundColor: '#f8fafc' }}>
-                        <input type="file" name="ghanaCardFront" style={{ width: '100%' }} accept=".jpg,.png,.jpeg,.webp" required />
+                      <label className="form-label">Ghana Card Number</label>
+                      <input type="text" name="ghanaCardNumber" className="form-control" required={step === 3} />
+                    </div>
+                    <div className="grid md:grid-cols-2 gap-4" style={{ marginTop: '1rem' }}>
+                      <div className="form-group">
+                        <label className="form-label">Upload Card (Front)</label>
+                        <div style={{ border: '2px dashed #cbd5e1', padding: '1.5rem', borderRadius: '12px', textAlign: 'center', backgroundColor: '#f8fafc' }}>
+                          <input type="file" name="ghanaCardFront" style={{ width: '100%' }} accept=".jpg,.png,.jpeg,.webp" required={step === 3} />
+                        </div>
+                      </div>
+                      <div className="form-group">
+                        <label className="form-label">Upload Card (Back)</label>
+                        <div style={{ border: '2px dashed #cbd5e1', padding: '1.5rem', borderRadius: '12px', textAlign: 'center', backgroundColor: '#f8fafc' }}>
+                          <input type="file" name="ghanaCardBack" style={{ width: '100%' }} accept=".jpg,.png,.jpeg,.webp" required={step === 3} />
+                        </div>
                       </div>
                     </div>
-                    <div className="form-group">
-                      <label className="form-label">Upload Card (Back)</label>
-                      <div style={{ border: '2px dashed #cbd5e1', padding: '1.5rem', borderRadius: '12px', textAlign: 'center', backgroundColor: '#f8fafc' }}>
-                        <input type="file" name="ghanaCardBack" style={{ width: '100%' }} accept=".jpg,.png,.jpeg,.webp" required />
-                      </div>
-                    </div>
-                  </div>
 
-                  <button
-                    type="submit"
-                    className="btn btn-primary"
-                    style={{ width: '100%', marginTop: '2rem' }}
-                    disabled={status === 'loading'}
-                  >
-                    {status === 'loading' ? 'Submitting...' : 'Submit Loan Application'}
-                  </button>
+                    <div className="wizard-actions">
+                      <button type="button" className="btn btn-outline" onClick={prevStep} disabled={status === 'loading'}>
+                        <ArrowLeft size={16} /> Previous
+                      </button>
+                      <button type="submit" className="btn btn-primary" disabled={status === 'loading'}>
+                        {status === 'loading' ? 'Submitting...' : 'Submit Application'}
+                      </button>
+                    </div>
+                  </div>
 
                 </form>
               </div>

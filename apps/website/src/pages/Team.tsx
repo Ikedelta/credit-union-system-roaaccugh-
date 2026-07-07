@@ -15,6 +15,7 @@ export function Team() {
       <PageHeader
         title="Board of Directors"
         description="The governance body entrusted with steering ROAACCU's vision and financial integrity."
+        bgImage="/slider3.jpg"
       />
       <main className="section container">
 

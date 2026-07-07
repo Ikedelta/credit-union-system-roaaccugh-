@@ -120,10 +120,11 @@ export function Home() {
         <div className="container">
           <div className="home-split">
             <RevealOnScroll direction="right">
-              <div className="home-split-image">
+              <div className="home-split-image" style={{ background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '3rem' }}>
                 <img
-                  src="https://images.unsplash.com/photo-1573164713988-8665fc963095?ixlib=rb-4.0.3&auto=format&fit=crop&w=900&q=80"
-                  alt="ROAACCU members in a financial meeting"
+                  src="/logo.png"
+                  alt="ROAACCU Logo"
+                  style={{ objectFit: 'contain', width: '100%', height: '100%', maxHeight: '400px' }}
                 />
                 <div className="home-split-badge">
                   <strong>Est. 2014</strong>
@@ -166,20 +167,27 @@ export function Home() {
       <section style={{ background: '#f8f9fc', borderTop: '1px solid var(--border-color)', borderBottom: '1px solid var(--border-color)' }}>
         <div className="container section">
           <RevealOnScroll>
-            <div className="services-header">
-              <div>
+            <div className="services-header" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: '1.5rem', marginBottom: '4rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <p className="eyebrow-label">What We Offer</p>
-                <h2>Financial tools<br />built for real life.</h2>
+                <h2 style={{ fontSize: 'clamp(2.2rem, 4vw, 3.2rem)', fontWeight: 800, marginBottom: '1rem', letterSpacing: '-0.02em', color: 'var(--primary-dark)' }}>
+                  Financial tools built for real life.
+                </h2>
+                <p style={{ color: 'var(--text-muted)', fontSize: '1.15rem', maxWidth: '650px', lineHeight: 1.7 }}>
+                  Explore our comprehensive suite of products meticulously designed to support your daily needs, grow your savings, and secure your financial future.
+                </p>
               </div>
-              <Link to="/services" className="btn btn-outline">View All Services <ArrowRight size={15} /></Link>
+              <Link to="/services" className="btn btn-primary" style={{ padding: '0.85rem 2.5rem', borderRadius: '100px', fontSize: '1.05rem', fontWeight: 600 }}>
+                View All Services <ArrowRight size={16} />
+              </Link>
             </div>
           </RevealOnScroll>
 
           <div className="services-row">
             <RevealOnScroll delay={0.05}>
               <Link to="/products" className="service-card">
-                <div className="service-card-icon">
-                  <TrendingUp size={22} />
+                <div className="service-card-icon" style={{ background: 'rgba(28, 16, 94, 0.1)', color: 'var(--primary-color)' }}>
+                  <TrendingUp size={24} />
                 </div>
                 <h3>Savings Accounts</h3>
                 <p>Susu, Voluntary, Fixed Deposit, Kids' Club — earn while you save with our tiered interest programs.</p>
@@ -189,8 +197,8 @@ export function Home() {
 
             <RevealOnScroll delay={0.12}>
               <Link to="/products" className="service-card">
-                <div className="service-card-icon">
-                  <ShieldCheck size={22} />
+                <div className="service-card-icon" style={{ background: 'rgba(16, 185, 129, 0.1)', color: '#10b981' }}>
+                  <ShieldCheck size={24} />
                 </div>
                 <h3>Loan Products</h3>
                 <p>Personal, business, and emergency loans with fast approvals, minimal paperwork, and fair rates.</p>
@@ -200,8 +208,8 @@ export function Home() {
 
             <RevealOnScroll delay={0.19}>
               <Link to="/welfare" className="service-card">
-                <div className="service-card-icon">
-                  <Users size={22} />
+                <div className="service-card-icon" style={{ background: 'rgba(245, 158, 11, 0.1)', color: 'var(--secondary-color)' }}>
+                  <Users size={24} />
                 </div>
                 <h3>Welfare Support</h3>
                 <p>Death benefits, medical support, and social welfare packages that care for members beyond banking.</p>
@@ -211,8 +219,8 @@ export function Home() {
 
             <RevealOnScroll delay={0.26}>
               <Link to="/services" className="service-card">
-                <div className="service-card-icon">
-                  <ShieldCheck size={22} />
+                <div className="service-card-icon" style={{ background: 'rgba(6, 182, 212, 0.1)', color: '#06b6d4' }}>
+                  <ShieldCheck size={24} />
                 </div>
                 <h3>Digital Access</h3>
                 <p>Check balances, initiate transfers, and access your account via USSD, Ezwich, and ATM 24/7.</p>
@@ -224,29 +232,26 @@ export function Home() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="home-cta-section">
-        <div className="container">
-          <div className="home-cta-inner">
-            <RevealOnScroll>
-              <div>
-                <h2 style={{ color: '#fff', fontSize: 'clamp(1.8rem, 4vw, 3rem)', fontWeight: 800, lineHeight: 1.15, marginBottom: '1rem' }}>
-                  Join ROAACCU today.<br />
-                  <span style={{ color: 'var(--secondary-color)' }}>Your money should work for you.</span>
-                </h2>
-                <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '1.05rem', lineHeight: 1.7, maxWidth: '480px' }}>
-                  Membership takes less than 5 minutes. Start with as little as GHS 50 and unlock access to savings, loans, and welfare benefits.
-                </p>
-              </div>
-              <div className="home-cta-actions">
-                <Link to="/join-now" className="btn btn-secondary">
-                  Open Membership <ArrowRight size={16} />
-                </Link>
-                <Link to="/apply-loan" className="btn btn-ghost">
-                  Apply for a Loan
-                </Link>
-              </div>
-            </RevealOnScroll>
-          </div>
+      <section className="home-cta-section" style={{ position: 'relative', padding: '6rem 0', backgroundImage: 'url(/slider2.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'fixed', marginTop: '0' }}>
+        <div style={{ position: 'absolute', inset: 0, background: 'rgba(28, 16, 94, 0.92)' }}></div>
+        <div className="container" style={{ position: 'relative', zIndex: 1, textAlign: 'center' }}>
+          <RevealOnScroll>
+            <h2 style={{ color: '#fff', fontSize: 'clamp(2.2rem, 5vw, 3.5rem)', fontWeight: 800, lineHeight: 1.15, marginBottom: '1.5rem', letterSpacing: '-0.02em' }}>
+              Join ROAACCU today.<br />
+              <span style={{ color: 'var(--secondary-color)' }}>Your money should work for you.</span>
+            </h2>
+            <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: '1.15rem', lineHeight: 1.7, maxWidth: '640px', margin: '0 auto 2.5rem' }}>
+              Membership takes less than 5 minutes. Start with as little as GHS 50 and unlock access to savings, loans, and comprehensive welfare benefits designed for your peace of mind.
+            </p>
+            <div style={{ display: 'flex', gap: '1.25rem', justifyContent: 'center', flexWrap: 'wrap' }} className="cta-button-group">
+              <Link to="/join-now" className="btn btn-secondary" style={{ padding: '1rem 2.5rem', fontSize: '1.1rem', minWidth: '220px', justifyContent: 'center' }}>
+                Open Membership <ArrowRight size={18} />
+              </Link>
+              <Link to="/apply-loan" className="btn btn-ghost" style={{ padding: '1rem 2.5rem', fontSize: '1.1rem', border: '2px solid rgba(255,255,255,0.3)', background: 'transparent', minWidth: '220px', justifyContent: 'center' }}>
+                Apply for a Loan
+              </Link>
+            </div>
+          </RevealOnScroll>
         </div>
       </section>
 

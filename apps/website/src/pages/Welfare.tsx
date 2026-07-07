@@ -3,13 +3,14 @@ import { PageHeader } from '../components/PageHeader';
 export function Welfare() {
   return (
     <>
-      <PageHeader
-        title="Welfare Application"
-        description="Join the ROAACCU welfare scheme for a secure future."
+      <PageHeader 
+        title="Welfare Benefits" 
+        description="Comprehensive support designed to provide peace of mind and financial security for you and your family."
         badge="Welfare"
+        bgImage="/slider1.jpg"
       />
       <main className="section container">
-        <div className="premium-card" style={{ maxWidth: '800px', margin: '0 auto' }}>
+        <div className="premium-card form-wizard-card" style={{ maxWidth: '800px', margin: '0 auto' }}>
           <form onSubmit={(e) => { e.preventDefault(); alert("Welfare Application submitted!"); }}>
           
           <h3 style={{ color: 'var(--primary-color)', marginBottom: '1.5rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '0.5rem' }}>Personal Information</h3>
