@@ -1,0 +1,37 @@
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { MainLayout } from '../layouts/MainLayout';
+import { Home } from '../pages/Home';
+import { JoinNow } from '../pages/JoinNow';
+import { ApplyLoan } from '../pages/ApplyLoan';
+import { Welfare } from '../pages/Welfare';
+import { Events } from '../pages/Events';
+import { Gallery } from '../pages/Gallery';
+import { About } from '../pages/About';
+import { Services } from '../pages/Services';
+import { Products } from '../pages/Products';
+import { Team } from '../pages/Team';
+import { Contact } from '../pages/Contact';
+import { Faq } from '../pages/Faq';
+
+export function AppRouter() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<MainLayout />}>
+          <Route index element={<Home />} />
+          <Route path="about" element={<About />} />
+          <Route path="services" element={<Services />} />
+          <Route path="products" element={<Products />} />
+          <Route path="team" element={<Team />} />
+          <Route path="contact" element={<Contact />} />
+          <Route path="faq" element={<Faq />} />
+          <Route path="join-now" element={<JoinNow />} />
+          <Route path="apply-loan" element={<ApplyLoan />} />
+          <Route path="welfare" element={<Welfare />} />
+          <Route path="events" element={<Events />} />
+          <Route path="gallery" element={<Gallery />} />
+        </Route>
+      </Routes>
+    </Router>
+  );
+}
