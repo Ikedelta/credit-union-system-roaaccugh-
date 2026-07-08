@@ -20,12 +20,9 @@ export const CMSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   useEffect(() => {
     const fetchContent = async () => {
       try {
-        const res = await axios.get('/api/admin/content');
-        const contentMap: CMSContent = {};
-        res.data.forEach((item: any) => {
-          contentMap[item.key] = item.value;
-        });
-        setContent(contentMap);
+        const res = await axios.get('/api/content');
+        // The API now returns a map directly
+        setContent(res.data);
       } catch (err) {
         console.error("Failed to fetch CMS content:", err);
       } finally {

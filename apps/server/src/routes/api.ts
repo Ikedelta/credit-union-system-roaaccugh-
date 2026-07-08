@@ -175,4 +175,19 @@ router.get("/welfare", async (req, res) => {
   }
 });
 
+// CMS Content
+router.get("/content", async (req, res) => {
+  try {
+    const content = await prisma.websiteContent.findMany();
+    // Transform array into key-value map for easier consumption by frontend
+    const contentMap = content.reduce((acc: any, item) => {
+      acc[item.key] = item.value;
+      return acc;
+    }, {});
+    res.json(contentMap);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch website content" });
+  }
+});
+
 export default router;
