@@ -13,6 +13,7 @@
   "license": "ISC",
   "author": "Isaac Asante Darko",
   "private": true,
+  "packageManager": "npm@11.3.0",
   "workspaces": [
     "apps/*",
     "packages/*"
