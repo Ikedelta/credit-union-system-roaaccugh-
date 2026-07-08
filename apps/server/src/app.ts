@@ -3,7 +3,9 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import path from "path";
+import cookieParser from "cookie-parser";
 import apiRoutes from "./routes/api";
+import adminRoutes from "./routes/admin";
 
 const app = express();
 
@@ -19,6 +21,9 @@ app.use(express.json());
 // Parse form data
 app.use(express.urlencoded({ extended: true }));
 
+// Parse cookies
+app.use(cookieParser());
+
 // Log incoming requests
 app.use(morgan("dev"));
 
@@ -27,6 +32,7 @@ app.use("/uploads", express.static(path.join(__dirname, "../../uploads")));
 
 // API Routes
 app.use("/api", apiRoutes);
+app.use("/api/admin", adminRoutes);
 
 // Health Check Route
 app.get("/api/health", (req, res) => {

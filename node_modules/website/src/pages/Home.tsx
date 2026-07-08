@@ -3,18 +3,21 @@ import { Link } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination, EffectFade } from 'swiper/modules';
 import { RevealOnScroll } from '../components/RevealOnScroll';
+import { useCMS } from '../context/CMSContext';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/effect-fade';
 
 export function Home() {
+  const { get } = useCMS();
+
   const slides = [
     {
       id: 1,
       image: "/slider1.jpg",
       eyebrow: "Me Daakye Anidaso",
-      title: "Your Future Starts Here",
-      subtitle: "Ghana's trusted financial co-operative — built by members, for members. Join over 11,000 people growing together.",
+      title: get("home_hero_title", "Your Future Starts Here"),
+      subtitle: get("home_hero_subtitle", "Ghana's trusted financial co-operative — built by members, for members. Join over 11,000 people growing together."),
     },
     {
       id: 2,

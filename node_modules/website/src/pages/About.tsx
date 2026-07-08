@@ -1,8 +1,11 @@
 import { ShieldCheck, Target, Globe } from 'lucide-react';
 import { PageHeader } from '../components/PageHeader';
 import { RevealOnScroll } from '../components/RevealOnScroll';
+import { useCMS } from '../context/CMSContext';
 
 export function About() {
+  const { get } = useCMS();
+
   const teamMembers = [
     { name: "Mr. Joseph Appiah", role: "Chairman", img: "https://roaaccugh.com/assets/img/team/joe.jpg" },
     { name: "Mr. Ebenezer Oppong", role: "Vice Chairman", img: "https://roaaccugh.com/assets/img/team/eben.jpg" },
@@ -35,7 +38,7 @@ export function About() {
             <p className="eyebrow-label">Our History</p>
             <h2 style={{ textAlign: 'left', fontSize: 'clamp(1.8rem, 3.5vw, 2.5rem)', marginBottom: '1.25rem' }}>Built by the community,<br/>for the community.</h2>
             <p className="card-text" style={{ margin: '0 0 1.25rem', lineHeight: 1.8 }}>
-              ROAA Co-operative Credit Union Ltd. (ROAACCU) was established in November 2011 through the initiative of the National Executive Council (NEC) of the Rubber Outgrowers and Agents Association (ROAA).
+              {get("about_text", "ROAA Co-operative Credit Union Ltd. (ROAACCU) was established in November 2011 through the initiative of the National Executive Council (NEC) of the Rubber Outgrowers and Agents Association (ROAA).")}
             </p>
             <p className="card-text" style={{ marginBottom: '1.25rem', lineHeight: 1.8 }}>
               It was formed to primarily take care of the extra credit facilities requested by the Association's members (farmers) and later, its common bond was opened to embrace the entire community.

@@ -7,6 +7,32 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Admin {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("ADMIN") // SUPERADMIN, ADMIN
+  createdAt DateTime @default(now())
+}
+
+model WebsiteContent {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  value     String
+  type      String   @default("TEXT") // TEXT, HTML, IMAGE
+  updatedAt DateTime @updatedAt
+}
+
+model SmsLog {
+  id        Int      @id @default(autoincrement())
+  recipient String
+  message   String
+  status    String   @default("SENT") // SENT, FAILED
+  senderId  Int?
+  createdAt DateTime @default(now())
+}
+
 model MemberApplication {
   id                 Int      @id @default(autoincrement())
   firstName          String
