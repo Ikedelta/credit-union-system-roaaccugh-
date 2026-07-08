@@ -14,6 +14,9 @@ import { Contact } from '../pages/Contact';
 import { Faq } from '../pages/Faq';
 import { Branches } from '../pages/Branches';
 
+import { MemberLogin } from '../pages/portal/MemberLogin';
+import { MemberDashboard } from '../pages/portal/MemberDashboard';
+
 export function AppRouter() {
   return (
     <Router>
@@ -32,6 +35,8 @@ export function AppRouter() {
           <Route path="welfare" element={<Welfare />} />
           <Route path="events" element={<Events />} />
           <Route path="gallery" element={<Gallery />} />
+          <Route path="portal/login" element={<MemberLogin />} />
+          <Route path="portal/dashboard" element={<MemberDashboard />} />
         </Route>
       </Routes>
     </Router>

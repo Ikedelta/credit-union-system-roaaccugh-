@@ -24,8 +24,12 @@ const Memberships: React.FC = () => {
 
   const updateStatus = async (id: number, status: string) => {
     try {
-      await axios.patch(`/api/admin/memberships/${id}/status`, { status });
+      const res = await axios.patch(`/api/admin/memberships/${id}/status`, { status });
       setApplications(applications.map(app => app.id === id ? { ...app, status } : app));
+      
+      if (res.data.generatedMemberId) {
+        alert(`Member Approved Successfully!\n\nMember ID: ${res.data.generatedMemberId}\nTemporary Password: ${res.data.generatedPassword}\n\nPlease share these credentials securely with the member.`);
+      }
     } catch (err) {
       console.error(err);
       alert("Failed to update status");

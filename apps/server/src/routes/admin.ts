@@ -81,10 +81,46 @@ router.patch("/memberships/:id/status", async (req, res) => {
   try {
     const adminReq = req as AuthRequest;
     const { status } = req.body;
+    const applicationId = parseInt(req.params.id);
+    
     const application = await prisma.memberApplication.update({
-      where: { id: parseInt(req.params.id) },
+      where: { id: applicationId },
       data: { status },
     });
+    
+    // Auto-generate member if APPROVED
+    if (status === 'APPROVED') {
+      // Check if they already have an account based on email or telNo to prevent duplicates
+      const existingMember = await prisma.member.findFirst({
+        where: { email: application.email }
+      });
+      
+      if (!existingMember) {
+        // Generate ROA-XXXX memberId
+        const memberId = `ROA-${Math.floor(1000 + Math.random() * 9000)}`;
+        // Generate random 8 char password
+        const randomPassword = Math.random().toString(36).slice(-8);
+        const hashedPassword = await bcrypt.hash(randomPassword, 10);
+        
+        await prisma.member.create({
+          data: {
+            memberId,
+            password: hashedPassword,
+            initialPassword: randomPassword, // Store temporarily for admin to view
+            firstName: application.firstName,
+            lastName: application.lastName,
+            email: application.email,
+            telNo: application.telNo,
+            balance: 0.0,
+          }
+        });
+        
+        // Return extra data to the frontend so admin can share it
+        await createAuditLog(adminReq.adminId, `${status}_MEMBERSHIP`, `Membership ID: ${application.id}`);
+        return res.json({ ...application, generatedMemberId: memberId, generatedPassword: randomPassword });
+      }
+    }
+    
     await createAuditLog(adminReq.adminId, `${status}_MEMBERSHIP`, `Membership ID: ${application.id}`);
     res.json(application);
   } catch (err) {

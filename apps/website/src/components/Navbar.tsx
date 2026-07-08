@@ -6,7 +6,7 @@ interface NavbarProps {
   setActiveModal: (modal: string | null) => void;
 }
 
-export function Navbar({ setActiveModal }: NavbarProps) {
+export function Navbar({ setActiveModal: _setActiveModal }: NavbarProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const location = useLocation();
@@ -84,7 +84,7 @@ export function Navbar({ setActiveModal }: NavbarProps) {
                   Member <ChevronDown size={16} className={`dropdown-icon ${activeDropdown === 'member' ? 'rotate' : ''}`} />
                 </div>
                 <div className="dropdown-content">
-                  <button onClick={() => { setActiveModal('balance'); setIsMobileMenuOpen(false); }} className="nav-link w-full text-left bg-transparent border-none cursor-pointer">Check Balance</button>
+                  <Link to="/portal/dashboard" className="nav-link">Member Portal</Link>
                   <Link to="/apply-loan" className="nav-link">Apply Loan</Link>
                   <Link to="/welfare" className="nav-link">Welfare</Link>
                 </div>

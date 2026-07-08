@@ -43,3 +43,29 @@ export const authenticateSuperAdmin = (req: AuthRequest, res: Response, next: Ne
     next();
   });
 };
+
+export interface MemberAuthRequest extends Request {
+  memberId?: number;
+}
+
+export const authenticateMember = (req: MemberAuthRequest, res: Response, next: NextFunction) => {
+  let token = req.cookies?.token;
+  if (!token && req.headers.authorization?.startsWith("Bearer ")) {
+    token = req.headers.authorization.split(" ")[1];
+  }
+
+  if (!token) {
+    return res.status(401).json({ error: "Access denied. No token provided." });
+  }
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET) as { id: number, role: string };
+    if (decoded.role !== "MEMBER") {
+      return res.status(401).json({ error: "Access denied. Not a member." });
+    }
+    req.memberId = decoded.id;
+    next();
+  } catch (error) {
+    return res.status(401).json({ error: "Invalid or expired token." });
+  }
+};

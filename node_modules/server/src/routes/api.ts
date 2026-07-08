@@ -2,13 +2,79 @@ import { Router } from "express";
 import multer from "multer";
 import path from "path";
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import { authenticateMember, MemberAuthRequest } from "../middleware/auth";
 
 const router = Router();
 const prisma = new PrismaClient();
+const JWT_SECRET = process.env.JWT_SECRET || "your-super-secret-jwt-key-change-in-production";
 
 // Multer config - memory storage for Vercel
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
+
+// Member Login
+router.post("/member/login", async (req, res) => {
+  try {
+    const { memberId, password } = req.body;
+    const member = await prisma.member.findUnique({ where: { memberId } });
+    if (!member) {
+      return res.status(401).json({ error: "Invalid member ID or password" });
+    }
+    const isValid = await bcrypt.compare(password, member.password);
+    if (!isValid) {
+      return res.status(401).json({ error: "Invalid member ID or password" });
+    }
+    const token = jwt.sign({ id: member.id, role: "MEMBER" }, JWT_SECRET, { expiresIn: "1d" });
+    res.json({ success: true, token, member: { id: member.id, memberId: member.memberId, firstName: member.firstName, lastName: member.lastName, balance: member.balance } });
+  } catch (err) {
+    res.status(500).json({ error: "Login failed" });
+  }
+});
+
+// Member Dashboard (Protected)
+router.get("/member/me", authenticateMember, async (req, res) => {
+  try {
+    const memberReq = req as MemberAuthRequest;
+    const member = await prisma.member.findUnique({
+      where: { id: memberReq.memberId },
+      select: {
+        id: true,
+        memberId: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        telNo: true,
+        balance: true,
+        createdAt: true,
+      }
+    });
+
+    if (!member) {
+      return res.status(404).json({ error: "Member not found" });
+    }
+
+    // Fetch related applications based on telNo or email or a direct relation
+    // Currently, applications don't have a direct relation to Member ID, 
+    // so we match by telNo or accountNumber/memberId
+    const loanApplications = await prisma.loanApplication.findMany({
+      where: { accountNumber: member.memberId }
+    });
+
+    const welfareApplications = await prisma.welfareApplication.findMany({
+      where: { accountNumber: member.memberId }
+    });
+
+    res.json({
+      member,
+      loanApplications,
+      welfareApplications
+    });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch member data" });
+  }
+});
 
 // Contact Form
 router.post("/contact", async (req, res) => {
