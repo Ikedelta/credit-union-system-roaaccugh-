@@ -60,7 +60,8 @@ const Sms: React.FC = () => {
     <div>
       <h2 className="page-title">Send SMS Broadcast</h2>
       
-      <div className="dashboard-widgets" style={{ maxWidth: '600px' }}>
+      <div className="dashboard-widgets" style={{ alignItems: 'start' }}>
+        {/* Left Column: Send SMS Form */}
         <div className="widget glass-panel">
           <p style={{ marginBottom: '1.5rem', color: 'var(--text-secondary)' }}>
             Use this tool to send SMS broadcasts to members. Enter comma-separated phone numbers below.
@@ -90,6 +91,7 @@ const Sms: React.FC = () => {
                 onChange={e => setRecipientsStr(e.target.value)} 
                 placeholder="e.g., +233201234567, 0241234567"
                 required 
+                style={{ width: '100%', padding: '0.75rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', resize: 'vertical' }}
               />
             </div>
             
@@ -101,6 +103,7 @@ const Sms: React.FC = () => {
                 onChange={e => setMessage(e.target.value)} 
                 placeholder="Type your message here..."
                 required 
+                style={{ width: '100%', padding: '0.75rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', resize: 'vertical' }}
               />
               <div style={{ textAlign: 'right', fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.25rem' }}>
                 {message.length} characters
@@ -111,6 +114,7 @@ const Sms: React.FC = () => {
               type="submit" 
               className="btn btn-primary" 
               disabled={loading}
+              style={{ alignSelf: 'flex-start' }}
             >
               {loading ? <Loader2 size={18} className="spinner" /> : <Send size={18} />}
               {loading ? 'Sending...' : 'Send Message'}
@@ -118,7 +122,8 @@ const Sms: React.FC = () => {
           </form>
         </div>
 
-        <div className="widget glass-panel" style={{ marginTop: '2rem' }}>
+        {/* Right Column: Recent Messages Table */}
+        <div className="widget glass-panel">
           <h3 style={{ marginBottom: '1rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>Recent Messages</h3>
           {logsLoading ? (
             <p>Loading logs...</p>
@@ -126,22 +131,22 @@ const Sms: React.FC = () => {
             <p className="text-secondary">No SMS messages sent yet.</p>
           ) : (
             <div className="table-responsive">
-              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <table className="table" style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
                   <tr style={{ borderBottom: '1px solid var(--border-color)', textAlign: 'left' }}>
-                    <th style={{ padding: '0.5rem' }}>Date</th>
-                    <th style={{ padding: '0.5rem' }}>Recipient</th>
-                    <th style={{ padding: '0.5rem' }}>Message Snippet</th>
-                    <th style={{ padding: '0.5rem' }}>Status</th>
+                    <th style={{ padding: '0.75rem 0.5rem' }}>Date</th>
+                    <th style={{ padding: '0.75rem 0.5rem' }}>Recipient</th>
+                    <th style={{ padding: '0.75rem 0.5rem' }}>Message Snippet</th>
+                    <th style={{ padding: '0.75rem 0.5rem' }}>Status</th>
                   </tr>
                 </thead>
                 <tbody>
                   {logs.map((log: any) => (
                     <tr key={log.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
-                      <td style={{ padding: '0.5rem', fontSize: '0.85rem' }}>{new Date(log.createdAt).toLocaleString()}</td>
-                      <td style={{ padding: '0.5rem', fontSize: '0.85rem' }}>{log.recipient}</td>
-                      <td style={{ padding: '0.5rem', fontSize: '0.85rem', maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{log.message}</td>
-                      <td style={{ padding: '0.5rem', fontSize: '0.85rem' }}>
+                      <td style={{ padding: '0.75rem 0.5rem', fontSize: '0.85rem' }}>{new Date(log.createdAt).toLocaleString()}</td>
+                      <td style={{ padding: '0.75rem 0.5rem', fontSize: '0.85rem' }}>{log.recipient}</td>
+                      <td style={{ padding: '0.75rem 0.5rem', fontSize: '0.85rem', maxWidth: '150px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{log.message}</td>
+                      <td style={{ padding: '0.75rem 0.5rem', fontSize: '0.85rem' }}>
                         <span className={`status-badge ${log.status.toLowerCase()}`}>
                           {log.status}
                         </span>
