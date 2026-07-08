@@ -2,39 +2,50 @@ import { Router } from "express";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { authenticateAdmin, AuthRequest } from "../middleware/auth";
+import { authenticateAdmin, authenticateSuperAdmin, AuthRequest } from "../middleware/auth";
 
 const router = Router();
 const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET || "your-super-secret-jwt-key-change-in-production";
 
-// --- AUTHENTICATION ---
+// --- HELPER: AUDIT LOGGING ---
+const createAuditLog = async (adminId: number | undefined, action: string, details?: string) => {
+  if (!adminId) return;
+  try {
+    const admin = await prisma.admin.findUnique({ where: { id: adminId } });
+    if (admin) {
+      await prisma.auditLog.create({ data: { adminId: admin.id, adminName: admin.name, action, details } });
+    }
+  } catch (err) {
+    console.error("Failed to create audit log", err);
+  }
+};
 
-// Login
+// --- HELPER: Normalize Ghana phone number to 233XXXXXXXXX ---
+function normalizeGhanaNumber(raw: string): string {
+  const num = raw.trim().replace(/[\s\-()]/g, "");
+  if (num.startsWith("+233")) return num.slice(1);
+  if (num.startsWith("233") && num.length >= 12) return num;
+  if (num.startsWith("0") && num.length === 10) return "233" + num.slice(1);
+  if (num.length === 9) return "233" + num;
+  return num;
+}
+
+// ============================================================
+// AUTHENTICATION (public routes - no middleware)
+// ============================================================
+
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
-
     const admin = await prisma.admin.findUnique({ where: { email } });
-    if (!admin) {
-      return res.status(401).json({ error: "Invalid email or password" });
-    }
+    if (!admin) return res.status(401).json({ error: "Invalid email or password" });
 
     const isMatch = await bcrypt.compare(password, admin.password);
-    if (!isMatch) {
-      return res.status(401).json({ error: "Invalid email or password" });
-    }
+    if (!isMatch) return res.status(401).json({ error: "Invalid email or password" });
 
     const token = jwt.sign({ adminId: admin.id, role: admin.role }, JWT_SECRET, { expiresIn: "1d" });
-
-    // Set cookie
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
-    });
-
+    res.cookie("token", token, { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "strict", maxAge: 86400000 });
     res.json({ success: true, token, admin: { id: admin.id, name: admin.name, email: admin.email, role: admin.role } });
   } catch (err) {
     console.error(err);
@@ -42,14 +53,10 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// Verify Auth
 router.get("/me", authenticateAdmin, async (req, res) => {
   try {
     const adminReq = req as AuthRequest;
-    const admin = await prisma.admin.findUnique({
-      where: { id: adminReq.adminId },
-      select: { id: true, name: true, email: true, role: true },
-    });
+    const admin = await prisma.admin.findUnique({ where: { id: adminReq.adminId }, select: { id: true, name: true, email: true, role: true } });
     if (!admin) return res.status(404).json({ error: "Admin not found" });
     res.json({ admin });
   } catch (err) {
@@ -57,17 +64,17 @@ router.get("/me", authenticateAdmin, async (req, res) => {
   }
 });
 
-// Logout
 router.post("/logout", (req, res) => {
   res.clearCookie("token");
   res.json({ success: true });
 });
 
-// --- DATA MANAGEMENT ---
-// All routes below require authentication
+// ============================================================
+// PROTECTED ROUTES (all require authentication)
+// ============================================================
 router.use(authenticateAdmin);
 
-// Memberships
+// --- MEMBERSHIPS ---
 router.get("/memberships", async (req, res) => {
   try {
     const applications = await prisma.memberApplication.findMany({ orderBy: { createdAt: "desc" } });
@@ -81,46 +88,19 @@ router.patch("/memberships/:id/status", async (req, res) => {
   try {
     const adminReq = req as AuthRequest;
     const { status } = req.body;
-    const applicationId = parseInt(req.params.id);
-    
-    const application = await prisma.memberApplication.update({
-      where: { id: applicationId },
-      data: { status },
-    });
-    
-    // Auto-generate member if APPROVED
-    if (status === 'APPROVED') {
-      // Check if they already have an account based on email or telNo to prevent duplicates
-      const existingMember = await prisma.member.findFirst({
-        where: { email: application.email }
-      });
-      
+    const application = await prisma.memberApplication.update({ where: { id: parseInt(req.params.id) }, data: { status } });
+
+    if (status === "APPROVED") {
+      const existingMember = await prisma.member.findFirst({ where: { email: application.email } });
       if (!existingMember) {
-        // Generate ROA-XXXX memberId
         const memberId = `ROA-${Math.floor(1000 + Math.random() * 9000)}`;
-        // Generate random 8 char password
         const randomPassword = Math.random().toString(36).slice(-8);
         const hashedPassword = await bcrypt.hash(randomPassword, 10);
-        
-        await prisma.member.create({
-          data: {
-            memberId,
-            password: hashedPassword,
-            initialPassword: randomPassword, // Store temporarily for admin to view
-            firstName: application.firstName,
-            lastName: application.lastName,
-            email: application.email,
-            telNo: application.telNo,
-            balance: 0.0,
-          }
-        });
-        
-        // Return extra data to the frontend so admin can share it
+        await prisma.member.create({ data: { memberId, password: hashedPassword, initialPassword: randomPassword, firstName: application.firstName, lastName: application.lastName, email: application.email, telNo: application.telNo, balance: 0.0 } });
         await createAuditLog(adminReq.adminId, `${status}_MEMBERSHIP`, `Membership ID: ${application.id}`);
         return res.json({ ...application, generatedMemberId: memberId, generatedPassword: randomPassword });
       }
     }
-    
     await createAuditLog(adminReq.adminId, `${status}_MEMBERSHIP`, `Membership ID: ${application.id}`);
     res.json(application);
   } catch (err) {
@@ -128,7 +108,7 @@ router.patch("/memberships/:id/status", async (req, res) => {
   }
 });
 
-// Loans
+// --- LOANS ---
 router.get("/loans", async (req, res) => {
   try {
     const applications = await prisma.loanApplication.findMany({ orderBy: { createdAt: "desc" } });
@@ -142,10 +122,7 @@ router.patch("/loans/:id/status", async (req, res) => {
   try {
     const adminReq = req as AuthRequest;
     const { status } = req.body;
-    const application = await prisma.loanApplication.update({
-      where: { id: parseInt(req.params.id) },
-      data: { status },
-    });
+    const application = await prisma.loanApplication.update({ where: { id: parseInt(req.params.id) }, data: { status } });
     await createAuditLog(adminReq.adminId, `${status}_LOAN`, `Loan ID: ${application.id}`);
     res.json(application);
   } catch (err) {
@@ -153,7 +130,7 @@ router.patch("/loans/:id/status", async (req, res) => {
   }
 });
 
-// Welfare
+// --- WELFARE ---
 router.get("/welfare", async (req, res) => {
   try {
     const applications = await prisma.welfareApplication.findMany({ orderBy: { createdAt: "desc" } });
@@ -167,10 +144,7 @@ router.patch("/welfare/:id/status", async (req, res) => {
   try {
     const adminReq = req as AuthRequest;
     const { status } = req.body;
-    const application = await prisma.welfareApplication.update({
-      where: { id: parseInt(req.params.id) },
-      data: { status },
-    });
+    const application = await prisma.welfareApplication.update({ where: { id: parseInt(req.params.id) }, data: { status } });
     await createAuditLog(adminReq.adminId, `${status}_WELFARE`, `Welfare ID: ${application.id}`);
     res.json(application);
   } catch (err) {
@@ -178,7 +152,7 @@ router.patch("/welfare/:id/status", async (req, res) => {
   }
 });
 
-// Contact Messages
+// --- MESSAGES ---
 router.get("/messages", async (req, res) => {
   try {
     const messages = await prisma.contactMessage.findMany({ orderBy: { createdAt: "desc" } });
@@ -188,26 +162,7 @@ router.get("/messages", async (req, res) => {
   }
 });
 
-// --- HELPER FOR AUDIT LOGGING ---
-const createAuditLog = async (adminId: number, action: string, details?: string) => {
-  try {
-    const admin = await prisma.admin.findUnique({ where: { id: adminId } });
-    if (admin) {
-      await prisma.auditLog.create({
-        data: {
-          adminId: admin.id,
-          adminName: admin.name,
-          action,
-          details,
-        },
-      });
-    }
-  } catch (err) {
-    console.error("Failed to create audit log", err);
-  }
-};
-
-// --- CMS ROUTES ---
+// --- CMS ---
 router.get("/content", async (req, res) => {
   try {
     const content = await prisma.websiteContent.findMany();
@@ -226,15 +181,14 @@ router.put("/content/:key", async (req, res) => {
       update: { value, type },
       create: { key: req.params.key, value, type: type || "TEXT" },
     });
-    
     await createAuditLog(adminReq.adminId, "UPDATED_CMS", `Updated CMS key: ${req.params.key}`);
-    
     res.json(content);
   } catch (err) {
     res.status(500).json({ error: "Failed to update content" });
   }
 });
-// --- SMS ROUTE (Arkesel Integration) ---
+
+// --- SMS (Arkesel Integration) ---
 router.get("/sms", async (req, res) => {
   try {
     const logs = await prisma.smsLog.findMany({ orderBy: { createdAt: "desc" } });
@@ -244,20 +198,17 @@ router.get("/sms", async (req, res) => {
   }
 });
 
-// Diagnostic: test Arkesel credentials without sending a real SMS
+// Diagnostic: verify Arkesel API key + check balance
 router.get("/sms/test", async (req, res) => {
   const ARKESEL_API_KEY = process.env.ARKESEL_API_KEY;
   if (!ARKESEL_API_KEY) {
-    return res.status(500).json({ error: "ARKESEL_API_KEY not set in .env", env_keys: Object.keys(process.env).filter(k => k.includes("ARKESEL")) });
+    return res.status(500).json({ error: "ARKESEL_API_KEY not set in .env" });
   }
   try {
-    // Call Arkesel balance check endpoint to verify credentials work
-    const apiRes = await fetch(`https://sms.arkesel.com/api/v2/clients/balance-details`, {
-      headers: { "api-key": ARKESEL_API_KEY }
+    const apiRes = await fetch("https://sms.arkesel.com/api/v2/clients/balance-details", {
+      headers: { "api-key": ARKESEL_API_KEY },
     });
-    const rawText = await apiRes.text();
-    let data = {};
-    try { data = JSON.parse(rawText); } catch { data = { raw: rawText }; }
+    const data = await apiRes.json();
     res.json({ configured: true, arkesel_response: data });
   } catch (err) {
     res.status(500).json({ error: "Failed to reach Arkesel API", details: String(err) });
@@ -270,28 +221,27 @@ router.post("/sms/send", async (req, res) => {
     const adminReq = req as AuthRequest;
 
     const ARKESEL_API_KEY = process.env.ARKESEL_API_KEY;
+    // NOTE: SENDER_ID must be registered on Arkesel dashboard.
+    // Use "TEST" for testing, or register "ROAACCU" at https://sms.arkesel.com
     const SENDER_ID = process.env.SMS_SENDER_ID || "ROAACCU";
 
     if (!ARKESEL_API_KEY) {
-      return res.status(500).json({ error: "SMS API key not configured." });
+      return res.status(500).json({ error: "SMS API key not configured on the server." });
     }
 
-    // Helper: normalize a Ghana phone number to 233XXXXXXXXX format
-    function normalizeGhanaNumber(raw: string): string {
-      let num = raw.trim().replace(/[\s\-]/g, '');
-      if (num.startsWith('+233')) return num.slice(1);
-      if (num.startsWith('233') && num.length >= 12) return num;
-      if (num.startsWith('0') && num.length === 10) return '233' + num.slice(1);
-      if (num.length === 9) return '233' + num;
-      return num;
+    if (!recipients || !Array.isArray(recipients) || recipients.length === 0) {
+      return res.status(400).json({ error: "No recipients provided." });
     }
 
-    const results: { recipient: string; formatted: string; status: string; arkeselResponse?: string }[] = [];
+    if (!message || message.trim().length === 0) {
+      return res.status(400).json({ error: "Message cannot be empty." });
+    }
+
+    const results: { recipient: string; formatted: string; status: string; detail: string }[] = [];
 
     for (const recipient of recipients) {
       const formatted = normalizeGhanaNumber(recipient);
       try {
-        // Use Arkesel v2 API — send all recipients as array
         const apiRes = await fetch("https://sms.arkesel.com/api/v2/sms/send", {
           method: "POST",
           headers: {
@@ -300,22 +250,22 @@ router.post("/sms/send", async (req, res) => {
           },
           body: JSON.stringify({
             sender: SENDER_ID,
-            message,
+            message: message.trim(),
             recipients: [formatted],
           }),
         });
 
         const rawText = await apiRes.text();
-        let data: { status?: string; message?: string; code?: string; data?: any } = {};
+        let data: { status?: string; message?: string; code?: string; data?: any[] } = {};
         try { data = JSON.parse(rawText); } catch { data = { message: rawText }; }
 
-        console.log(`[SMS] ${recipient} → ${formatted}:`, JSON.stringify(data));
-        const isSuccess = data.status === "success";
+        console.log(`[SMS] ${recipient} → ${formatted}: status=${data.status}, response=${rawText}`);
 
+        const isSuccess = data.status === "success";
         await prisma.smsLog.create({
           data: {
             recipient: formatted,
-            message,
+            message: message.trim(),
             status: isSuccess ? "SENT" : "FAILED",
             senderId: adminReq.adminId,
           },
@@ -325,27 +275,19 @@ router.post("/sms/send", async (req, res) => {
           recipient,
           formatted,
           status: isSuccess ? "SENT" : "FAILED",
-          arkeselResponse: isSuccess
-            ? `Delivered to ${formatted}`
-            : (data.message || data.code || "Unknown error"),
+          detail: isSuccess ? `Delivered to ${formatted}` : (data.message || data.code || "Rejected by network"),
         });
       } catch (perErr) {
-        console.error(`[SMS] Network error for ${formatted}:`, perErr);
-        await prisma.smsLog.create({
-          data: { recipient: formatted, message, status: "FAILED", senderId: adminReq.adminId },
-        });
-        results.push({ recipient, formatted, status: "FAILED", arkeselResponse: String(perErr) });
+        console.error(`[SMS] Error sending to ${formatted}:`, perErr);
+        await prisma.smsLog.create({ data: { recipient: formatted, message: message.trim(), status: "FAILED", senderId: adminReq.adminId } });
+        results.push({ recipient, formatted, status: "FAILED", detail: "Network error: " + String(perErr) });
       }
     }
 
     const sentCount = results.filter(r => r.status === "SENT").length;
     const failedCount = results.filter(r => r.status === "FAILED").length;
 
-    await createAuditLog(
-      adminReq.adminId,
-      "SENT_SMS",
-      `Sent: ${sentCount}, Failed: ${failedCount} of ${recipients.length} recipients`
-    );
+    await createAuditLog(adminReq.adminId, "SENT_SMS", `Sent: ${sentCount}, Failed: ${failedCount} of ${recipients.length}`);
 
     res.json({
       success: true,
@@ -353,19 +295,18 @@ router.post("/sms/send", async (req, res) => {
       results,
     });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to send SMS" });
+    console.error("[SMS] Unexpected error:", err);
+    res.status(500).json({ error: "Unexpected server error while sending SMS. Check server logs." });
   }
 });
 
-// --- USER MANAGEMENT & AUDIT LOGS (SUPERADMIN ONLY) ---
-import { authenticateSuperAdmin } from "../middleware/auth";
+// ============================================================
+// SUPERADMIN ONLY ROUTES
+// ============================================================
 
 router.get("/users", authenticateSuperAdmin, async (req, res) => {
   try {
-    const users = await prisma.admin.findMany({
-      select: { id: true, name: true, email: true, role: true, createdAt: true },
-    });
+    const users = await prisma.admin.findMany({ select: { id: true, name: true, email: true, role: true, createdAt: true } });
     res.json(users);
   } catch (err) {
     res.status(500).json({ error: "Failed to fetch users" });
@@ -390,9 +331,7 @@ router.delete("/users/:id", authenticateSuperAdmin, async (req, res) => {
   try {
     const adminReq = req as AuthRequest;
     const userId = parseInt(req.params.id as string);
-    if (adminReq.adminId === userId) {
-      return res.status(400).json({ error: "Cannot delete yourself." });
-    }
+    if (adminReq.adminId === userId) return res.status(400).json({ error: "Cannot delete yourself." });
     await prisma.admin.delete({ where: { id: userId } });
     res.json({ success: true });
   } catch (err) {
@@ -402,9 +341,7 @@ router.delete("/users/:id", authenticateSuperAdmin, async (req, res) => {
 
 router.get("/audit-logs", authenticateSuperAdmin, async (req, res) => {
   try {
-    const logs = await prisma.auditLog.findMany({
-      orderBy: { createdAt: "desc" },
-    });
+    const logs = await prisma.auditLog.findMany({ orderBy: { createdAt: "desc" } });
     res.json(logs);
   } catch (err) {
     res.status(500).json({ error: "Failed to fetch audit logs" });
