@@ -3,7 +3,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--bg-color); /* Use the standard background */
+  background: linear-gradient(rgba(28, 16, 94, 0.7), rgba(28, 16, 94, 0.85)), url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1920') center/cover no-repeat;
   padding: 1rem;
 }
 
