@@ -1,12 +1,19 @@
-import React from 'react';
-import { Outlet, NavLink, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LayoutDashboard, Users, CreditCard, HeartHandshake, MessageSquare, LogOut, FileText, UserCog, Send, Building } from 'lucide-react';
+import { LayoutDashboard, Users, CreditCard, HeartHandshake, MessageSquare, LogOut, FileText, UserCog, Send, Building, Menu, X } from 'lucide-react';
 import './Layout.css';
 
 const Layout: React.FC = () => {
   const { admin, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
+
+  useEffect(() => {
+    // Close sidebar on navigation
+    setIsMobileOpen(false);
+  }, [location]);
 
   const handleLogout = () => {
     logout();
@@ -29,13 +36,26 @@ const Layout: React.FC = () => {
 
   return (
     <div className="app-container">
-      <aside className="sidebar">
-        <div className="sidebar-header" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '1.5rem 1.25rem' }}>
-          <div style={{ background: 'var(--primary-color)', color: 'white', padding: '0.5rem', borderRadius: '8px', display: 'flex' }}>
-            <Building size={24} />
+      {/* Mobile Sidebar Overlay */}
+      <div 
+        className={`sidebar-overlay ${isMobileOpen ? 'active' : ''}`}
+        onClick={() => setIsMobileOpen(false)}
+      ></div>
+
+      <aside className={`sidebar ${isMobileOpen ? 'mobile-open' : ''}`}>
+        <div className="sidebar-header" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '1.5rem 1.25rem', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <div style={{ background: 'var(--primary-color)', color: 'white', padding: '0.5rem', borderRadius: '8px', display: 'flex' }}>
+              <Building size={24} />
+            </div>
+            <h2 style={{ fontSize: '1.2rem', margin: 0 }}>Admin Portal</h2>
           </div>
-          <h2 style={{ fontSize: '1.2rem', margin: 0 }}>Admin Portal</h2>
+          {/* Close button inside sidebar for mobile */}
+          <button className="mobile-menu-btn d-md-none" onClick={() => setIsMobileOpen(false)} style={{ padding: '0', display: window.innerWidth > 768 ? 'none' : 'block' }}>
+            <X size={24} />
+          </button>
         </div>
+        
         <nav className="sidebar-nav">
           {navItems.map((item) => (
             <NavLink
@@ -48,6 +68,7 @@ const Layout: React.FC = () => {
             </NavLink>
           ))}
         </nav>
+        
         <div className="sidebar-footer">
           <div className="admin-info">
             <div className="admin-avatar">{admin?.name?.charAt(0)}</div>
@@ -67,10 +88,20 @@ const Layout: React.FC = () => {
           </div>
         </div>
       </aside>
+
       <main className="main-content">
-        <header className="header">
-          <h3>Credit Union Management System</h3>
+        <header className="mobile-topbar glass-header">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <div style={{ background: 'var(--primary-color)', color: 'white', padding: '0.4rem', borderRadius: '6px', display: 'flex' }}>
+              <Building size={20} />
+            </div>
+            <h2 style={{ fontSize: '1.1rem', margin: 0, color: 'var(--primary-color)' }}>Admin Portal</h2>
+          </div>
+          <button className="mobile-menu-btn" onClick={() => setIsMobileOpen(true)}>
+            <Menu size={28} />
+          </button>
         </header>
+        
         <div className="page-content">
           <Outlet />
         </div>

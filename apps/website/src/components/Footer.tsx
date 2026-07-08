@@ -46,6 +46,7 @@ export function Footer({ setActiveModal }: FooterProps) {
             {[
               { to: '/', label: 'Home' },
               { to: '/about', label: 'About' },
+              { to: '/branches', label: 'Branches' },
               { to: '/services', label: 'Services' },
               { to: '/products', label: 'Products' },
               { to: '/faq', label: 'FAQ' },

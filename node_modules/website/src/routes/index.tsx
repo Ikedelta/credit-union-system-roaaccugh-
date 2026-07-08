@@ -12,6 +12,7 @@ import { Services } from '../pages/Services';
 import { Products } from '../pages/Products';
 import { Contact } from '../pages/Contact';
 import { Faq } from '../pages/Faq';
+import { Branches } from '../pages/Branches';
 
 export function AppRouter() {
   return (
@@ -24,6 +25,7 @@ export function AppRouter() {
           <Route path="services" element={<Services />} />
           <Route path="products" element={<Products />} />
           <Route path="contact" element={<Contact />} />
+          <Route path="branches" element={<Branches />} />
           <Route path="faq" element={<Faq />} />
           <Route path="join-now" element={<JoinNow />} />
           <Route path="apply-loan" element={<ApplyLoan />} />

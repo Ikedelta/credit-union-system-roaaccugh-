@@ -62,6 +62,7 @@ export function Navbar({ setActiveModal }: NavbarProps) {
                 </div>
                 <div className="dropdown-content">
                   <Link to="/about" className="nav-link">About Us</Link>
+                  <Link to="/branches" className="nav-link">Branches</Link>
                   <Link to="/faq" className="nav-link">FAQ</Link>
                 </div>
               </div>
