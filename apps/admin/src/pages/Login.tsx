@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
-import { ShieldCheck, Loader2 } from 'lucide-react';
+import { ShieldCheck, Loader2, Mail, Lock } from 'lucide-react';
 import './Login.css';
 
 const Login: React.FC = () => {
@@ -33,13 +33,13 @@ const Login: React.FC = () => {
 
   return (
     <div className="login-container">
-      <div className="login-card glass-panel">
+      <div className="login-card">
         <div className="login-header">
           <div className="login-icon-wrapper">
-            <ShieldCheck size={32} className="login-icon" />
+            <img src="/logo.png" alt="ROAACCU Logo" />
           </div>
-          <h1>Admin Portal</h1>
-          <p>Credit Union Management System</p>
+          <h1>Admin Login</h1>
+          <p>Login to manage ROAACCU</p>
         </div>
 
         {error && <div className="login-error">{error}</div>}
@@ -47,28 +47,34 @@ const Login: React.FC = () => {
         <form onSubmit={handleSubmit} className="login-form">
           <div className="form-group">
             <label htmlFor="email">Email Address</label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              placeholder="admin@creditunion.com"
-            />
+            <div className="input-wrapper">
+              <Mail className="input-icon" size={20} />
+              <input
+                type="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                placeholder="admin@roaaccugh.com"
+              />
+            </div>
           </div>
           <div className="form-group">
             <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              placeholder="••••••••"
-            />
+            <div className="input-wrapper">
+              <Lock className="input-icon" size={20} />
+              <input
+                type="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                placeholder="••••••••"
+              />
+            </div>
           </div>
-          <button type="submit" className="btn btn-primary login-btn" disabled={loading}>
-            {loading ? <Loader2 className="spinner" size={20} /> : 'Sign In'}
+          <button type="submit" className="login-btn" disabled={loading}>
+            {loading ? <Loader2 className="spinner" size={20} /> : 'Login Now ↗'}
           </button>
         </form>
         

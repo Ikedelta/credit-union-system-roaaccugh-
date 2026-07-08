@@ -61,20 +61,20 @@ const Dashboard: React.FC = () => {
       
       <div className="stats-grid">
         {statCards.map((stat, idx) => (
-          <div key={idx} className="stat-card glass-panel" style={{ cursor: 'pointer' }}>
-            <div className="stat-content">
-              <h3>{stat.title}</h3>
-              <p className="stat-value">{stat.value}</p>
-            </div>
+          <div key={idx} className="stat-card widget" style={{ cursor: 'pointer' }}>
             <div className="stat-icon" style={{ backgroundColor: stat.bg, color: stat.color }}>
-              <stat.icon size={28} />
+              <stat.icon size={24} />
+            </div>
+            <div className="stat-content">
+              <p className="stat-value">{stat.value}</p>
+              <h3>{stat.title}</h3>
             </div>
           </div>
         ))}
       </div>
       
       <div className="dashboard-widgets">
-        <div className="widget glass-panel" style={{ display: 'flex', flexDirection: 'column' }}>
+        <div className="widget" style={{ display: 'flex', flexDirection: 'column' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.75rem' }}>
             <FileText size={20} color="var(--primary-color)" />
             <h3 style={{ margin: 0, borderBottom: 'none', paddingBottom: 0 }}>Recent Activity</h3>

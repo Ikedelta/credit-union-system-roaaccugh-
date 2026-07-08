@@ -44,19 +44,18 @@ const Layout: React.FC = () => {
       ></div>
 
       <aside className={`sidebar ${isMobileOpen ? 'mobile-open' : ''}`}>
-        <div className="sidebar-header" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '1.5rem 1.25rem', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <div style={{ background: 'var(--primary-color)', color: 'white', padding: '0.5rem', borderRadius: '8px', display: 'flex' }}>
-              <Building size={24} />
-            </div>
-            <h2 style={{ fontSize: '1.2rem', margin: 0 }}>Admin Portal</h2>
-          </div>
+        <div className="sidebar-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem 1rem' }}>
+          <img src="/logo.png" alt="ROAACCU Logo" style={{ maxWidth: '160px', height: 'auto' }} />
           {/* Close button inside sidebar for mobile */}
-          <button className="mobile-menu-btn d-md-none" onClick={() => setIsMobileOpen(false)} style={{ padding: '0', display: window.innerWidth > 768 ? 'none' : 'block' }}>
+          <button className="mobile-menu-btn d-md-none" onClick={() => setIsMobileOpen(false)} style={{ position: 'absolute', right: '1rem', top: '1.5rem', padding: '0', display: window.innerWidth > 768 ? 'none' : 'block' }}>
             <X size={24} />
           </button>
         </div>
         
+        <div style={{ padding: '0 1.5rem', marginBottom: '0.5rem' }}>
+          <span style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--text-secondary)', letterSpacing: '0.1em' }}>MENU</span>
+        </div>
+
         <nav className="sidebar-nav">
           {navItems.map((item) => (
             <NavLink
@@ -64,43 +63,40 @@ const Layout: React.FC = () => {
               to={item.path}
               className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
             >
-              <item.icon size={20} />
+              <div className="nav-icon-wrapper">
+                <item.icon size={18} />
+              </div>
               <span>{item.label}</span>
             </NavLink>
           ))}
         </nav>
-        
-        <div className="sidebar-footer">
-          <div className="admin-info">
-            <div className="admin-avatar">{admin?.name?.charAt(0)}</div>
-            <div className="admin-details">
-              <span className="admin-name">{admin?.name}</span>
-              <span className="admin-email">{admin?.email}</span>
-            </div>
-          </div>
-          <button onClick={handleLogout} className="logout-btn">
-            <LogOut size={18} />
-            <span>Logout</span>
-          </button>
-          <div style={{ marginTop: '1rem', textAlign: 'center', fontSize: '0.75rem' }}>
-            <a href="mailto:developer@creditunion.com" style={{ color: 'var(--text-secondary)' }}>
-              Contact Developer
-            </a>
-          </div>
-        </div>
       </aside>
 
       <main className="main-content">
-        <header className="mobile-topbar glass-header">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <div style={{ background: 'var(--primary-color)', color: 'white', padding: '0.4rem', borderRadius: '6px', display: 'flex' }}>
-              <Building size={20} />
+        <header className="desktop-topbar">
+          <div className="topbar-left">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: 'var(--primary-color)' }}></div>
+              <h2 style={{ fontSize: '1.1rem', margin: 0, fontWeight: 800, color: '#1e293b' }}>ROAACCU CONTROL</h2>
             </div>
-            <h2 style={{ fontSize: '1.1rem', margin: 0, color: 'var(--primary-color)' }}>Admin Portal</h2>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', letterSpacing: '0.05em', fontWeight: 600, marginTop: '0.2rem', display: 'block' }}>SMART CREDIT UNION MANAGEMENT</span>
           </div>
-          <button className="mobile-menu-btn" onClick={() => setIsMobileOpen(true)}>
-            <Menu size={28} />
-          </button>
+          
+          <div className="topbar-right">
+            <div className="admin-profile-pill">
+              <div className="admin-avatar">{admin?.name?.charAt(0) || 'A'}</div>
+              <div className="admin-details">
+                <span className="admin-name">{admin?.name || 'ADMIN'}</span>
+                <span className="admin-role">{admin?.role || 'ADMIN'}</span>
+              </div>
+              <button onClick={handleLogout} className="logout-icon-btn" title="Logout">
+                <LogOut size={16} />
+              </button>
+            </div>
+            <button className="mobile-menu-btn desktop-hide" onClick={() => setIsMobileOpen(true)}>
+              <Menu size={28} />
+            </button>
+          </div>
         </header>
         
         <div className="page-content">
