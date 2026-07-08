@@ -234,8 +234,16 @@ router.put("/content/:key", async (req, res) => {
     res.status(500).json({ error: "Failed to update content" });
   }
 });
-
 // --- SMS MOCK ROUTE ---
+router.get("/sms", async (req, res) => {
+  try {
+    const logs = await prisma.smsLog.findMany({ orderBy: { createdAt: "desc" } });
+    res.json(logs);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch SMS logs" });
+  }
+});
+
 router.post("/sms/send", async (req, res) => {
   try {
     const { recipients, message } = req.body;

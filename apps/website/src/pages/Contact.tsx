@@ -1,9 +1,11 @@
 import { MapPin, Mail, Phone } from 'lucide-react';
 import { useState } from 'react';
 import { PageHeader } from '../components/PageHeader';
+import { useCMS } from '../context/CMSContext';
 
 export function Contact() {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const { get } = useCMS();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -14,7 +16,7 @@ export function Contact() {
       const formData = new FormData(form);
       const data = Object.fromEntries(formData);
       
-      const response = await fetch('http://localhost:5000/api/contact', {
+      const response = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -50,21 +52,21 @@ export function Contact() {
               <div className="card-icon" style={{ marginBottom: 0, flexShrink: 0 }}><MapPin size={20} /></div>
               <div>
                 <p style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--text-main)', marginBottom: '0.2rem' }}>Head Office</p>
-                <p className="card-text" style={{ fontSize: '0.9rem' }}>GPS: WH-0010-3904, Agona Ahanta, W/R</p>
+                <p className="card-text" style={{ fontSize: '0.9rem' }}>{get('contact_address', 'GPS: WH-0010-3904, Agona Ahanta, W/R')}</p>
               </div>
             </div>
             <div className="flex items-center gap-4">
               <div className="card-icon" style={{ marginBottom: 0, flexShrink: 0 }}><Mail size={20} /></div>
               <div>
                 <p style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--text-main)', marginBottom: '0.2rem' }}>Email Us</p>
-                <a href="mailto:roaaccugh@gmail.com" className="card-text" style={{ fontSize: '0.9rem' }}>roaaccugh@gmail.com</a>
+                <a href={`mailto:${get('contact_email', 'roaaccugh@gmail.com')}`} className="card-text" style={{ fontSize: '0.9rem' }}>{get('contact_email', 'roaaccugh@gmail.com')}</a>
               </div>
             </div>
             <div className="flex items-center gap-4">
               <div className="card-icon" style={{ marginBottom: 0, flexShrink: 0 }}><Phone size={20} /></div>
               <div>
                 <p style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--text-main)', marginBottom: '0.2rem' }}>Call Us</p>
-                <p className="card-text" style={{ fontSize: '0.9rem' }}>+233 248 735 558 / +233 256 111 555</p>
+                <p className="card-text" style={{ fontSize: '0.9rem' }}>{get('contact_phone', '+233 248 735 558 / +233 256 111 555')}</p>
               </div>
             </div>
           </div>

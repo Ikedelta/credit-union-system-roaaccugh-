@@ -7,6 +7,23 @@ const Sms: React.FC = () => {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
+  const [logs, setLogs] = useState<any[]>([]);
+  const [logsLoading, setLogsLoading] = useState(true);
+
+  const fetchLogs = async () => {
+    try {
+      const res = await axios.get('/api/admin/sms');
+      setLogs(res.data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLogsLoading(false);
+    }
+  };
+
+  React.useEffect(() => {
+    fetchLogs();
+  }, []);
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,6 +44,7 @@ const Sms: React.FC = () => {
       setResult(res.data.message || "Messages sent successfully!");
       setRecipientsStr('');
       setMessage('');
+      fetchLogs();
     } catch (err) {
       console.error(err);
       setResult("Failed to send messages. Please try again.");
@@ -86,6 +104,42 @@ const Sms: React.FC = () => {
               {loading ? 'Sending...' : 'Send Message'}
             </button>
           </form>
+        </div>
+
+        <div className="widget glass-panel" style={{ marginTop: '2rem' }}>
+          <h3 style={{ marginBottom: '1rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>Recent Messages</h3>
+          {logsLoading ? (
+            <p>Loading logs...</p>
+          ) : logs.length === 0 ? (
+            <p className="text-secondary">No SMS messages sent yet.</p>
+          ) : (
+            <div className="table-responsive">
+              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid var(--border-color)', textAlign: 'left' }}>
+                    <th style={{ padding: '0.5rem' }}>Date</th>
+                    <th style={{ padding: '0.5rem' }}>Recipient</th>
+                    <th style={{ padding: '0.5rem' }}>Message Snippet</th>
+                    <th style={{ padding: '0.5rem' }}>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {logs.map((log: any) => (
+                    <tr key={log.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
+                      <td style={{ padding: '0.5rem', fontSize: '0.85rem' }}>{new Date(log.createdAt).toLocaleString()}</td>
+                      <td style={{ padding: '0.5rem', fontSize: '0.85rem' }}>{log.recipient}</td>
+                      <td style={{ padding: '0.5rem', fontSize: '0.85rem', maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{log.message}</td>
+                      <td style={{ padding: '0.5rem', fontSize: '0.85rem' }}>
+                        <span className={`status-badge ${log.status.toLowerCase()}`}>
+                          {log.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       </div>
     </div>

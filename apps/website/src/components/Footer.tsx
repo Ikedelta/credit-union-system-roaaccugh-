@@ -1,11 +1,14 @@
 import { Mail, Phone, MapPin, ArrowRight, Globe } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useCMS } from '../context/CMSContext';
 
 interface FooterProps {
   setActiveModal: (modal: string | null) => void;
 }
 
-export function Footer({ setActiveModal }: FooterProps) {
+export function Footer({ setActiveModal: _setActiveModal }: FooterProps) {
+  const { get } = useCMS();
+
   return (
     <footer className="footer">
       <div className="container">
@@ -20,8 +23,7 @@ export function Footer({ setActiveModal }: FooterProps) {
               />
             </div>
             <p style={{ color: 'rgba(148, 163, 184, 0.8)', marginBottom: '1.5rem', lineHeight: 1.8, fontSize: '0.9rem' }}>
-              ROAA Co-operative Credit Union Ltd.<br/>
-              <em style={{ color: 'var(--accent-gold)' }}>Me Daakye Anidaso.</em>
+              {get('footer_text', 'Building sustainable wealth together.')}
             </p>
             {/* Social Icons */}
             <div style={{ display: 'flex', gap: '0.75rem' }}>
@@ -62,23 +64,8 @@ export function Footer({ setActiveModal }: FooterProps) {
           {/* Member Access */}
           <div>
             <h3>Member Access</h3>
-            <button 
-              onClick={() => setActiveModal('balance')} 
-              className="footer-link" 
-              style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 0, fontSize: '0.9rem', width: '100%', textAlign: 'left' }}
-            >
-              <ArrowRight size={12} style={{ color: 'var(--accent-emerald)', flexShrink: 0 }} />
-              Check Balance
-            </button>
-            <button 
-              onClick={() => setActiveModal('deposit')} 
-              className="footer-link" 
-              style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 0, fontSize: '0.9rem', width: '100%', textAlign: 'left', marginTop: 0 }}
-            >
-              <ArrowRight size={12} style={{ color: 'var(--accent-emerald)', flexShrink: 0 }} />
-              Deposit Funds
-            </button>
             {[
+              { to: '/portal/dashboard', label: 'Member Portal' },
               { to: '/apply-loan', label: 'Apply for Loan' },
               { to: '/welfare', label: 'Join Welfare' },
               { to: '/join-now', label: 'Join Now' },
@@ -95,15 +82,15 @@ export function Footer({ setActiveModal }: FooterProps) {
             <h3>Contact Us</h3>
             <div className="footer-link" style={{ alignItems: 'flex-start' }}>
               <Mail size={16} style={{ color: 'var(--accent-cyan)', flexShrink: 0, marginTop: '2px' }} />
-              <span>roaaccugh@gmail.com</span>
+              <span>{get('contact_email', 'info@roaaccugh.com')}</span>
             </div>
             <div className="footer-link">
               <Phone size={16} style={{ color: 'var(--accent-cyan)', flexShrink: 0 }} />
-              <span>+233 262 671 616</span>
+              <span>{get('contact_phone', '+233 24 123 4567')}</span>
             </div>
             <div className="footer-link" style={{ alignItems: 'flex-start' }}>
               <MapPin size={16} style={{ color: 'var(--accent-cyan)', flexShrink: 0, marginTop: '2px' }} />
-              <span>Ghana, West Africa</span>
+              <span>{get('contact_address', 'Western Region, Ghana')}</span>
             </div>
 
             {/* CTA */}
