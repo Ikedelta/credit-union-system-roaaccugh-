@@ -234,7 +234,7 @@ router.put("/content/:key", async (req, res) => {
     res.status(500).json({ error: "Failed to update content" });
   }
 });
-// --- SMS MOCK ROUTE ---
+// --- SMS ROUTE (Arkesel Integration) ---
 router.get("/sms", async (req, res) => {
   try {
     const logs = await prisma.smsLog.findMany({ orderBy: { createdAt: "desc" } });
@@ -248,24 +248,67 @@ router.post("/sms/send", async (req, res) => {
   try {
     const { recipients, message } = req.body;
     const adminReq = req as AuthRequest;
-    
-    // Create an SMS log for each recipient
-    const logs = [];
-    for (const recipient of recipients) {
-      logs.push({
-        recipient,
-        message,
-        status: "SENT",
-        senderId: adminReq.adminId,
-      });
+
+    const ARKESEL_API_KEY = process.env.ARKESEL_API_KEY;
+    const SENDER_ID = process.env.SMS_SENDER_ID || "ROAACCU";
+
+    if (!ARKESEL_API_KEY) {
+      return res.status(500).json({ error: "SMS API key not configured." });
     }
-    
-    await prisma.smsLog.createMany({ data: logs });
-    
-    await createAuditLog(adminReq.adminId, "SENT_SMS", `Sent SMS to ${recipients.length} recipients`);
-    
-    // In a real app, you would call Twilio or Africa's Talking here
-    res.json({ success: true, message: `Sent ${recipients.length} messages.` });
+
+    const results: { recipient: string; status: string; arkeselResponse?: string }[] = [];
+
+    // Send to each recipient individually for accurate per-recipient logging
+    for (const recipient of recipients) {
+      try {
+        const apiRes = await fetch("https://sms.arkesel.com/api/v2/sms/send", {
+          method: "POST",
+          headers: {
+            "api-key": ARKESEL_API_KEY,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            sender: SENDER_ID,
+            message,
+            recipients: [recipient],
+          }),
+        });
+
+        const data = await apiRes.json() as { status?: string; message?: string };
+        const isSuccess = data.status === "success";
+
+        await prisma.smsLog.create({
+          data: {
+            recipient,
+            message,
+            status: isSuccess ? "SENT" : "FAILED",
+            senderId: adminReq.adminId,
+          },
+        });
+
+        results.push({ recipient, status: isSuccess ? "SENT" : "FAILED", arkeselResponse: data.message });
+      } catch (perErr) {
+        await prisma.smsLog.create({
+          data: { recipient, message, status: "FAILED", senderId: adminReq.adminId },
+        });
+        results.push({ recipient, status: "FAILED" });
+      }
+    }
+
+    const sentCount = results.filter(r => r.status === "SENT").length;
+    const failedCount = results.filter(r => r.status === "FAILED").length;
+
+    await createAuditLog(
+      adminReq.adminId,
+      "SENT_SMS",
+      `Sent: ${sentCount}, Failed: ${failedCount} of ${recipients.length} recipients`
+    );
+
+    res.json({
+      success: true,
+      message: `${sentCount} sent, ${failedCount} failed out of ${recipients.length}.`,
+      results,
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to send SMS" });

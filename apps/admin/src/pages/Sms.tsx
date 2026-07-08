@@ -7,6 +7,7 @@ const Sms: React.FC = () => {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
+  const [sendResults, setSendResults] = useState<{ recipient: string; status: string; arkeselResponse?: string }[]>([]);
   const [logs, setLogs] = useState<any[]>([]);
   const [logsLoading, setLogsLoading] = useState(true);
 
@@ -42,12 +43,14 @@ const Sms: React.FC = () => {
     try {
       const res = await axios.post('/api/admin/sms/send', { recipients, message });
       setResult(res.data.message || "Messages sent successfully!");
+      setSendResults(res.data.results || []);
       setRecipientsStr('');
       setMessage('');
       fetchLogs();
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      setResult("Failed to send messages. Please try again.");
+      setResult(err.response?.data?.error || "Failed to send messages. Please try again.");
+      setSendResults([]);
     } finally {
       setLoading(false);
     }
@@ -64,8 +67,17 @@ const Sms: React.FC = () => {
           </p>
           
           {result && (
-            <div style={{ padding: '1rem', background: 'rgba(16, 185, 129, 0.1)', color: 'var(--success)', borderRadius: 'var(--radius-sm)', marginBottom: '1rem' }}>
-              {result}
+            <div style={{ padding: '1rem', background: sendResults.some(r => r.status === 'FAILED') ? 'rgba(239, 68, 68, 0.08)' : 'rgba(16, 185, 129, 0.1)', color: sendResults.some(r => r.status === 'FAILED') ? 'var(--danger)' : 'var(--success)', borderRadius: 'var(--radius-sm)', marginBottom: '1rem' }}>
+              <strong>{result}</strong>
+              {sendResults.length > 0 && (
+                <ul style={{ marginTop: '0.5rem', paddingLeft: '1.25rem', fontSize: '0.85rem' }}>
+                  {sendResults.map((r, i) => (
+                    <li key={i} style={{ color: r.status === 'SENT' ? 'var(--success)' : 'var(--danger)' }}>
+                      {r.recipient} — <strong>{r.status}</strong>{r.arkeselResponse ? ` (${r.arkeselResponse})` : ''}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           )}
 
