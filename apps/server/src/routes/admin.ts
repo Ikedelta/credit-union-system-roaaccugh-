@@ -276,11 +276,22 @@ router.post("/sms/send", async (req, res) => {
       return res.status(500).json({ error: "SMS API key not configured." });
     }
 
-    const results: { recipient: string; status: string; arkeselResponse?: string }[] = [];
+    // Helper: normalize a Ghana phone number to 233XXXXXXXXX format
+    function normalizeGhanaNumber(raw: string): string {
+      let num = raw.trim().replace(/[\s\-]/g, '');
+      if (num.startsWith('+233')) return num.slice(1);
+      if (num.startsWith('233') && num.length >= 12) return num;
+      if (num.startsWith('0') && num.length === 10) return '233' + num.slice(1);
+      if (num.length === 9) return '233' + num;
+      return num;
+    }
 
-    // Send to each recipient individually for accurate per-recipient logging
+    const results: { recipient: string; formatted: string; status: string; arkeselResponse?: string }[] = [];
+
     for (const recipient of recipients) {
+      const formatted = normalizeGhanaNumber(recipient);
       try {
+        // Use Arkesel v2 API — send all recipients as array
         const apiRes = await fetch("https://sms.arkesel.com/api/v2/sms/send", {
           method: "POST",
           headers: {
@@ -290,33 +301,40 @@ router.post("/sms/send", async (req, res) => {
           body: JSON.stringify({
             sender: SENDER_ID,
             message,
-            recipients: [recipient],
+            recipients: [formatted],
           }),
         });
 
         const rawText = await apiRes.text();
-        let data: { status?: string; message?: string; code?: string } = {};
+        let data: { status?: string; message?: string; code?: string; data?: any } = {};
         try { data = JSON.parse(rawText); } catch { data = { message: rawText }; }
 
-        console.log(`[SMS] Arkesel response for ${recipient}:`, data);
+        console.log(`[SMS] ${recipient} → ${formatted}:`, JSON.stringify(data));
         const isSuccess = data.status === "success";
 
         await prisma.smsLog.create({
           data: {
-            recipient,
+            recipient: formatted,
             message,
             status: isSuccess ? "SENT" : "FAILED",
             senderId: adminReq.adminId,
           },
         });
 
-        results.push({ recipient, status: isSuccess ? "SENT" : "FAILED", arkeselResponse: data.message || data.code });
-      } catch (perErr) {
-        console.error(`[SMS] Network error for ${recipient}:`, perErr);
-        await prisma.smsLog.create({
-          data: { recipient, message, status: "FAILED", senderId: adminReq.adminId },
+        results.push({
+          recipient,
+          formatted,
+          status: isSuccess ? "SENT" : "FAILED",
+          arkeselResponse: isSuccess
+            ? `Delivered to ${formatted}`
+            : (data.message || data.code || "Unknown error"),
         });
-        results.push({ recipient, status: "FAILED", arkeselResponse: String(perErr) });
+      } catch (perErr) {
+        console.error(`[SMS] Network error for ${formatted}:`, perErr);
+        await prisma.smsLog.create({
+          data: { recipient: formatted, message, status: "FAILED", senderId: adminReq.adminId },
+        });
+        results.push({ recipient, formatted, status: "FAILED", arkeselResponse: String(perErr) });
       }
     }
 
