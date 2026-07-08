@@ -79,11 +79,13 @@ router.get("/memberships", async (req, res) => {
 
 router.patch("/memberships/:id/status", async (req, res) => {
   try {
+    const adminReq = req as AuthRequest;
     const { status } = req.body;
     const application = await prisma.memberApplication.update({
       where: { id: parseInt(req.params.id) },
       data: { status },
     });
+    await createAuditLog(adminReq.adminId, `${status}_MEMBERSHIP`, `Membership ID: ${application.id}`);
     res.json(application);
   } catch (err) {
     res.status(500).json({ error: "Failed to update status" });
@@ -102,11 +104,13 @@ router.get("/loans", async (req, res) => {
 
 router.patch("/loans/:id/status", async (req, res) => {
   try {
+    const adminReq = req as AuthRequest;
     const { status } = req.body;
     const application = await prisma.loanApplication.update({
       where: { id: parseInt(req.params.id) },
       data: { status },
     });
+    await createAuditLog(adminReq.adminId, `${status}_LOAN`, `Loan ID: ${application.id}`);
     res.json(application);
   } catch (err) {
     res.status(500).json({ error: "Failed to update status" });
@@ -125,11 +129,13 @@ router.get("/welfare", async (req, res) => {
 
 router.patch("/welfare/:id/status", async (req, res) => {
   try {
+    const adminReq = req as AuthRequest;
     const { status } = req.body;
     const application = await prisma.welfareApplication.update({
       where: { id: parseInt(req.params.id) },
       data: { status },
     });
+    await createAuditLog(adminReq.adminId, `${status}_WELFARE`, `Welfare ID: ${application.id}`);
     res.json(application);
   } catch (err) {
     res.status(500).json({ error: "Failed to update status" });
@@ -146,6 +152,25 @@ router.get("/messages", async (req, res) => {
   }
 });
 
+// --- HELPER FOR AUDIT LOGGING ---
+const createAuditLog = async (adminId: number, action: string, details?: string) => {
+  try {
+    const admin = await prisma.admin.findUnique({ where: { id: adminId } });
+    if (admin) {
+      await prisma.auditLog.create({
+        data: {
+          adminId: admin.id,
+          adminName: admin.name,
+          action,
+          details,
+        },
+      });
+    }
+  } catch (err) {
+    console.error("Failed to create audit log", err);
+  }
+};
+
 // --- CMS ROUTES ---
 router.get("/content", async (req, res) => {
   try {
@@ -158,12 +183,16 @@ router.get("/content", async (req, res) => {
 
 router.put("/content/:key", async (req, res) => {
   try {
+    const adminReq = req as AuthRequest;
     const { value, type } = req.body;
     const content = await prisma.websiteContent.upsert({
       where: { key: req.params.key },
       update: { value, type },
       create: { key: req.params.key, value, type: type || "TEXT" },
     });
+    
+    await createAuditLog(adminReq.adminId, "UPDATED_CMS", `Updated CMS key: ${req.params.key}`);
+    
     res.json(content);
   } catch (err) {
     res.status(500).json({ error: "Failed to update content" });
@@ -189,6 +218,8 @@ router.post("/sms/send", async (req, res) => {
     
     await prisma.smsLog.createMany({ data: logs });
     
+    await createAuditLog(adminReq.adminId, "SENT_SMS", `Sent SMS to ${recipients.length} recipients`);
+    
     // In a real app, you would call Twilio or Africa's Talking here
     res.json({ success: true, message: `Sent ${recipients.length} messages.` });
   } catch (err) {
@@ -197,7 +228,7 @@ router.post("/sms/send", async (req, res) => {
   }
 });
 
-// --- USER MANAGEMENT (SUPERADMIN ONLY) ---
+// --- USER MANAGEMENT & AUDIT LOGS (SUPERADMIN ONLY) ---
 import { authenticateSuperAdmin } from "../middleware/auth";
 
 router.get("/users", authenticateSuperAdmin, async (req, res) => {
@@ -236,6 +267,17 @@ router.delete("/users/:id", authenticateSuperAdmin, async (req, res) => {
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: "Failed to delete user" });
+  }
+});
+
+router.get("/audit-logs", authenticateSuperAdmin, async (req, res) => {
+  try {
+    const logs = await prisma.auditLog.findMany({
+      orderBy: { createdAt: "desc" },
+    });
+    res.json(logs);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch audit logs" });
   }
 });
 

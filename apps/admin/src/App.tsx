@@ -11,6 +11,7 @@ import Messages from './pages/Messages';
 import CMS from './pages/CMS';
 import Users from './pages/Users';
 import Sms from './pages/Sms';
+import AuditLogs from './pages/AuditLogs';
 import { Loader2 } from 'lucide-react';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -44,6 +45,7 @@ const AppRoutes = () => {
         <Route path="cms" element={<CMS />} />
         <Route path="users" element={<Users />} />
         <Route path="sms" element={<Sms />} />
+        <Route path="audit-logs" element={<AuditLogs />} />
       </Route>
     </Routes>
   );

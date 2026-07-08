@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LayoutDashboard, Users, CreditCard, HeartHandshake, MessageSquare, LogOut, FileText, UserCog, Send, Building, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Users, CreditCard, HeartHandshake, MessageSquare, LogOut, FileText, UserCog, Send, Building, Menu, X, ShieldAlert } from 'lucide-react';
 import './Layout.css';
 
 const Layout: React.FC = () => {
@@ -32,6 +32,7 @@ const Layout: React.FC = () => {
 
   if (admin?.role === 'SUPERADMIN') {
     navItems.push({ path: '/users', icon: UserCog, label: 'Users' });
+    navItems.push({ path: '/audit-logs', icon: ShieldAlert, label: 'Audit Logs' });
   }
 
   return (
