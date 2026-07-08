@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { ShieldCheck, Loader2, Mail, Lock } from 'lucide-react';
+import logoUrl from '../assets/logo.png';
 import './Login.css';
 
 const Login: React.FC = () => {
@@ -35,7 +36,7 @@ const Login: React.FC = () => {
     <div className="login-container">
       <div className="login-card">
         <div className="login-header">
-          <img src="/logo.png" alt="ROAACCU Logo" className="login-logo" />
+          <img src={logoUrl} alt="ROAACCU Logo" className="login-logo" />
           <h1>Admin Login</h1>
           <p>Login to manage ROAACCU</p>
         </div>

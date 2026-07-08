@@ -105,9 +105,16 @@ button {
 }
 
 .page-content {
-  padding: 1.5rem;
+  padding: 1.5rem 2rem;
   flex: 1;
   overflow-y: auto;
+}
+
+.page-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
 }
 
 @media (max-width: 768px) {
@@ -141,12 +148,13 @@ button {
 /* Form Elements */
 input, select, textarea {
   width: 100%;
-  padding: 0.75rem 1rem;
+  padding: 0.6rem 0.85rem;
   background-color: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
   color: var(--text-primary);
   font-family: inherit;
+  font-size: 0.9rem;
   transition: var(--transition);
 }
 
@@ -161,9 +169,10 @@ input:focus, select:focus, textarea:focus {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
+  padding: 0.6rem 1.25rem;
   border-radius: 9999px;
   font-weight: 600;
+  font-size: 0.85rem;
   border: none;
   transition: var(--transition);
   font-family: 'Montserrat', sans-serif;
@@ -323,7 +332,7 @@ table {
 }
 
 th, td {
-  padding: 1rem;
+  padding: 0.75rem 1rem;
   text-align: left;
   border-bottom: 1px solid var(--border-color);
 }

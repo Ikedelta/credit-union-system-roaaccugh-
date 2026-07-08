@@ -4,6 +4,8 @@ import { useAuth } from '../context/AuthContext';
 import { LayoutDashboard, Users, CreditCard, HeartHandshake, MessageSquare, LogOut, FileText, UserCog, Send, Building, Menu, X, ShieldAlert, Moon, Sun } from 'lucide-react';
 import './Layout.css';
 
+import logoUrl from '../assets/logo.png';
+
 const Layout: React.FC = () => {
   const { admin, logout } = useAuth();
   const navigate = useNavigate();
@@ -58,7 +60,7 @@ const Layout: React.FC = () => {
 
       <aside className={`sidebar ${isMobileOpen ? 'mobile-open' : ''}`}>
         <div className="sidebar-header">
-          <img src="/logo.png" alt="ROAACCU Logo" style={{ maxWidth: '160px', height: 'auto' }} />
+          <img src={logoUrl} alt="ROAACCU Logo" style={{ maxWidth: '160px', height: 'auto' }} />
           {/* Close button inside sidebar for mobile */}
           <button className="mobile-menu-btn d-md-none" onClick={() => setIsMobileOpen(false)} style={{ position: 'absolute', right: '1rem', top: '1.5rem', padding: '0', display: window.innerWidth > 768 ? 'none' : 'block' }}>
             <X size={24} />
