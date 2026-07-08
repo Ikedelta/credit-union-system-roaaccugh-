@@ -126,3 +126,17 @@
 .widget p {
   color: var(--text-secondary);
 }
+
+@media (max-width: 768px) {
+  .stat-card {
+    padding: 1.5rem;
+  }
+  
+  .stat-value {
+    font-size: 2.5rem;
+  }
+  
+  .stat-icon {
+    margin-bottom: 1rem;
+  }
+}

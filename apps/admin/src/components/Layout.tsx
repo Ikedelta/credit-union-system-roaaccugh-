@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LayoutDashboard, Users, CreditCard, HeartHandshake, MessageSquare, LogOut, FileText, UserCog, Send, Building, Menu, X, ShieldAlert } from 'lucide-react';
+import { LayoutDashboard, Users, CreditCard, HeartHandshake, MessageSquare, LogOut, FileText, UserCog, Send, Building, Menu, X, ShieldAlert, Moon, Sun } from 'lucide-react';
 import './Layout.css';
 
 const Layout: React.FC = () => {
@@ -9,6 +9,19 @@ const Layout: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    return localStorage.getItem('theme') === 'dark';
+  });
+
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [isDarkMode]);
 
   useEffect(() => {
     // Close sidebar on navigation
@@ -83,6 +96,13 @@ const Layout: React.FC = () => {
           </div>
           
           <div className="topbar-right">
+            <button 
+              className="theme-toggle-btn" 
+              onClick={() => setIsDarkMode(!isDarkMode)}
+              title={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+            >
+              {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+            </button>
             <div className="admin-profile-pill">
               <div className="admin-avatar">{admin?.name?.charAt(0) || 'A'}</div>
               <div className="admin-details">
