@@ -36,19 +36,19 @@
 }
 
 [data-theme='dark'] {
-  --bg-color: #0f172a;
-  --bg-secondary: #1e293b;
-  --bg-glass: rgba(30, 41, 59, 0.85);
+  --bg-color: #060411; /* Very deep blue-black */
+  --bg-secondary: #0c0822; /* Slightly lighter deep blue for cards */
+  --bg-glass: rgba(12, 8, 34, 0.85);
   
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
+  --text-primary: #e6e8f0; /* Softer white to reduce harsh contrast */
+  --text-secondary: #8c93a8;
   
-  --primary-color: #3b82f6; /* Lighter blue for dark mode readability */
-  --primary-hover: #60a5fa;
-  --primary-light: rgba(59, 130, 246, 0.15);
+  --primary-color: #6353e6; /* Vivid blue-purple for readability */
+  --primary-hover: #7b6dec;
+  --primary-light: rgba(99, 83, 230, 0.15);
   
-  --border-color: #334155;
-  --border-light: rgba(255, 255, 255, 0.05);
+  --border-color: #181236;
+  --border-light: rgba(255, 255, 255, 0.03);
   
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.6);
