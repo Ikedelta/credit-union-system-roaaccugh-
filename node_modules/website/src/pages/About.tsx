@@ -89,6 +89,41 @@ export function About() {
         </div>
       </RevealOnScroll>
 
+      {/* Branches Section */}
+      <div style={{ marginTop: '5rem', padding: '3rem 0', borderTop: '1px solid var(--border-color)', borderBottom: '1px solid var(--border-color)' }}>
+        <RevealOnScroll>
+          <div className="text-center" style={{ marginBottom: '3.5rem' }}>
+            <p className="eyebrow-label">Our Network</p>
+            <h2 style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.5rem)', marginBottom: '1rem' }}>Our Branches</h2>
+            <p style={{ color: 'var(--text-muted)', maxWidth: '600px', margin: '0 auto' }}>
+              We serve our community through our head office and a growing network of modern, fully-equipped branches across the Western and Central Regions.
+            </p>
+          </div>
+        </RevealOnScroll>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[
+            { name: 'Agona Ahanta', type: 'Head Office', img: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=600&h=400' },
+            { name: 'Manso Amenfi', type: 'Branch Office', img: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=600&h=400' },
+            { name: 'Wassa Simpa', type: 'Branch Office', img: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&q=80&w=600&h=400' },
+            { name: 'Nzema Aiyinase', type: 'Branch Office', img: 'https://images.unsplash.com/photo-1556761175-5973dc0f32d7?auto=format&fit=crop&q=80&w=600&h=400' },
+            { name: 'Assin Foso', type: 'Branch Office', img: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=600&h=400' }
+          ].map((branch, i) => (
+            <RevealOnScroll key={i} delay={i * 0.1}>
+              <div className="branch-card" style={{ background: 'var(--bg-white)', borderRadius: 'var(--border-radius-lg)', overflow: 'hidden', boxShadow: 'var(--shadow-sm)' }}>
+                <div style={{ height: '200px', overflow: 'hidden' }}>
+                  <img src={branch.img} alt={branch.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                </div>
+                <div style={{ padding: '1.5rem' }}>
+                  <h3 style={{ fontSize: '1.1rem', marginBottom: '0.25rem' }}>{branch.name}</h3>
+                  <p style={{ color: 'var(--primary-color)', fontSize: '0.85rem', fontWeight: 600 }}>{branch.type}</p>
+                </div>
+              </div>
+            </RevealOnScroll>
+          ))}
+        </div>
+      </div>
+
       <div style={{ marginTop: '5rem' }}>
         {/* Intro */}
         <RevealOnScroll>

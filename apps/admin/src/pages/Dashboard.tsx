@@ -2,7 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Users, CreditCard, HeartHandshake, MessageSquare, CheckCircle, Clock, FileText } from 'lucide-react';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import './Dashboard.css';
+
+const chartData = [
+  { name: 'Jan', members: 40, loans: 24 },
+  { name: 'Feb', members: 30, loans: 13 },
+  { name: 'Mar', members: 20, loans: 98 },
+  { name: 'Apr', members: 27, loans: 39 },
+  { name: 'May', members: 18, loans: 48 },
+  { name: 'Jun', members: 23, loans: 38 },
+  { name: 'Jul', members: 34, loans: 43 },
+];
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -73,7 +84,39 @@ const Dashboard: React.FC = () => {
         ))}
       </div>
       
-      <div className="dashboard-widgets">
+      <div className="dashboard-widgets" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1.5rem', marginTop: '1.5rem' }}>
+        <div className="widget" style={{ display: 'flex', flexDirection: 'column', height: '400px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.75rem' }}>
+            <Users size={20} color="var(--primary-color)" />
+            <h3 style={{ margin: 0, borderBottom: 'none', paddingBottom: 0 }}>Growth Overview</h3>
+          </div>
+          <div style={{ flex: 1, width: '100%', height: '100%' }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorMembers" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#1c105e" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="#1c105e" stopOpacity={0}/>
+                  </linearGradient>
+                  <linearGradient id="colorLoans" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <XAxis dataKey="name" stroke="var(--text-secondary)" fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis stroke="var(--text-secondary)" fontSize={12} tickLine={false} axisLine={false} />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-color)" />
+                <Tooltip 
+                  contentStyle={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border-color)', borderRadius: '8px', color: 'var(--text-primary)' }} 
+                  itemStyle={{ color: 'var(--text-primary)' }}
+                />
+                <Area type="monotone" dataKey="members" stroke="#1c105e" fillOpacity={1} fill="url(#colorMembers)" name="New Members" />
+                <Area type="monotone" dataKey="loans" stroke="#10b981" fillOpacity={1} fill="url(#colorLoans)" name="Loan Applications" />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
         <div className="widget" style={{ display: 'flex', flexDirection: 'column' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.75rem' }}>
             <FileText size={20} color="var(--primary-color)" />

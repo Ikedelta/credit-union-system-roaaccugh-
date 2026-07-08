@@ -32,11 +32,42 @@ const Memberships: React.FC = () => {
     }
   };
 
+  const exportToCsv = () => {
+    const headers = ['Date', 'First Name', 'Last Name', 'Email', 'Phone', 'Occupation', 'Status'];
+    const csvData = applications.map(app => [
+      format(new Date(app.createdAt), 'yyyy-MM-dd'),
+      app.firstName,
+      app.lastName,
+      app.email,
+      app.telNo,
+      app.occupation,
+      app.status
+    ]);
+    
+    const csvContent = [
+      headers.join(','),
+      ...csvData.map(row => row.map(cell => `"${cell || ''}"`).join(','))
+    ].join('\n');
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute('download', 'memberships_export.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   if (loading) return <p>Loading...</p>;
 
   return (
     <div>
-      <h2 className="page-title">Membership Applications</h2>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+        <h2 className="page-title" style={{ margin: 0 }}>Membership Applications</h2>
+        <button className="btn btn-outline" onClick={exportToCsv} disabled={applications.length === 0}>
+          Export to CSV
+        </button>
+      </div>
       
       <div className="glass-panel table-container">
         <table>
