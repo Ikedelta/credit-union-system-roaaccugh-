@@ -9,12 +9,11 @@
   --text-primary: #1e293b;
   --text-secondary: #64748b;
   
-  /* Primary Accent: Emerald/Green */
-  --primary-color: #059669;
-  --primary-hover: #047857;
-  --primary-light: #ecfdf5;
+  /* Primary Accent: ROAACCU Blue */
+  --primary-color: #1c105e;
+  --primary-hover: #170d4d;
+  --primary-light: rgba(28, 16, 94, 0.08);
   
-  /* ROAACCU Blue (kept for branding but secondary) */
   --roaaccu-blue: #1c105e;
   
   --success: #10b981;
