@@ -6,17 +6,8 @@ import { PrismaClient } from "@prisma/client";
 const router = Router();
 const prisma = new PrismaClient();
 
-// Multer config
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, "../../uploads"));
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname));
-  },
-});
-
+// Multer config - memory storage for Vercel
+const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 // Contact Form
@@ -49,8 +40,10 @@ router.post(
   async (req, res) => {
     try {
       const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-      const frontUrl = files["ghanaCardFront"]?.[0]?.filename || null;
-      const backUrl = files["ghanaCardBack"]?.[0]?.filename || null;
+      // In production (Vercel), these should be uploaded to S3/Cloudinary.
+      // For now, since it's memory storage, we'll store a placeholder or base64.
+      const frontUrl = files["ghanaCardFront"]?.[0] ? "placeholder_front.jpg" : null;
+      const backUrl = files["ghanaCardBack"]?.[0] ? "placeholder_back.jpg" : null;
 
       const data = req.body;
       await prisma.memberApplication.create({

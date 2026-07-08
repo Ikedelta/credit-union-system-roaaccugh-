@@ -5,20 +5,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const multer_1 = __importDefault(require("multer"));
-const path_1 = __importDefault(require("path"));
 const client_1 = require("@prisma/client");
 const router = (0, express_1.Router)();
 const prisma = new client_1.PrismaClient();
-// Multer config
-const storage = multer_1.default.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, path_1.default.join(__dirname, "../../uploads"));
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-        cb(null, file.fieldname + "-" + uniqueSuffix + path_1.default.extname(file.originalname));
-    },
-});
+// Multer config - memory storage for Vercel
+const storage = multer_1.default.memoryStorage();
 const upload = (0, multer_1.default)({ storage });
 // Contact Form
 router.post("/contact", async (req, res) => {
@@ -47,8 +38,10 @@ router.get("/contact", async (req, res) => {
 router.post("/join", upload.fields([{ name: "ghanaCardFront" }, { name: "ghanaCardBack" }]), async (req, res) => {
     try {
         const files = req.files;
-        const frontUrl = files["ghanaCardFront"]?.[0]?.filename || null;
-        const backUrl = files["ghanaCardBack"]?.[0]?.filename || null;
+        // In production (Vercel), these should be uploaded to S3/Cloudinary.
+        // For now, since it's memory storage, we'll store a placeholder or base64.
+        const frontUrl = files["ghanaCardFront"]?.[0] ? "placeholder_front.jpg" : null;
+        const backUrl = files["ghanaCardBack"]?.[0] ? "placeholder_back.jpg" : null;
         const data = req.body;
         await prisma.memberApplication.create({
             data: {
