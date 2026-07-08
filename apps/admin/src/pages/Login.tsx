@@ -35,9 +35,7 @@ const Login: React.FC = () => {
     <div className="login-container">
       <div className="login-card">
         <div className="login-header">
-          <div className="login-icon-wrapper">
-            <img src="/logo.png" alt="ROAACCU Logo" />
-          </div>
+          <img src="https://roaaccugh.com/assets/img/logo.png" alt="ROAACCU Logo" className="login-logo" />
           <h1>Admin Login</h1>
           <p>Login to manage ROAACCU</p>
         </div>
