@@ -34,6 +34,15 @@ router.post("/contact", async (req, res) => {
         res.status(500).json({ error: "Failed to submit contact message" });
     }
 });
+router.get("/contact", async (req, res) => {
+    try {
+        const messages = await prisma.contactMessage.findMany({ orderBy: { createdAt: 'desc' } });
+        res.json(messages);
+    }
+    catch (err) {
+        res.status(500).json({ error: "Failed to fetch messages" });
+    }
+});
 // Join Form (Member Application)
 router.post("/join", upload.fields([{ name: "ghanaCardFront" }, { name: "ghanaCardBack" }]), async (req, res) => {
     try {
@@ -63,6 +72,7 @@ router.post("/join", upload.fields([{ name: "ghanaCardFront" }, { name: "ghanaCa
                 accountHolder: data.accountHolder,
                 bankBranch: data.bankBranch,
                 accountNumber: data.accountNumber,
+                ghanaCardNumber: data.ghanaCardNo,
                 ghanaCardFrontUrl: frontUrl,
                 ghanaCardBackUrl: backUrl,
             },
@@ -144,6 +154,15 @@ router.post("/welfare", upload.fields([
     catch (err) {
         console.error(err);
         res.status(500).json({ error: "Failed to submit application" });
+    }
+});
+router.get("/welfare", async (req, res) => {
+    try {
+        const applications = await prisma.welfareApplication.findMany({ orderBy: { createdAt: 'desc' } });
+        res.json(applications);
+    }
+    catch (err) {
+        res.status(500).json({ error: "Failed to fetch applications" });
     }
 });
 exports.default = router;

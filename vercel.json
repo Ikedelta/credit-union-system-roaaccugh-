@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "cd apps/website && npm install && npm run build",
+  "buildCommand": "npm run build --workspaces",
   "outputDirectory": "apps/website/dist",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
