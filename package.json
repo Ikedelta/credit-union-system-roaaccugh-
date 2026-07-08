@@ -1,0 +1,25 @@
+{
+  "name": "credit-union-system",
+  "version": "1.0.0",
+  "description": "A website and an ERP system",
+  "homepage": "https://github.com/Ikedelta/credit-union-system-roaaccugh-#readme",
+  "bugs": {
+    "url": "https://github.com/Ikedelta/credit-union-system-roaaccugh-/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ikedelta/credit-union-system-roaaccugh-.git"
+  },
+  "license": "ISC",
+  "author": "Isaac Asante Darko",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces",
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces"
+  }
+}
