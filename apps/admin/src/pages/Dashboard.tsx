@@ -84,7 +84,7 @@ const Dashboard: React.FC = () => {
         ))}
       </div>
       
-      <div className="dashboard-widgets" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1.5rem', marginTop: '1.5rem' }}>
+      <div className="dashboard-widgets">
         <div className="widget" style={{ display: 'flex', flexDirection: 'column', height: '400px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.75rem' }}>
             <Users size={20} color="var(--primary-color)" />

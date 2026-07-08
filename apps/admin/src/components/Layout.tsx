@@ -41,7 +41,7 @@ const Layout: React.FC = () => {
     { path: '/loans', icon: CreditCard, label: 'Loans' },
     { path: '/welfare', icon: HeartHandshake, label: 'Welfare' },
     { path: '/messages', icon: MessageSquare, label: 'Messages' },
-    { path: '/cms', icon: FileText, label: 'Website Content' },
+    { path: '/cms', icon: FileText, label: 'CMS' },
     { path: '/sms', icon: Send, label: 'Send SMS' },
   ];
 
@@ -60,7 +60,7 @@ const Layout: React.FC = () => {
 
       <aside className={`sidebar ${isMobileOpen ? 'mobile-open' : ''}`}>
         <div className="sidebar-header">
-          <img src={logoUrl} alt="ROAACCU Logo" style={{ maxWidth: '160px', height: 'auto' }} />
+          <img src={logoUrl} alt="ROAACCU Logo" style={{ maxWidth: '120px', height: 'auto' }} />
           {/* Close button inside sidebar for mobile */}
           <button className="mobile-menu-btn d-md-none" onClick={() => setIsMobileOpen(false)} style={{ position: 'absolute', right: '1rem', top: '1.5rem', padding: '0', display: window.innerWidth > 768 ? 'none' : 'block' }}>
             <X size={24} />

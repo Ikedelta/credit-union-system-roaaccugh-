@@ -54,12 +54,13 @@
 .dashboard-widgets {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1.25rem;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
 }
 
 @media (min-width: 1024px) {
   .dashboard-widgets {
-    grid-template-columns: 1fr;
+    grid-template-columns: 2fr 1fr;
   }
 }
 
@@ -125,7 +126,7 @@
   }
   
   .stat-value {
-    font-size: 2.5rem;
+    font-size: 1.75rem;
   }
   
   .stat-icon {
