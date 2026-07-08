@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "cd apps/server && npx prisma generate && npx prisma db push --accept-data-loss && cd ../.. && npm run build --workspaces && mkdir -p public && cp -r apps/website/dist/* public/ && mkdir -p public/admin && cp -r apps/admin/dist/* public/admin/",
+  "buildCommand": "npm run build --workspaces && mkdir -p public && cp -r apps/website/dist/* public/ && mkdir -p public/admin && cp -r apps/admin/dist/* public/admin/",
   "outputDirectory": "public",
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/apps/server/api/index.ts" },
