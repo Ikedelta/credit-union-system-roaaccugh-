@@ -244,6 +244,26 @@ router.get("/sms", async (req, res) => {
   }
 });
 
+// Diagnostic: test Arkesel credentials without sending a real SMS
+router.get("/sms/test", async (req, res) => {
+  const ARKESEL_API_KEY = process.env.ARKESEL_API_KEY;
+  if (!ARKESEL_API_KEY) {
+    return res.status(500).json({ error: "ARKESEL_API_KEY not set in .env", env_keys: Object.keys(process.env).filter(k => k.includes("ARKESEL")) });
+  }
+  try {
+    // Call Arkesel balance check endpoint to verify credentials work
+    const apiRes = await fetch(`https://sms.arkesel.com/api/v2/clients/balance-details`, {
+      headers: { "api-key": ARKESEL_API_KEY }
+    });
+    const rawText = await apiRes.text();
+    let data = {};
+    try { data = JSON.parse(rawText); } catch { data = { raw: rawText }; }
+    res.json({ configured: true, arkesel_response: data });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to reach Arkesel API", details: String(err) });
+  }
+});
+
 router.post("/sms/send", async (req, res) => {
   try {
     const { recipients, message } = req.body;
@@ -274,7 +294,11 @@ router.post("/sms/send", async (req, res) => {
           }),
         });
 
-        const data = await apiRes.json() as { status?: string; message?: string };
+        const rawText = await apiRes.text();
+        let data: { status?: string; message?: string; code?: string } = {};
+        try { data = JSON.parse(rawText); } catch { data = { message: rawText }; }
+
+        console.log(`[SMS] Arkesel response for ${recipient}:`, data);
         const isSuccess = data.status === "success";
 
         await prisma.smsLog.create({
@@ -286,12 +310,13 @@ router.post("/sms/send", async (req, res) => {
           },
         });
 
-        results.push({ recipient, status: isSuccess ? "SENT" : "FAILED", arkeselResponse: data.message });
+        results.push({ recipient, status: isSuccess ? "SENT" : "FAILED", arkeselResponse: data.message || data.code });
       } catch (perErr) {
+        console.error(`[SMS] Network error for ${recipient}:`, perErr);
         await prisma.smsLog.create({
           data: { recipient, message, status: "FAILED", senderId: adminReq.adminId },
         });
-        results.push({ recipient, status: "FAILED" });
+        results.push({ recipient, status: "FAILED", arkeselResponse: String(perErr) });
       }
     }
 
