@@ -97,27 +97,6 @@ const Dashboard: React.FC = () => {
             View All Applications
           </button>
         </div>
-
-        <div className="widget glass-panel">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.75rem' }}>
-            <CheckCircle size={20} color="var(--success)" />
-            <h3 style={{ margin: 0, borderBottom: 'none', paddingBottom: 0 }}>System Status</h3>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontWeight: 500 }}>API Connection</span>
-              <span style={{ color: 'var(--success)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.25rem' }}><span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--success)' }}></span> Online</span>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontWeight: 500 }}>Database</span>
-              <span style={{ color: 'var(--success)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.25rem' }}><span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--success)' }}></span> Postgres Ready</span>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontWeight: 500 }}>Last Backup</span>
-              <span style={{ color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}><Clock size={14} /> Today, 2:00 AM</span>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );

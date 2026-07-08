@@ -59,7 +59,7 @@
 
 @media (min-width: 1024px) {
   .dashboard-widgets {
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 1fr;
   }
 }
 
