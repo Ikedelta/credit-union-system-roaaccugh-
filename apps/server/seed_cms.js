@@ -56,7 +56,7 @@ async function main() {
   for (const item of defaultContent) {
     await prisma.websiteContent.upsert({
       where: { key: item.key },
-      update: {},
+      update: { value: item.value, type: item.type },
       create: item,
     });
   }

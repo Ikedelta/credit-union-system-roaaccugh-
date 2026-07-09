@@ -3,7 +3,7 @@
   "buildCommand": "npm run build --workspaces && mkdir -p public && cp -r apps/website/dist/* public/ && mkdir -p public/admin && cp -r apps/admin/dist/* public/admin/",
   "outputDirectory": "public",
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/apps/server/api/index.ts" },
+    { "source": "/api/(.*)", "destination": "/api/index.ts" },
     { "source": "/admin/(.*)", "destination": "/admin/index.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
