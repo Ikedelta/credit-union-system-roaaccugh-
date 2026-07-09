@@ -14,6 +14,7 @@ import { Products } from '../pages/Products';
 import { Contact } from '../pages/Contact';
 import { Faq } from '../pages/Faq';
 import { Branches } from '../pages/Branches';
+import { NewsAndBlog } from '../pages/NewsAndBlog';
 
 import { MemberLogin } from '../pages/portal/MemberLogin';
 import { MemberDashboard } from '../pages/portal/MemberDashboard';
@@ -27,6 +28,7 @@ export function AppRouter() {
           <Route index element={<Home />} />
           <Route path="about" element={<About />} />
           <Route path="board-and-management" element={<BoardAndManagement />} />
+          <Route path="news" element={<NewsAndBlog />} />
           <Route path="services" element={<Services />} />
           <Route path="products" element={<Products />} />
           <Route path="contact" element={<Contact />} />

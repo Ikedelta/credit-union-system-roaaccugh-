@@ -279,6 +279,22 @@ const CMS: React.FC = () => {
     ]);
   };
 
+  const renderNewsTab = () => {
+    return (
+      <>
+        {renderListEditor('alert_ticker', 'Alert Ticker', { text: '' }, [
+          { name: 'text', label: 'Alert Message', type: 'text' }
+        ])}
+        {renderListEditor('news_list', 'News & Blog', { title: '', date: '', image: '', content: '' }, [
+          { name: 'image', label: 'Thumbnail Image', type: 'image' },
+          { name: 'title', label: 'Headline Title', type: 'text' },
+          { name: 'date', label: 'Date', type: 'text' },
+          { name: 'content', label: 'Article Content', type: 'textarea' }
+        ])}
+      </>
+    );
+  };
+
   if (loading) return <LoadingScreen message="Loading CMS data..." />;
 
   return (
@@ -292,6 +308,7 @@ const CMS: React.FC = () => {
         <button className={`btn ${activeTab === 'general' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('general')}>General</button>
         <button className={`btn ${activeTab === 'home' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('home')}>Home</button>
         <button className={`btn ${activeTab === 'about' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('about')}>About Us</button>
+        <button className={`btn ${activeTab === 'news' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('news')}>News & Alerts</button>
         <button className={`btn ${activeTab === 'faqs' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('faqs')}>FAQs</button>
         <button className={`btn ${activeTab === 'branches' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('branches')}>Branches</button>
         <button className={`btn ${activeTab === 'products' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('products')}>Products/Services</button>
@@ -301,6 +318,7 @@ const CMS: React.FC = () => {
         {activeTab === 'general' && renderGeneralFields()}
         {activeTab === 'home' && renderHomeTab()}
         {activeTab === 'about' && renderAboutTab()}
+        {activeTab === 'news' && renderNewsTab()}
         {activeTab === 'faqs' && renderFaqsTab()}
         {activeTab === 'branches' && renderBranchesTab()}
         {activeTab === 'products' && renderProductsTab()}

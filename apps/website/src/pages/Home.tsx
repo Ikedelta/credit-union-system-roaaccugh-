@@ -95,6 +95,35 @@ export function Home() {
         </div>
       </section>
 
+      {/* ── Alert Ticker ── */}
+      {getJSON('alert_ticker', [
+        { text: "Notice: Upcoming Annual General Meeting on August 15, 2026. All members are invited!" }
+      ]).length > 0 && (
+        <section style={{ background: '#f59e0b', color: '#fff', padding: '0.75rem 0', overflow: 'hidden', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center' }}>
+          <div style={{ background: '#d97706', padding: '0.75rem 1.5rem', fontWeight: 600, textTransform: 'uppercase', fontSize: '0.85rem', letterSpacing: '1px', zIndex: 10, position: 'relative' }}>
+            Alerts
+          </div>
+          <div style={{ flex: 1, overflow: 'hidden' }}>
+            <div style={{ display: 'inline-block', paddingLeft: '100%', animation: 'marquee 25s linear infinite' }}>
+              {getJSON('alert_ticker', [
+                { text: "Notice: Upcoming Annual General Meeting on August 15, 2026. All members are invited!" }
+              ]).map((alert: any, i: number) => (
+                <span key={i} style={{ marginRight: '4rem', fontSize: '0.95rem', fontWeight: 500 }}>
+                  <span style={{ marginRight: '0.5rem' }}>🔔</span>
+                  {alert.text}
+                </span>
+              ))}
+            </div>
+          </div>
+          <style>{`
+            @keyframes marquee {
+              0% { transform: translate(0, 0); }
+              100% { transform: translate(-100%, 0); }
+            }
+          `}</style>
+        </section>
+      )}
+
       {/* ── Stats Strip ── */}
       <section style={{ background: 'var(--primary-color)' }}>
         <div className="container">
