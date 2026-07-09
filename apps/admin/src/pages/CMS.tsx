@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import { Save, Loader2, Plus, Trash2, Image as ImageIcon, UploadCloud } from 'lucide-react';
+import { Save, Loader2, Plus, Trash2, UploadCloud } from 'lucide-react';
+import LoadingScreen from '../components/LoadingScreen';
 
 interface ContentItem {
   key: string;
@@ -14,7 +15,7 @@ const CMS: React.FC = () => {
   const [savingKey, setSavingKey] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('general');
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [uploadingImageFor, setUploadingImageFor] = useState<{key: string, index: number} | null>(null);
+  const [uploadingImageFor, setUploadingImageFor] = useState<{key: string, index: number, field: string} | null>(null);
 
   useEffect(() => {
     fetchContent();
@@ -31,10 +32,17 @@ const CMS: React.FC = () => {
     }
   };
 
+  const getItem = (key: string, defaultType = 'TEXT', defaultValue = '') => {
+    return content.find(c => c.key === key) || { key, value: defaultValue, type: defaultType };
+  };
+
   const handleUpdate = async (item: ContentItem) => {
     setSavingKey(item.key);
     try {
       await axios.put(`/api/admin/content/${item.key}`, { value: item.value, type: item.type });
+      if (!content.find(c => c.key === item.key)) {
+        setContent([...content, item]);
+      }
       alert("Updated successfully!");
     } catch (err) {
       console.error(err);
@@ -44,12 +52,17 @@ const CMS: React.FC = () => {
     }
   };
 
-  const handleChange = (key: string, value: string) => {
-    setContent(content.map(item => item.key === key ? { ...item, value } : item));
+  const handleChange = (key: string, value: string, type = 'TEXT') => {
+    const exists = content.find(item => item.key === key);
+    if (exists) {
+      setContent(content.map(item => item.key === key ? { ...item, value } : item));
+    } else {
+      setContent([...content, { key, value, type }]);
+    }
   };
 
   const handleJsonChange = (key: string, parsedValue: any) => {
-    handleChange(key, JSON.stringify(parsedValue));
+    handleChange(key, JSON.stringify(parsedValue), 'JSON');
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,10 +71,9 @@ const CMS: React.FC = () => {
     const formData = new FormData();
     formData.append('image', file);
 
-    const { key, index } = uploadingImageFor;
-    const item = content.find(i => i.key === key);
-    if (!item) return;
-
+    const { key, index, field } = uploadingImageFor;
+    const item = getItem(key, 'JSON', '[]');
+    
     try {
       const res = await axios.post('/api/admin/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
@@ -69,196 +81,203 @@ const CMS: React.FC = () => {
       const imageUrl = res.data.url;
       
       const parsed = JSON.parse(item.value);
-      parsed[index].image = imageUrl;
+      parsed[index][field] = imageUrl;
       handleJsonChange(key, parsed);
     } catch (err) {
       console.error(err);
-      alert('Failed to upload image');
+      alert('Failed to upload image. Ensure Supabase is configured and the image is not too large.');
     } finally {
       setUploadingImageFor(null);
       if (fileInputRef.current) fileInputRef.current.value = '';
     }
   };
 
-  const renderGeneralFields = () => {
-    const generalKeys = ['home_hero_title', 'home_hero_subtitle', 'about_text', 'contact_email', 'contact_phone', 'contact_address', 'footer_text', 'stats_members', 'stats_branches', 'stats_assets', 'stats_years'];
-    const fields = content.filter(item => generalKeys.includes(item.key));
-    
-    return fields.map(item => (
-      <div key={item.key} className="widget glass-panel" style={{ marginBottom: '1.5rem' }}>
-        <h3 style={{ marginBottom: '1rem', textTransform: 'capitalize' }}>
-          {item.key.replace(/_/g, ' ')}
-        </h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          {item.type === 'TEXT' && (item.key.includes('text') || item.key.includes('subtitle')) ? (
-            <textarea 
-              rows={4} 
-              value={item.value} 
-              onChange={(e) => handleChange(item.key, e.target.value)} 
-            />
-          ) : (
-            <input 
-              type="text" 
-              value={item.value} 
-              onChange={(e) => handleChange(item.key, e.target.value)} 
-            />
-          )}
-          <button 
-            className="btn btn-primary" 
-            style={{ alignSelf: 'flex-start' }}
-            onClick={() => handleUpdate(item)}
-            disabled={savingKey === item.key}
-          >
-            {savingKey === item.key ? <Loader2 size={18} className="spinner" /> : <Save size={18} />}
-            {savingKey === item.key ? 'Saving...' : 'Save Changes'}
-          </button>
-        </div>
-      </div>
-    ));
-  };
+  const renderListEditor = (key: string, title: string, template: any, fields: {name: string, label: string, type: string}[]) => {
+    const item = getItem(key, 'JSON', '[]');
+    let list: any[] = [];
+    try { list = JSON.parse(item.value); } catch(e) {}
 
-  const renderSlidesEditor = () => {
-    const slideItem = content.find(c => c.key === 'home_slides');
-    if (!slideItem) return <p>No slides found. Run seed script.</p>;
-
-    let slides: any[] = [];
-    try { slides = JSON.parse(slideItem.value); } catch(e) {}
-
-    const addSlide = () => {
-      const newSlide = { id: Date.now(), image: '', eyebrow: '', title: '', subtitle: '' };
-      handleJsonChange('home_slides', [...slides, newSlide]);
+    const addListItem = () => handleJsonChange(key, [...list, { ...template, id: Date.now() }]);
+    const removeListItem = (index: number) => {
+      const newList = [...list];
+      newList.splice(index, 1);
+      handleJsonChange(key, newList);
     };
-
-    const removeSlide = (index: number) => {
-      const newSlides = [...slides];
-      newSlides.splice(index, 1);
-      handleJsonChange('home_slides', newSlides);
-    };
-
-    const updateSlide = (index: number, field: string, value: string) => {
-      const newSlides = [...slides];
-      newSlides[index][field] = value;
-      handleJsonChange('home_slides', newSlides);
+    const updateListItem = (index: number, field: string, value: string) => {
+      const newList = [...list];
+      newList[index][field] = value;
+      handleJsonChange(key, newList);
     };
 
     return (
-      <div className="widget glass-panel">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-          <h3>Home Sliders</h3>
-          <button className="btn btn-secondary" onClick={addSlide}>
-            <Plus size={16} /> Add Slide
-          </button>
+      <div className="widget glass-panel" style={{ marginBottom: '1.5rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+          <h3>{title}</h3>
+          <div style={{ display: 'flex', gap: '1rem' }}>
+            <button className="btn btn-secondary" onClick={addListItem}>
+              <Plus size={16} /> Add Item
+            </button>
+            <button className="btn btn-primary" onClick={() => handleUpdate(item)} disabled={savingKey === item.key}>
+              {savingKey === item.key ? <Loader2 size={18} className="spinner" /> : <Save size={18} />}
+              Save {title}
+            </button>
+          </div>
         </div>
         
-        {slides.map((slide, index) => (
-          <div key={slide.id || index} style={{ border: '1px solid var(--border-color)', padding: '1.5rem', borderRadius: '12px', marginBottom: '1.5rem', background: 'rgba(0,0,0,0.02)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-              <h4>Slide {index + 1}</h4>
-              <button className="btn btn-ghost" style={{ color: 'red', padding: '0.5rem' }} onClick={() => removeSlide(index)}>
+        {list.length === 0 && (
+          <p style={{ color: 'var(--text-muted)', textAlign: 'center', padding: '2rem' }}>No items added yet. Click "Add Item" to start.</p>
+        )}
+
+        {list.map((listItem, index) => (
+          <div key={listItem.id || index} style={{ border: '1px solid var(--border-color)', padding: '1.5rem', borderRadius: '12px', marginBottom: '1.5rem', background: 'var(--bg-white)', boxShadow: 'var(--shadow-sm)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', paddingBottom: '1rem', borderBottom: '1px solid var(--border-color)' }}>
+              <strong style={{ color: 'var(--primary-color)' }}>Item #{index + 1}</strong>
+              <button className="btn btn-ghost" style={{ color: 'red', padding: '0.5rem' }} onClick={() => removeListItem(index)} title="Remove Item">
                 <Trash2 size={16} />
               </button>
             </div>
             <div className="grid md:grid-cols-2 gap-4">
-              <div style={{ gridColumn: '1 / -1' }}>
-                <label>Image</label>
-                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                  {slide.image && <img src={slide.image.startsWith('http') ? slide.image : `http://localhost:3000${slide.image}`} alt="Preview" style={{ width: '80px', height: '60px', objectFit: 'cover', borderRadius: '8px' }} />}
-                  <input type="text" value={slide.image || ''} onChange={(e) => updateSlide(index, 'image', e.target.value)} placeholder="Image URL or upload..." style={{ flex: 1 }} />
-                  <button className="btn btn-secondary" onClick={() => { setUploadingImageFor({key: 'home_slides', index}); fileInputRef.current?.click(); }}>
-                    <UploadCloud size={16} /> Upload
-                  </button>
+              {fields.map(f => (
+                <div key={f.name} style={{ gridColumn: f.type === 'textarea' || f.type === 'image' ? '1 / -1' : 'auto' }}>
+                  <label className="form-label">{f.label}</label>
+                  {f.type === 'textarea' ? (
+                    <textarea rows={3} className="form-control" value={listItem[f.name] || ''} onChange={(e) => updateListItem(index, f.name, e.target.value)} />
+                  ) : f.type === 'image' ? (
+                    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', background: '#f8fafc', padding: '0.5rem', borderRadius: '8px' }}>
+                      {listItem[f.name] && <img src={listItem[f.name].startsWith('http') ? listItem[f.name] : `http://localhost:3000${listItem[f.name]}`} alt="Preview" style={{ width: '80px', height: '60px', objectFit: 'cover', borderRadius: '4px', border: '1px solid var(--border-color)' }} />}
+                      <input type="text" className="form-control" value={listItem[f.name] || ''} onChange={(e) => updateListItem(index, f.name, e.target.value)} placeholder="Image URL or click Upload..." style={{ flex: 1 }} />
+                      <button className="btn btn-secondary" onClick={() => { setUploadingImageFor({key, index, field: f.name}); fileInputRef.current?.click(); }}>
+                        <UploadCloud size={16} /> Upload
+                      </button>
+                    </div>
+                  ) : (
+                    <input type="text" className="form-control" value={listItem[f.name] || ''} onChange={(e) => updateListItem(index, f.name, e.target.value)} />
+                  )}
                 </div>
-              </div>
-              <div>
-                <label>Eyebrow Text</label>
-                <input type="text" value={slide.eyebrow || ''} onChange={(e) => updateSlide(index, 'eyebrow', e.target.value)} />
-              </div>
-              <div>
-                <label>Title</label>
-                <input type="text" value={slide.title || ''} onChange={(e) => updateSlide(index, 'title', e.target.value)} />
-              </div>
-              <div style={{ gridColumn: '1 / -1' }}>
-                <label>Subtitle</label>
-                <textarea rows={3} value={slide.subtitle || ''} onChange={(e) => updateSlide(index, 'subtitle', e.target.value)} />
-              </div>
+              ))}
             </div>
           </div>
         ))}
-
-        <button 
-          className="btn btn-primary" 
-          onClick={() => handleUpdate(slideItem)}
-          disabled={savingKey === slideItem.key}
-        >
-          {savingKey === slideItem.key ? <Loader2 size={18} className="spinner" /> : <Save size={18} />}
-          Save Sliders
-        </button>
       </div>
     );
   };
 
-  const renderSocialLinks = () => {
-    const socialItem = content.find(c => c.key === 'social_links');
-    if (!socialItem) return <p>No social links found. Run seed script.</p>;
-
-    let links: any[] = [];
-    try { links = JSON.parse(socialItem.value); } catch(e) {}
-
-    const addLink = () => {
-      handleJsonChange('social_links', [...links, { platform: '', url: '' }]);
-    };
-
-    const removeLink = (index: number) => {
-      const newLinks = [...links];
-      newLinks.splice(index, 1);
-      handleJsonChange('social_links', newLinks);
-    };
-
-    const updateLink = (index: number, field: string, value: string) => {
-      const newLinks = [...links];
-      newLinks[index][field] = value;
-      handleJsonChange('social_links', newLinks);
-    };
-
+  const renderGeneralFields = () => {
+    const fieldsToRender = ['contact_email', 'contact_phone', 'contact_address', 'footer_text', 'stats_members', 'stats_branches', 'stats_assets', 'stats_years'];
     return (
-      <div className="widget glass-panel">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-          <h3>Social Media Links</h3>
-          <button className="btn btn-secondary" onClick={addLink}>
-            <Plus size={16} /> Add Link
-          </button>
-        </div>
-        
-        {links.map((link, index) => (
-          <div key={index} style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', alignItems: 'flex-end' }}>
-            <div style={{ flex: 1 }}>
-              <label>Platform (e.g. Facebook, Twitter)</label>
-              <input type="text" value={link.platform || ''} onChange={(e) => updateLink(index, 'platform', e.target.value)} />
+      <>
+        {fieldsToRender.map(key => {
+          const item = getItem(key);
+          return (
+            <div key={key} className="widget glass-panel" style={{ marginBottom: '1.5rem' }}>
+              <h3 style={{ marginBottom: '1rem', textTransform: 'capitalize' }}>{key.replace(/_/g, ' ')}</h3>
+              <div style={{ display: 'flex', gap: '1rem' }}>
+                <input type="text" className="form-control" value={item.value} onChange={(e) => handleChange(key, e.target.value)} />
+                <button className="btn btn-primary" onClick={() => handleUpdate(item)} disabled={savingKey === key}>
+                  {savingKey === key ? <Loader2 size={18} className="spinner" /> : <Save size={18} />} Save
+                </button>
+              </div>
             </div>
-            <div style={{ flex: 2 }}>
-              <label>URL</label>
-              <input type="text" value={link.url || ''} onChange={(e) => updateLink(index, 'url', e.target.value)} />
-            </div>
-            <button className="btn btn-ghost" style={{ color: 'red', height: '42px' }} onClick={() => removeLink(index)}>
-              <Trash2 size={16} />
-            </button>
-          </div>
-        ))}
-
-        <button 
-          className="btn btn-primary" 
-          onClick={() => handleUpdate(socialItem)}
-          disabled={savingKey === socialItem.key}
-          style={{ marginTop: '1rem' }}
-        >
-          {savingKey === socialItem.key ? <Loader2 size={18} className="spinner" /> : <Save size={18} />}
-          Save Social Links
-        </button>
-      </div>
+          );
+        })}
+        {renderListEditor('social_links', 'Social Media Links', { platform: '', url: '' }, [
+          { name: 'platform', label: 'Platform Name', type: 'text' },
+          { name: 'url', label: 'URL Profile Link', type: 'text' }
+        ])}
+      </>
     );
   };
 
-  if (loading) return <p>Loading...</p>;
+  const renderHomeTab = () => {
+    return (
+      <>
+        <div style={{ marginBottom: '2rem' }}>
+          <p style={{ color: 'var(--text-muted)' }}>
+            Manage the hero sliders that appear at the top of the homepage. You can add multiple slides, and they will automatically cycle through.
+          </p>
+        </div>
+        {renderListEditor('home_slides', 'Home Sliders', { image: '', eyebrow: 'Welcome to ROAACCU', title: 'New Slide', subtitle: '' }, [
+          { name: 'image', label: 'Background Image', type: 'image' },
+          { name: 'eyebrow', label: 'Eyebrow Text (Small Top Text)', type: 'text' },
+          { name: 'title', label: 'Main Title', type: 'text' },
+          { name: 'subtitle', label: 'Subtitle / Description', type: 'textarea' },
+        ])}
+      </>
+    );
+  };
+
+  const renderAboutTab = () => {
+    const textItem = getItem('about_text');
+    const missionItem = getItem('about_mission');
+    const visionItem = getItem('about_vision');
+    
+    return (
+      <>
+        <div className="widget glass-panel" style={{ marginBottom: '1.5rem' }}>
+          <h3 style={{ marginBottom: '1rem' }}>About Us Text</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div>
+              <label className="form-label">Main History / About Text</label>
+              <textarea rows={6} className="form-control" value={textItem.value} onChange={(e) => handleChange('about_text', e.target.value)} />
+            </div>
+            <div>
+              <label className="form-label">Mission Statement</label>
+              <textarea rows={3} className="form-control" value={missionItem.value} onChange={(e) => handleChange('about_mission', e.target.value)} />
+            </div>
+            <div>
+              <label className="form-label">Vision Statement</label>
+              <textarea rows={3} className="form-control" value={visionItem.value} onChange={(e) => handleChange('about_vision', e.target.value)} />
+            </div>
+            <div style={{ display: 'flex', gap: '1rem' }}>
+              <button className="btn btn-primary" onClick={() => { handleUpdate(textItem); handleUpdate(missionItem); handleUpdate(visionItem); }}>
+                <Save size={18} /> Save About Texts
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {renderListEditor('about_core_values', 'Core Values', { title: '', desc: '' }, [
+          { name: 'title', label: 'Value Title', type: 'text' },
+          { name: 'desc', label: 'Value Description', type: 'text' }
+        ])}
+
+        {renderListEditor('about_team', 'Executive Board / Team', { name: '', role: '', image: '' }, [
+          { name: 'image', label: 'Profile Picture', type: 'image' },
+          { name: 'name', label: 'Full Name', type: 'text' },
+          { name: 'role', label: 'Position / Role', type: 'text' }
+        ])}
+      </>
+    );
+  };
+
+  const renderFaqsTab = () => {
+    return renderListEditor('faq_list', 'Frequently Asked Questions', { q: '', a: '' }, [
+      { name: 'q', label: 'Question', type: 'text' },
+      { name: 'a', label: 'Answer', type: 'textarea' }
+    ]);
+  };
+
+  const renderBranchesTab = () => {
+    return renderListEditor('branches_list', 'Branches', { name: '', location: '', contact: '', manager: '', image: '' }, [
+      { name: 'image', label: 'Branch Image', type: 'image' },
+      { name: 'name', label: 'Branch Name', type: 'text' },
+      { name: 'location', label: 'Physical Location', type: 'text' },
+      { name: 'contact', label: 'Contact Phone', type: 'text' },
+      { name: 'manager', label: 'Manager Name (Optional)', type: 'text' }
+    ]);
+  };
+
+  const renderProductsTab = () => {
+    return renderListEditor('products_list', 'Products & Services', { title: '', desc: '', image: '', type: 'Savings', features: '' }, [
+      { name: 'image', label: 'Service Image', type: 'image' },
+      { name: 'title', label: 'Product Title', type: 'text' },
+      { name: 'type', label: 'Type (Savings, Loan, Investment)', type: 'text' },
+      { name: 'desc', label: 'Product Description', type: 'textarea' },
+      { name: 'features', label: 'Features (Comma separated)', type: 'textarea' }
+    ]);
+  };
+
+  if (loading) return <LoadingScreen message="Loading CMS data..." />;
 
   return (
     <div>
@@ -267,16 +286,22 @@ const CMS: React.FC = () => {
       {/* Hidden file input for uploads */}
       <input type="file" ref={fileInputRef} style={{ display: 'none' }} accept="image/*" onChange={handleImageUpload} />
 
-      <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
-        <button className={`btn ${activeTab === 'general' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('general')}>General Info</button>
-        <button className={`btn ${activeTab === 'sliders' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('sliders')}>Home Sliders</button>
-        <button className={`btn ${activeTab === 'social' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('social')}>Social Links</button>
+      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
+        <button className={`btn ${activeTab === 'general' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('general')}>General</button>
+        <button className={`btn ${activeTab === 'home' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('home')}>Home</button>
+        <button className={`btn ${activeTab === 'about' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('about')}>About Us</button>
+        <button className={`btn ${activeTab === 'faqs' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('faqs')}>FAQs</button>
+        <button className={`btn ${activeTab === 'branches' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('branches')}>Branches</button>
+        <button className={`btn ${activeTab === 'products' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('products')}>Products/Services</button>
       </div>
 
       <div className="dashboard-widgets">
         {activeTab === 'general' && renderGeneralFields()}
-        {activeTab === 'sliders' && renderSlidesEditor()}
-        {activeTab === 'social' && renderSocialLinks()}
+        {activeTab === 'home' && renderHomeTab()}
+        {activeTab === 'about' && renderAboutTab()}
+        {activeTab === 'faqs' && renderFaqsTab()}
+        {activeTab === 'branches' && renderBranchesTab()}
+        {activeTab === 'products' && renderProductsTab()}
       </div>
     </div>
   );

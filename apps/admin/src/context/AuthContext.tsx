@@ -22,11 +22,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (import.meta.env.DEV) {
-      setAdmin({ id: 1, name: "Dev SuperAdmin", email: "dev@creditunion.com", role: "SUPERADMIN" });
-      setLoading(false);
-      return;
-    }
+    // Dev auto-login removed so user can test real login
 
     const token = localStorage.getItem('adminToken');
     if (token) {

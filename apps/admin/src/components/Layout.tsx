@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LayoutDashboard, Users, CreditCard, HeartHandshake, MessageSquare, LogOut, FileText, UserCog, Send, Building, Menu, X, ShieldAlert, Moon, Sun } from 'lucide-react';
+import { LayoutDashboard, Users, CreditCard, HeartHandshake, MessageSquare, LogOut, FileText, UserCog, Send, Building, Menu, X, ShieldAlert, Moon, Sun, Image } from 'lucide-react';
 import './Layout.css';
 
 import logoUrl from '../assets/logo.png';
@@ -42,6 +42,7 @@ const Layout: React.FC = () => {
     { path: '/welfare', icon: HeartHandshake, label: 'Welfare' },
     { path: '/messages', icon: MessageSquare, label: 'Messages' },
     { path: '/cms', icon: FileText, label: 'CMS' },
+    { path: '/media', icon: Image, label: 'Media' },
     { path: '/sms', icon: Send, label: 'Send SMS' },
   ];
 
@@ -60,9 +61,9 @@ const Layout: React.FC = () => {
 
       <aside className={`sidebar ${isMobileOpen ? 'mobile-open' : ''}`}>
         <div className="sidebar-header">
-          <img src={logoUrl} alt="ROAACCU Logo" style={{ maxWidth: '120px', height: 'auto' }} />
+          <img src={logoUrl} alt="ROAACCU Logo" style={{ maxWidth: '80px', height: 'auto' }} />
           {/* Close button inside sidebar for mobile */}
-          <button className="mobile-menu-btn d-md-none" onClick={() => setIsMobileOpen(false)} style={{ position: 'absolute', right: '1rem', top: '1.5rem', padding: '0', display: window.innerWidth > 768 ? 'none' : 'block' }}>
+          <button className="mobile-close-btn" onClick={() => setIsMobileOpen(false)} style={{ position: 'absolute', right: '1rem', top: '1.5rem', padding: '0', background: 'transparent', border: 'none', color: 'var(--text-secondary)' }}>
             <X size={24} />
           </button>
         </div>

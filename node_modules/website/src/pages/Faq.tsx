@@ -3,17 +3,19 @@ import { ChevronDown, ChevronUp, MessageSquare, Phone } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { PageHeader } from '../components/PageHeader';
 import { RevealOnScroll } from '../components/RevealOnScroll';
+import { useCMS } from '../context/CMSContext';
 
 export function Faq() {
   const [activeFaq, setActiveFaq] = useState<number | null>(0);
+  const { getJSON } = useCMS();
   
-  const faqs = [
+  const faqs = getJSON('faq_list', [
     { q: "Is ROAACCU recognized by Bank of Ghana (BOG)?", a: "Yes. ROAACCU is affiliated to Ghana Co-operatives Credit Unions Association (CUA) and registered by Department of Co-operatives (DOC)." },
     { q: "Can I save with ROAACCU without acquiring the minimum shares?", a: "Yes. However, you have up to six months to acquire the minimum shares." },
     { q: "Is acquisition of shares compulsory?", a: "Yes. It makes you a full member of ROAACCU who will enjoy all the benefits entitled to a member." },
     { q: "Can I access my account balances on my phone?", a: "Yes. You can use our USSD code (*889*55#) with default pin 1234 to access your account balances." },
     { q: "Does ROAACCU provide SMS alerts on transactions?", a: "Yes. Members receive SMS alerts on all their transactions at NO cost." }
-  ];
+  ]);
 
   return (
     <>

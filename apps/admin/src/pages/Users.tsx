@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { UserPlus, Trash2 } from 'lucide-react';
+import LoadingScreen from '../components/LoadingScreen';
 
 interface User {
   id: number;
@@ -40,9 +41,9 @@ const Users: React.FC = () => {
       setShowModal(false);
       setFormData({ name: '', email: '', password: '', role: 'ADMIN' });
       fetchUsers();
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert('Failed to create user');
+      alert(err.response?.data?.error || 'Failed to create user');
     } finally {
       setSaving(false);
     }
@@ -71,7 +72,7 @@ const Users: React.FC = () => {
 
       <div className="widget glass-panel">
         {loading ? (
-          <p>Loading users...</p>
+          <LoadingScreen message="Loading users..." />
         ) : (
           <div className="table-responsive">
             <table className="table" style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -118,44 +119,47 @@ const Users: React.FC = () => {
       {showModal && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
           <div className="widget glass-panel" style={{ width: '100%', maxWidth: '400px' }}>
-            <h3 style={{ marginBottom: '1.5rem' }}>Add New User</h3>
+            <h3 style={{ marginBottom: '1.5rem', fontSize: '1.2rem' }}>Add New User</h3>
             <form onSubmit={handleCreate} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem' }}>Full Name</label>
+                <label className="form-label">Full Name</label>
                 <input 
                   type="text" 
+                  className="form-control"
                   value={formData.name} 
                   onChange={e => setFormData({ ...formData, name: e.target.value })} 
                   required 
-                  style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid var(--border-color)' }}
+                  placeholder="e.g. John Doe"
                 />
               </div>
               <div>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem' }}>Email Address</label>
+                <label className="form-label">Email Address</label>
                 <input 
                   type="email" 
+                  className="form-control"
                   value={formData.email} 
                   onChange={e => setFormData({ ...formData, email: e.target.value })} 
                   required 
-                  style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid var(--border-color)' }}
+                  placeholder="e.g. john@roaaccugh.com"
                 />
               </div>
               <div>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem' }}>Password</label>
+                <label className="form-label">Password</label>
                 <input 
                   type="password" 
+                  className="form-control"
                   value={formData.password} 
                   onChange={e => setFormData({ ...formData, password: e.target.value })} 
                   required 
-                  style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid var(--border-color)' }}
+                  placeholder="••••••••"
                 />
               </div>
               <div>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem' }}>Role</label>
+                <label className="form-label">Role</label>
                 <select 
+                  className="form-control"
                   value={formData.role} 
                   onChange={e => setFormData({ ...formData, role: e.target.value })}
-                  style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid var(--border-color)' }}
                 >
                   <option value="MANAGER">Manager</option>
                   <option value="ADMIN">Admin</option>
@@ -164,7 +168,7 @@ const Users: React.FC = () => {
               </div>
               
               <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-                <button type="button" className="btn" style={{ background: '#f1f5f9', color: '#475569', flex: 1 }} onClick={() => setShowModal(false)}>
+                <button type="button" className="btn btn-outline" style={{ flex: 1 }} onClick={() => setShowModal(false)}>
                   Cancel
                 </button>
                 <button type="submit" className="btn btn-primary" disabled={saving} style={{ flex: 1 }}>

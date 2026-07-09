@@ -8,6 +8,7 @@ import { Welfare } from '../pages/Welfare';
 import { Events } from '../pages/Events';
 import { Gallery } from '../pages/Gallery';
 import { About } from '../pages/About';
+import { BoardAndManagement } from '../pages/BoardAndManagement';
 import { Services } from '../pages/Services';
 import { Products } from '../pages/Products';
 import { Contact } from '../pages/Contact';
@@ -25,6 +26,7 @@ export function AppRouter() {
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Home />} />
           <Route path="about" element={<About />} />
+          <Route path="board-and-management" element={<BoardAndManagement />} />
           <Route path="services" element={<Services />} />
           <Route path="products" element={<Products />} />
           <Route path="contact" element={<Contact />} />

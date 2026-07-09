@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { format } from 'date-fns';
 import { Check, X } from 'lucide-react';
+import LoadingScreen from '../components/LoadingScreen';
 
 const Loans: React.FC = () => {
   const [applications, setApplications] = useState<any[]>([]);
@@ -57,7 +58,7 @@ const Loans: React.FC = () => {
     document.body.removeChild(link);
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <LoadingScreen message="Loading loans..." />;
 
   return (
     <div>

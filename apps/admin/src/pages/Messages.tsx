@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { MessageSquare, Mail, Phone, Trash2 } from 'lucide-react';
+import LoadingScreen from '../components/LoadingScreen';
 import axios from 'axios';
 import { format } from 'date-fns';
 
@@ -21,7 +23,7 @@ const Messages: React.FC = () => {
     }
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <LoadingScreen message="Loading messages..." />;
 
   return (
     <div>

@@ -1,9 +1,45 @@
+.sidebar {
+  width: 220px;
+  background-color: var(--bg-secondary);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  z-index: 10;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  margin-left: 220px;
+}
+
+.page-content {
+  flex: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+.page-content > * {
+  animation: fadeInPage 0.4s ease-out forwards;
+}
+
+@keyframes fadeInPage {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .sidebar-header {
-  min-height: 80px;
+  min-height: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem 1rem;
+  padding: 1rem;
 }
 
 .sidebar-nav {
@@ -19,11 +55,11 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+  border-radius: 6px;
   color: var(--text-secondary);
   font-weight: 500;
-  font-size: 0.85rem;
+  font-size: 0.8125rem;
   transition: var(--transition);
 }
 
@@ -79,12 +115,12 @@
 
 /* Desktop Topbar */
 .desktop-topbar {
-  height: 80px;
+  height: 64px;
   background-color: var(--bg-color); /* Same as body bg */
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 2rem;
+  padding: 0 1.5rem;
 }
 
 .topbar-right {
@@ -100,8 +136,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   transition: var(--transition);
   box-shadow: var(--shadow-sm);
@@ -183,7 +219,6 @@
 
 /* Responsive Sidebar & Overlay */
 .sidebar-overlay {
-  display: none;
   position: fixed;
   top: 0;
   left: 0;
@@ -193,19 +228,28 @@
   backdrop-filter: blur(4px);
   z-index: 90;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
   pointer-events: none;
 }
 
 .sidebar-overlay.active {
-  display: block;
   opacity: 1;
+  visibility: visible;
   pointer-events: auto;
+}
+
+.mobile-close-btn {
+  display: none;
 }
 
 @media (max-width: 768px) {
   .desktop-hide {
     display: flex;
+  }
+  
+  .mobile-close-btn {
+    display: block;
   }
   
   .desktop-topbar {
@@ -240,6 +284,10 @@
   }
   
   .main-content {
-    margin-left: 0 !important;
+    margin-left: 0;
+  }
+  
+  .page-content {
+    padding: 1rem;
   }
 }

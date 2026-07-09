@@ -1,52 +1,51 @@
 import { PageHeader } from '../components/PageHeader';
 import { RevealOnScroll } from '../components/RevealOnScroll';
-import { MapPin, Mail, Phone } from 'lucide-react';
+import { MapPin, Phone, User } from 'lucide-react';
+import { useCMS } from '../context/CMSContext';
 
 export function Branches() {
-  const branches = [
+  const { getJSON } = useCMS();
+
+  const branches = getJSON('branches_list', [
     {
       name: "HEAD OFFICE",
       location: "Agona Ahanta",
-      email: "info@roaaccugh.com",
-      phone: "0302 999 374",
-      image: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80"
+      contact: "0302 999 374",
+      manager: "John Doe",
+      image: ""
     },
     {
       name: "AGONA AHANTA BRANCH",
       location: "Near Police Barrier",
-      email: "aa.branch@roaaccugh.com",
-      phone: "0256 111 557 / 031………",
-      image: "https://images.unsplash.com/photo-1578509374026-613d0527acbf?auto=format&fit=crop&w=800&q=80"
+      contact: "0256 111 557 / 031………",
+      manager: "Jane Smith",
+      image: ""
     },
     {
       name: "ASSIN FOSO",
       location: "Behind Mama Doris Drug Store",
-      email: "af.branch@roaaccugh.com",
-      phone: "0256 111 552 / 0312 290 799",
-      image: "https://images.unsplash.com/photo-1554469384-e58fac16e23a?auto=format&fit=crop&w=800&q=80"
+      contact: "0256 111 552 / 0312 290 799",
+      manager: "Peter Jones"
     },
     {
       name: "MANSO AMENFI",
       location: "Opposite PUMA Filling Station",
-      email: "ma.branch@roaaccugh.com",
-      phone: "0256 111 559 / 0312 290 818",
-      image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=800&q=80"
+      contact: "0256 111 559 / 0312 290 818",
+      manager: ""
     },
     {
       name: "WASSA SIMPA BRANCH",
       location: "Near Total Filling Station",
-      email: "ws.branch@roaaccugh.com",
-      phone: "0256 111 551 / 0302 999 375",
-      image: "https://images.unsplash.com/photo-1517502884422-41eaead166d4?auto=format&fit=crop&w=800&q=80"
+      contact: "0256 111 551 / 0302 999 375",
+      manager: ""
     },
     {
       name: "NZEMA AIYINASE BRANCH",
       location: "Opposite Blameless Supermaket",
-      email: "na.branch@roaaccugh.com",
-      phone: "0256 111 554 / 0312 294 679",
-      image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80"
+      contact: "0256 111 554 / 0312 294 679",
+      manager: ""
     }
-  ];
+  ]);
 
   return (
     <>
@@ -70,9 +69,14 @@ export function Branches() {
                 flexDirection: 'column',
                 transition: 'var(--transition)'
               }} className="branch-card hover:-translate-y-1 hover:shadow-md">
-                
-                <div style={{ height: '200px', width: '100%', overflow: 'hidden' }}>
-                  <img src={branch.image} alt={branch.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <div style={{ height: '200px', width: '100%', overflow: 'hidden', background: '#f8fafc' }}>
+                  {branch.image ? (
+                    <img src={branch.image.startsWith('http') ? branch.image : `http://localhost:3000${branch.image}`} alt={branch.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  ) : (
+                    <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
+                      <MapPin size={48} opacity={0.2} />
+                    </div>
+                  )}
                 </div>
 
                 <div style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1rem', flex: 1 }}>
@@ -85,15 +89,19 @@ export function Branches() {
                     <span style={{ color: 'var(--text-color)', lineHeight: 1.5 }}>{branch.location}</span>
                   </div>
                   
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <Mail size={20} color="var(--secondary-color)" style={{ flexShrink: 0 }} />
-                    <a href={`mailto:${branch.email}`} style={{ color: 'var(--text-color)', textDecoration: 'none' }}>{branch.email}</a>
-                  </div>
-                  
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <Phone size={20} color="var(--secondary-color)" style={{ flexShrink: 0 }} />
-                    <span style={{ color: 'var(--text-color)' }}>{branch.phone}</span>
-                  </div>
+                  {branch.contact && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                      <Phone size={20} color="var(--secondary-color)" style={{ flexShrink: 0 }} />
+                      <span style={{ color: 'var(--text-color)' }}>{branch.contact}</span>
+                    </div>
+                  )}
+
+                  {branch.manager && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                      <User size={20} color="var(--secondary-color)" style={{ flexShrink: 0 }} />
+                      <span style={{ color: 'var(--text-color)' }}>{branch.manager}</span>
+                    </div>
+                  )}
                 </div>
               </div>
             </RevealOnScroll>

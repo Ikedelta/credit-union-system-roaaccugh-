@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { CheckCircle2, ArrowRight } from 'lucide-react';
 import { PageHeader } from '../components/PageHeader';
 import { RevealOnScroll } from '../components/RevealOnScroll';
+import { useCMS } from '../context/CMSContext';
 
 const typeConfig: Record<string, { label: string; badgeClass: string; bg: string }> = {
   Savings:    { label: 'Savings Account',    badgeClass: 'type-badge type-badge-savings',    bg: '#f8fafc' },
@@ -10,77 +11,38 @@ const typeConfig: Record<string, { label: string; badgeClass: string; bg: string
   Investment: { label: 'Investment',         badgeClass: 'type-badge type-badge-investment', bg: 'rgba(28, 16, 94, 0.05)' },
 };
 
-const products = [
-  { 
-    id: 1,
-    title: 'Prime Savings',       
-    type: 'Investment', 
-    img: 'https://roaaccugh.com/assets/img/portfolio/ps.png',
-    desc: 'A premium high-yield investment account designed to grow your wealth steadily with highly competitive interest rates.',
-    features: ['Premium interest rates', 'Flexible withdrawal terms', 'Dedicated account manager']
-  },
-  { 
-    id: 2,
-    title: 'Member Savings',      
-    type: 'Savings',    
-    img: 'https://roaaccugh.com/assets/img/portfolio/ms.png',
-    desc: 'The foundation of your financial journey. A secure, accessible account that builds your regular savings habits while earning interest.',
-    features: ['Low initial deposit', 'No monthly maintenance fees', 'Easy access to funds']
-  },
-  { 
-    id: 3,
-    title: 'Smart Savings',       
-    type: 'Savings',    
-    img: 'https://roaaccugh.com/assets/img/portfolio/ss.png',
-    desc: 'An automated, goal-oriented savings plan that helps you put money away for targeted future projects seamlessly.',
-    features: ['Goal-tracking tools', 'Automated deductions', 'Bonus interest on maturity']
-  },
-  { 
-    id: 4,
-    title: 'Mbofora Daakye',      
-    type: 'Savings',    
-    img: 'https://roaaccugh.com/assets/img/portfolio/md.png',
-    desc: 'Secure your children\'s future with our minor savings account, featuring educational benefits and special child-focused perks.',
-    features: ['High compound interest', 'Educational scholarship entry', 'Restricted early withdrawals']
-  },
-  { 
-    id: 5,
-    title: 'Rubber Power Loan',   
-    type: 'Loan',       
-    img: 'https://roaaccugh.com/assets/img/portfolio/RPL.jpg',
-    desc: 'Tailored agricultural financing specifically designed to empower rubber farmers to expand their outgrower operations.',
-    features: ['Up to GHS 500,000 capital', 'Flexible seasonal repayment', 'Fast processing time']
-  },
-  { 
-    id: 6,
-    title: 'Akatua Mpontu Loan',  
-    type: 'Loan',       
-    img: 'https://roaaccugh.com/assets/img/portfolio/AML.jpeg',
-    desc: 'A reliable salary advance loan that bridges the gap between paychecks, perfect for immediate personal emergencies.',
-    features: ['Processed within 24 hours', 'Low interest rates', 'Flexible 1-12 month terms']
-  },
-  { 
-    id: 7,
-    title: 'Direct Sales Loan',   
-    type: 'Loan',       
-    img: 'https://roaaccugh.com/assets/img/portfolio/dsl.png',
-    desc: 'Commercial capital injections aimed at boosting inventory and expanding direct retail operations for business owners.',
-    features: ['Working capital support', 'Competitive market rates', 'Business advisory included']
-  },
-  { 
-    id: 8,
-    title: 'Short Term Loan',     
-    type: 'Loan',       
-    img: 'https://roaaccugh.com/assets/img/portfolio/stl.png',
-    desc: 'Quick access to moderate funds for unexpected expenses. Easy to apply for and straightforward to clear.',
-    features: ['Minimal documentation', 'No collateral required', 'Instant disbursement']
-  },
-];
-
 export function Products() {
   const [activeTab, setActiveTab] = useState<'All' | 'Savings' | 'Loan'>('All');
+  const { getJSON } = useCMS();
 
-  const filteredProducts = products.filter(p => {
+  const products = getJSON('products_list', [
+    { 
+      id: 1,
+      title: 'Prime Savings',       
+      type: 'Investment', 
+      image: 'https://roaaccugh.com/assets/img/portfolio/ps.png',
+      desc: 'A premium high-yield investment account designed to grow your wealth steadily with highly competitive interest rates.',
+      features: 'Premium interest rates, Flexible withdrawal terms, Dedicated account manager'
+    },
+    { 
+      id: 2,
+      title: 'Member Savings',      
+      type: 'Savings',    
+      image: 'https://roaaccugh.com/assets/img/portfolio/ms.png',
+      desc: 'The foundation of your financial journey. A secure, accessible account that builds your regular savings habits while earning interest.',
+      features: 'Low initial deposit, No monthly maintenance fees, Easy access to funds'
+    },
+    { 
+      id: 5,
+      title: 'Rubber Power Loan',   
+      type: 'Loan',       
+      image: 'https://roaaccugh.com/assets/img/portfolio/RPL.jpg',
+      desc: 'Tailored agricultural financing specifically designed to empower rubber farmers to expand their outgrower operations.',
+      features: 'Up to GHS 500k capital, Flexible seasonal repayment, Fast processing time'
+    }
+  ]);
+
+  const filteredProducts = products.filter((p: any) => {
     if (activeTab === 'All') return true;
     if (activeTab === 'Savings') return p.type === 'Savings' || p.type === 'Investment';
     if (activeTab === 'Loan') return p.type === 'Loan';
@@ -131,15 +93,17 @@ export function Products() {
 
         {/* Products Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredProducts.map((product, i) => {
+          {filteredProducts.map((product: any, i: number) => {
             const config = typeConfig[product.type] || typeConfig.Savings;
+            const featuresList = (product.features || '').split(',').map((f: string) => f.trim()).filter(Boolean);
+            
             return (
-              <RevealOnScroll key={product.id} delay={(i % 3) * 0.1}>
+              <RevealOnScroll key={product.id || i} delay={(i % 3) * 0.1}>
                 <div className="premium-card" style={{ padding: '0', display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
                   
                   {/* Image Area */}
                   <div style={{ position: 'relative', width: '100%', height: '220px', background: config.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
-                    <img src={product.img} alt={product.title} className="animate-float" style={{ width: '100%', height: '100%', objectFit: 'contain', mixBlendMode: 'multiply', animationDuration: '4s' }} />
+                    <img src={product.image?.startsWith('http') ? product.image : `http://localhost:3000${product.image}`} alt={product.title} className="animate-float" style={{ width: '100%', height: '100%', objectFit: 'contain', mixBlendMode: 'multiply', animationDuration: '4s' }} />
                     <div style={{ position: 'absolute', top: '1rem', right: '1rem' }}>
                       <span className={config.badgeClass}>{config.label}</span>
                     </div>
@@ -154,7 +118,7 @@ export function Products() {
 
                     {/* Features List */}
                     <div style={{ marginBottom: '2rem', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-                      {product.features.map((feature, idx) => (
+                      {featuresList.map((feature: string, idx: number) => (
                         <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
                           <CheckCircle2 size={16} color="var(--secondary-color)" style={{ marginTop: '3px', flexShrink: 0 }} />
                           <span style={{ fontSize: '0.85rem', color: 'var(--text-main)', fontWeight: 500 }}>{feature}</span>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Users, CreditCard, HeartHandshake, MessageSquare, CheckCircle, Clock, FileText } from 'lucide-react';
+import { Users, CreditCard, HeartHandshake, MessageSquare, CheckCircle, Clock, FileText, Zap } from 'lucide-react';
 import './Dashboard.css';
 
 const Dashboard: React.FC = () => {
@@ -98,6 +98,29 @@ const Dashboard: React.FC = () => {
           <button className="btn btn-primary" style={{ marginTop: 'auto', alignSelf: 'flex-start', padding: '0.5rem 1rem' }} onClick={() => navigate('/memberships')}>
             View All Applications
           </button>
+        </div>
+
+        {/* Quick Actions Column */}
+        <div className="widget" style={{ display: 'flex', flexDirection: 'column' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.75rem' }}>
+            <Zap size={20} color="var(--primary-color)" />
+            <h3 style={{ margin: 0, borderBottom: 'none', paddingBottom: 0 }}>Quick Actions</h3>
+          </div>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            <button className="btn btn-outline" style={{ justifyContent: 'flex-start' }} onClick={() => navigate('/memberships')}>
+              <Users size={16} /> Review Pending Memberships
+            </button>
+            <button className="btn btn-outline" style={{ justifyContent: 'flex-start' }} onClick={() => navigate('/loans')}>
+              <CreditCard size={16} /> Process Loan Applications
+            </button>
+            <button className="btn btn-outline" style={{ justifyContent: 'flex-start' }} onClick={() => navigate('/sms')}>
+              <MessageSquare size={16} /> Send SMS Broadcast
+            </button>
+            <button className="btn btn-outline" style={{ justifyContent: 'flex-start' }} onClick={() => navigate('/cms')}>
+              <FileText size={16} /> Update Website Content
+            </button>
+          </div>
         </div>
       </div>
     </div>

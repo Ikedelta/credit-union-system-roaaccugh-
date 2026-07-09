@@ -16,8 +16,8 @@ export function Home() {
       id: 1,
       image: "/slider1.jpg",
       eyebrow: "Me Daakye Anidaso",
-      title: get("home_hero_title", "Your Future Starts Here"),
-      subtitle: get("home_hero_subtitle", "Ghana's trusted financial co-operative — built by members, for members. Join over 11,000 people growing together."),
+      title: "Your Future Starts Here",
+      subtitle: "Ghana's trusted financial co-operative — built by members, for members. Join over 11,000 people growing together.",
     }
   ]);
 
@@ -35,8 +35,8 @@ export function Home() {
           loop={true}
           className="hero-swiper"
         >
-          {slides.map((slide) => (
-            <SwiperSlide key={slide.id}>
+          {slides.map((slide: any, index: number) => (
+            <SwiperSlide key={slide.id || index}>
               {/* Background */}
               <div style={{
                 position: 'absolute', inset: 0,

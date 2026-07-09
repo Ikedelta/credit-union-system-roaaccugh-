@@ -21,5 +21,9 @@
     "dev": "npm run dev --workspaces",
     "build": "npm run build --workspaces",
     "test": "npm run test --workspaces"
+  },
+  "dependencies": {
+    "cross-fetch": "^4.1.0",
+    "tslib": "^2.8.1"
   }
 }

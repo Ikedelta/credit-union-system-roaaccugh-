@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { format } from 'date-fns';
 import { ShieldAlert, Activity } from 'lucide-react';
+import LoadingScreen from '../components/LoadingScreen';
 
 const AuditLogs: React.FC = () => {
   const [logs, setLogs] = useState<any[]>([]);
@@ -22,7 +23,7 @@ const AuditLogs: React.FC = () => {
     }
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <LoadingScreen message="Loading audit logs..." />;
 
   return (
     <div>

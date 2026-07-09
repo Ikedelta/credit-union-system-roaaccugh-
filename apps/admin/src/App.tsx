@@ -12,17 +12,15 @@ import CMS from './pages/CMS';
 import Users from './pages/Users';
 import Sms from './pages/Sms';
 import AuditLogs from './pages/AuditLogs';
+import Media from './pages/Media';
 import { Loader2 } from 'lucide-react';
+import LoadingScreen from './components/LoadingScreen';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { admin, loading } = useAuth();
   
   if (loading) {
-    return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: 'var(--bg-color)' }}>
-        <Loader2 className="spinner" size={48} color="var(--primary-color)" />
-      </div>
-    );
+    return <LoadingScreen fullScreen message="Loading Admin Dashboard..." />;
   }
   
   if (!admin) {
@@ -43,6 +41,7 @@ const AppRoutes = () => {
         <Route path="welfare" element={<Welfare />} />
         <Route path="messages" element={<Messages />} />
         <Route path="cms" element={<CMS />} />
+        <Route path="media" element={<Media />} />
         <Route path="users" element={<Users />} />
         <Route path="sms" element={<Sms />} />
         <Route path="audit-logs" element={<AuditLogs />} />

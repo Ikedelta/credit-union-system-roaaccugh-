@@ -15,7 +15,10 @@ const JWT_SECRET = process.env.JWT_SECRET || "your-super-secret-jwt-key-change-i
 // Initialize Supabase Client for Storage
 const supabaseUrl = process.env.SUPABASE_URL || '';
 const supabaseKey = process.env.SUPABASE_KEY || '';
-const supabase = createClient(supabaseUrl, supabaseKey);
+// Only create real client if URL is provided to prevent crash on boot
+const supabase = supabaseUrl 
+  ? createClient(supabaseUrl, supabaseKey) 
+  : { storage: { from: () => ({ upload: async () => ({ error: { message: "Supabase not configured" } }), getPublicUrl: () => ({ data: { publicUrl: "" } }) }) } } as any;
 
 // Use memory storage for uploads before pushing to Supabase
 const storage = multer.memoryStorage();
@@ -129,6 +132,62 @@ router.post("/upload", upload.single("image"), async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "File upload failed" });
+  }
+});
+
+// --- MEDIA MANAGER ---
+router.get("/media", async (req, res) => {
+  try {
+    if (!supabaseUrl || !supabaseKey) {
+      return res.status(500).json({ error: "Supabase storage is not configured in .env" });
+    }
+
+    const { data, error } = await supabase.storage.from('cms-media').list();
+    if (error) {
+      console.error("Supabase List Error:", error);
+      return res.status(500).json({ error: "Failed to fetch files" });
+    }
+
+    const files = data
+      .filter((file: any) => file.name !== '.emptyFolderPlaceholder')
+      .map((file: any) => {
+        const { data: publicUrlData } = supabase.storage.from('cms-media').getPublicUrl(file.name);
+        return {
+          name: file.name,
+          url: publicUrlData.publicUrl,
+          created_at: file.created_at
+        };
+      })
+      .sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+    res.json({ files });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to list media files" });
+  }
+});
+
+router.delete("/media/:filename", async (req, res) => {
+  try {
+    if (!supabaseUrl || !supabaseKey) {
+      return res.status(500).json({ error: "Supabase storage is not configured" });
+    }
+
+    const { filename } = req.params;
+    const { error } = await supabase.storage.from('cms-media').remove([filename]);
+    
+    if (error) {
+      console.error("Supabase Delete Error:", error);
+      return res.status(500).json({ error: "Failed to delete file" });
+    }
+
+    const adminReq = req as AuthRequest;
+    await createAuditLog(adminReq.adminId, "DELETE_FILE", `Deleted media file: ${filename}`);
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to delete media file" });
   }
 });
 
@@ -380,7 +439,11 @@ router.post("/users", authenticateSuperAdmin, async (req, res) => {
       select: { id: true, name: true, email: true, role: true },
     });
     res.json(user);
-  } catch (err) {
+  } catch (err: any) {
+    if (err.code === 'P2002') {
+      return res.status(400).json({ error: "A user with this email already exists" });
+    }
+    console.error(err);
     res.status(500).json({ error: "Failed to create user" });
   }
 });

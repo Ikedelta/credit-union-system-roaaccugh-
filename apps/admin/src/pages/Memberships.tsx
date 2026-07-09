@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { format } from 'date-fns';
 import { Check, X, Eye } from 'lucide-react';
+import LoadingScreen from '../components/LoadingScreen';
 
 const Memberships: React.FC = () => {
   const [applications, setApplications] = useState<any[]>([]);
@@ -62,7 +63,7 @@ const Memberships: React.FC = () => {
     document.body.removeChild(link);
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <LoadingScreen message="Loading memberships..." />;
 
   return (
     <div>

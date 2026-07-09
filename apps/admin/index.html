@@ -2,12 +2,55 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" href="/logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>admin</title>
+    <title>ROAACCU Admin Dashboard</title>
+    <style>
+      body {
+        margin: 0;
+        background-color: #f4f7fb;
+        font-family: 'Inter', 'Montserrat', sans-serif;
+      }
+      .initial-loader {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        width: 100vw;
+      }
+      .initial-spinner {
+        width: 50px;
+        height: 50px;
+        border: 4px solid rgba(28, 16, 94, 0.1);
+        border-top-color: #1c105e;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+      .initial-text {
+        margin-top: 1.5rem;
+        color: #1c105e;
+        font-weight: 600;
+        font-size: 1.1rem;
+        letter-spacing: 0.05em;
+        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+      }
+    </style>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app">
+      <div class="initial-loader">
+        <div class="initial-spinner"></div>
+        <div class="initial-text">ROAACCU</div>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Send, Loader2 } from 'lucide-react';
+import LoadingScreen from '../components/LoadingScreen';
 
 const Sms: React.FC = () => {
   const [recipientsStr, setRecipientsStr] = useState('');
@@ -126,7 +127,7 @@ const Sms: React.FC = () => {
         <div className="widget glass-panel">
           <h3 style={{ marginBottom: '1rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>Recent Messages</h3>
           {logsLoading ? (
-            <p>Loading logs...</p>
+            <LoadingScreen message="Loading logs..." />
           ) : logs.length === 0 ? (
             <p className="text-secondary">No SMS messages sent yet.</p>
           ) : (

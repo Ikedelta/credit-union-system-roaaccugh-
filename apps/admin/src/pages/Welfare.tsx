@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { format } from 'date-fns';
-import { Check, X } from 'lucide-react';
+import { ShieldPlus, FileText, CheckCircle, XCircle, Check, X } from 'lucide-react';
+import LoadingScreen from '../components/LoadingScreen';
 
 const Welfare: React.FC = () => {
   const [applications, setApplications] = useState<any[]>([]);
@@ -32,7 +33,7 @@ const Welfare: React.FC = () => {
     }
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <LoadingScreen message="Loading welfare data..." />;
 
   return (
     <div>
