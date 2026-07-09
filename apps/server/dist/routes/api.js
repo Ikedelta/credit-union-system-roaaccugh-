@@ -6,11 +6,73 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const multer_1 = __importDefault(require("multer"));
 const client_1 = require("@prisma/client");
+const bcrypt_1 = __importDefault(require("bcrypt"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const auth_1 = require("../middleware/auth");
 const router = (0, express_1.Router)();
 const prisma = new client_1.PrismaClient();
+const JWT_SECRET = process.env.JWT_SECRET || "your-super-secret-jwt-key-change-in-production";
 // Multer config - memory storage for Vercel
 const storage = multer_1.default.memoryStorage();
 const upload = (0, multer_1.default)({ storage });
+// Member Login
+router.post("/member/login", async (req, res) => {
+    try {
+        const { memberId, password } = req.body;
+        const member = await prisma.member.findUnique({ where: { memberId } });
+        if (!member) {
+            return res.status(401).json({ error: "Invalid member ID or password" });
+        }
+        const isValid = await bcrypt_1.default.compare(password, member.password);
+        if (!isValid) {
+            return res.status(401).json({ error: "Invalid member ID or password" });
+        }
+        const token = jsonwebtoken_1.default.sign({ id: member.id, role: "MEMBER" }, JWT_SECRET, { expiresIn: "1d" });
+        res.json({ success: true, token, member: { id: member.id, memberId: member.memberId, firstName: member.firstName, lastName: member.lastName, balance: member.balance } });
+    }
+    catch (err) {
+        res.status(500).json({ error: "Login failed" });
+    }
+});
+// Member Dashboard (Protected)
+router.get("/member/me", auth_1.authenticateMember, async (req, res) => {
+    try {
+        const memberReq = req;
+        const member = await prisma.member.findUnique({
+            where: { id: memberReq.memberId },
+            select: {
+                id: true,
+                memberId: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+                telNo: true,
+                balance: true,
+                createdAt: true,
+            }
+        });
+        if (!member) {
+            return res.status(404).json({ error: "Member not found" });
+        }
+        // Fetch related applications based on telNo or email or a direct relation
+        // Currently, applications don't have a direct relation to Member ID, 
+        // so we match by telNo or accountNumber/memberId
+        const loanApplications = await prisma.loanApplication.findMany({
+            where: { accountNumber: member.memberId }
+        });
+        const welfareApplications = await prisma.welfareApplication.findMany({
+            where: { accountNumber: member.memberId }
+        });
+        res.json({
+            member,
+            loanApplications,
+            welfareApplications
+        });
+    }
+    catch (err) {
+        res.status(500).json({ error: "Failed to fetch member data" });
+    }
+});
 // Contact Form
 router.post("/contact", async (req, res) => {
     try {
@@ -156,6 +218,21 @@ router.get("/welfare", async (req, res) => {
     }
     catch (err) {
         res.status(500).json({ error: "Failed to fetch applications" });
+    }
+});
+// CMS Content
+router.get("/content", async (req, res) => {
+    try {
+        const content = await prisma.websiteContent.findMany();
+        // Transform array into key-value map for easier consumption by frontend
+        const contentMap = content.reduce((acc, item) => {
+            acc[item.key] = item.value;
+            return acc;
+        }, {});
+        res.json(contentMap);
+    }
+    catch (err) {
+        res.status(500).json({ error: "Failed to fetch website content" });
     }
 });
 exports.default = router;

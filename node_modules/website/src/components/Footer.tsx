@@ -7,7 +7,19 @@ interface FooterProps {
 }
 
 export function Footer({ setActiveModal: _setActiveModal }: FooterProps) {
-  const { get } = useCMS();
+  const { get, getJSON } = useCMS();
+
+  const socialLinks = getJSON<{platform: string, url: string}[]>('social_links', []);
+
+  const getIcon = (platform: string) => {
+    switch (platform.toLowerCase()) {
+      case 'facebook': return Globe; // Fallback to globe if social icons are missing
+      case 'twitter': return Globe;
+      case 'instagram': return Globe;
+      case 'linkedin': return Globe;
+      default: return Globe;
+    }
+  };
 
   return (
     <footer className="footer">
@@ -27,18 +39,19 @@ export function Footer({ setActiveModal: _setActiveModal }: FooterProps) {
             </p>
             {/* Social Icons */}
             <div style={{ display: 'flex', gap: '0.75rem' }}>
-              {[
-                { icon: Globe,  href: '#', label: 'Website' },
-              ].map(({ icon: Icon, href, label }) => (
-                <a 
-                  key={label} href={href} aria-label={label}
-                  style={{ width: '38px', height: '38px', borderRadius: '10px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(148,163,184,0.8)', transition: 'all 0.3s ease' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = 'var(--grad-primary)'; (e.currentTarget as HTMLAnchorElement).style.color = 'white'; (e.currentTarget as HTMLAnchorElement).style.borderColor = 'transparent'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = 'rgba(255,255,255,0.06)'; (e.currentTarget as HTMLAnchorElement).style.color = 'rgba(148,163,184,0.8)'; (e.currentTarget as HTMLAnchorElement).style.borderColor = 'rgba(255,255,255,0.08)'; }}
-                >
-                  <Icon size={16} />
-                </a>
-              ))}
+              {socialLinks.map(({ platform, url }) => {
+                const Icon = getIcon(platform);
+                return (
+                  <a 
+                    key={platform} href={url} aria-label={platform}
+                    style={{ width: '38px', height: '38px', borderRadius: '10px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(148,163,184,0.8)', transition: 'all 0.3s ease' }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = 'var(--grad-primary)'; (e.currentTarget as HTMLAnchorElement).style.color = 'white'; (e.currentTarget as HTMLAnchorElement).style.borderColor = 'transparent'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = 'rgba(255,255,255,0.06)'; (e.currentTarget as HTMLAnchorElement).style.color = 'rgba(148,163,184,0.8)'; (e.currentTarget as HTMLAnchorElement).style.borderColor = 'rgba(255,255,255,0.08)'; }}
+                  >
+                    <Icon size={16} />
+                  </a>
+                );
+              })}
             </div>
           </div>
 

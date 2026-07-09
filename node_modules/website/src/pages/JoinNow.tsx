@@ -21,7 +21,7 @@ export function JoinNow() {
       const form = e.currentTarget;
       const formData = new FormData(form);
       
-      const response = await fetch('http://localhost:5000/api/join', {
+      const response = await fetch('/api/join', {
         method: 'POST',
         body: formData,
       });

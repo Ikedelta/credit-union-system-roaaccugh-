@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.authenticateSuperAdmin = exports.authenticateAdmin = void 0;
+exports.authenticateMember = exports.authenticateSuperAdmin = exports.authenticateAdmin = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const JWT_SECRET = process.env.JWT_SECRET || "your-super-secret-jwt-key-change-in-production";
 const authenticateAdmin = (req, res, next) => {
@@ -40,4 +40,25 @@ const authenticateSuperAdmin = (req, res, next) => {
     });
 };
 exports.authenticateSuperAdmin = authenticateSuperAdmin;
+const authenticateMember = (req, res, next) => {
+    let token = req.cookies?.token;
+    if (!token && req.headers.authorization?.startsWith("Bearer ")) {
+        token = req.headers.authorization.split(" ")[1];
+    }
+    if (!token) {
+        return res.status(401).json({ error: "Access denied. No token provided." });
+    }
+    try {
+        const decoded = jsonwebtoken_1.default.verify(token, JWT_SECRET);
+        if (decoded.role !== "MEMBER") {
+            return res.status(401).json({ error: "Access denied. Not a member." });
+        }
+        req.memberId = decoded.id;
+        next();
+    }
+    catch (error) {
+        return res.status(401).json({ error: "Invalid or expired token." });
+    }
+};
+exports.authenticateMember = authenticateMember;
 //# sourceMappingURL=auth.js.map

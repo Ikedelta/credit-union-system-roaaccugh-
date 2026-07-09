@@ -9,6 +9,7 @@ interface CMSContextType {
   content: CMSContent;
   loading: boolean;
   get: (key: string, defaultValue?: string) => string;
+  getJSON: <T>(key: string, defaultValue?: T) => T;
 }
 
 const CMSContext = createContext<CMSContextType | undefined>(undefined);
@@ -37,8 +38,19 @@ export const CMSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return content[key] || defaultValue;
   };
 
+  const getJSON = <T,>(key: string, defaultValue?: T): T => {
+    try {
+      if (content[key]) {
+        return JSON.parse(content[key]) as T;
+      }
+    } catch (e) {
+      console.error(`Failed to parse JSON for CMS key: ${key}`);
+    }
+    return defaultValue as T;
+  };
+
   return (
-    <CMSContext.Provider value={{ content, loading, get }}>
+    <CMSContext.Provider value={{ content, loading, get, getJSON }}>
       {children}
     </CMSContext.Provider>
   );

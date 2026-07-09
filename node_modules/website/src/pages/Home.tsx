@@ -9,31 +9,17 @@ import 'swiper/css/pagination';
 import 'swiper/css/effect-fade';
 
 export function Home() {
-  const { get } = useCMS();
+  const { get, getJSON } = useCMS();
 
-  const slides = [
+  const slides = getJSON('home_slides', [
     {
       id: 1,
       image: "/slider1.jpg",
       eyebrow: "Me Daakye Anidaso",
       title: get("home_hero_title", "Your Future Starts Here"),
       subtitle: get("home_hero_subtitle", "Ghana's trusted financial co-operative — built by members, for members. Join over 11,000 people growing together."),
-    },
-    {
-      id: 2,
-      image: "/slider2.jpg",
-      eyebrow: "Save. Borrow. Grow.",
-      title: "Savings That Work As Hard As You Do",
-      subtitle: "High-yield savings accounts and low-interest loans designed around your real life goals — not a bank's bottom line.",
-    },
-    {
-      id: 3,
-      image: "/slider3.jpg",
-      eyebrow: "Business & Personal Loans",
-      title: "Capital When Opportunity Knocks",
-      subtitle: "Fast-approval loans from GHS 1,000 to GHS 500,000. Competitive rates, flexible terms, local decisions.",
     }
-  ];
+  ]);
 
   return (
     <main className="hero-page">
@@ -54,7 +40,7 @@ export function Home() {
               {/* Background */}
               <div style={{
                 position: 'absolute', inset: 0,
-                backgroundImage: `url(${slide.image})`,
+                backgroundImage: `url(${slide.image && slide.image.startsWith('http') ? slide.image : (slide.image?.startsWith('/') ? 'http://localhost:3000' + slide.image : slide.image)})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
               }} />
@@ -114,22 +100,22 @@ export function Home() {
         <div className="container">
           <div className="stats-strip">
             <div className="stat-strip-item">
-              <span className="stat-strip-number">11,880</span>
+              <span className="stat-strip-number">{get('stats_members', '11,880')}</span>
               <span className="stat-strip-label">Members</span>
             </div>
             <div className="stat-strip-divider" />
             <div className="stat-strip-item">
-              <span className="stat-strip-number">5</span>
+              <span className="stat-strip-number">{get('stats_branches', '5')}</span>
               <span className="stat-strip-label">Branches</span>
             </div>
             <div className="stat-strip-divider" />
             <div className="stat-strip-item">
-              <span className="stat-strip-number">GHS 72.2M+</span>
+              <span className="stat-strip-number">{get('stats_assets', 'GHS 72.2M+')}</span>
               <span className="stat-strip-label">Total Assets</span>
             </div>
             <div className="stat-strip-divider" />
             <div className="stat-strip-item">
-              <span className="stat-strip-number">10+</span>
+              <span className="stat-strip-number">{get('stats_years', '10+')}</span>
               <span className="stat-strip-label">Years of Service</span>
             </div>
           </div>
@@ -159,7 +145,7 @@ export function Home() {
                 <p className="eyebrow-label">About ROAACCU</p>
                 <h2>Built on trust.<br />Driven by community.</h2>
                 <p style={{ color: 'var(--text-muted)', lineHeight: 1.8, margin: '1.5rem 0 2rem', fontSize: '1.05rem' }}>
-                  ROAACCU — Road Officers' and Allies' Co-operative Credit Union — is a member-owned financial institution serving Ghanaians with integrity since 2014. We exist to improve our members' financial wellbeing, not to generate profit for shareholders.
+                  {get('about_text', "ROAACCU — Road Officers' and Allies' Co-operative Credit Union — is a member-owned financial institution serving Ghanaians with integrity since 2014. We exist to improve our members' financial wellbeing, not to generate profit for shareholders.")}
                 </p>
                 <div className="about-features">
                   <div className="about-feature">

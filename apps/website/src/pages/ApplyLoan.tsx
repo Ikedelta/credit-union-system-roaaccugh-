@@ -34,7 +34,7 @@ export function ApplyLoan() {
     try {
       const form = e.currentTarget;
       const formData = new FormData(form);
-      const response = await fetch('http://localhost:5000/api/loan', {
+      const response = await fetch('/api/loan', {
         method: 'POST',
         body: formData,
       });
