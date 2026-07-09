@@ -5,26 +5,20 @@ import jwt from "jsonwebtoken";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import { createClient } from '@supabase/supabase-js';
 import { authenticateAdmin, authenticateSuperAdmin, AuthRequest } from "../middleware/auth";
 
 const router = Router();
 const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET || "your-super-secret-jwt-key-change-in-production";
 
-// Configure local upload storage
-const uploadDir = path.join(__dirname, "../../../uploads");
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, 'cms-' + uniqueSuffix + path.extname(file.originalname));
-  }
-});
+// Initialize Supabase Client for Storage
+const supabaseUrl = process.env.SUPABASE_URL || '';
+const supabaseKey = process.env.SUPABASE_KEY || '';
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+// Use memory storage for uploads before pushing to Supabase
+const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 // --- HELPER: AUDIT LOGGING ---
@@ -99,11 +93,39 @@ router.post("/upload", upload.single("image"), async (req, res) => {
     if (!req.file) {
       return res.status(400).json({ error: "No file uploaded" });
     }
+
+    if (!supabaseUrl || !supabaseKey) {
+      return res.status(500).json({ error: "Supabase storage is not configured in .env" });
+    }
+
     const adminReq = req as AuthRequest;
-    await createAuditLog(adminReq.adminId, "UPLOAD_FILE", `Uploaded: ${req.file.filename}`);
+    
+    // Generate unique filename
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const filename = 'cms-' + uniqueSuffix + path.extname(req.file.originalname);
+
+    // Upload to Supabase Storage bucket named 'cms-media'
+    const { data, error } = await supabase.storage
+      .from('cms-media')
+      .upload(filename, req.file.buffer, {
+        contentType: req.file.mimetype,
+        upsert: false
+      });
+
+    if (error) {
+      console.error("Supabase Storage Error:", error);
+      return res.status(500).json({ error: "Failed to upload to Supabase" });
+    }
+
+    // Get public URL
+    const { data: publicUrlData } = supabase.storage
+      .from('cms-media')
+      .getPublicUrl(filename);
+
+    await createAuditLog(adminReq.adminId, "UPLOAD_FILE", `Uploaded to Supabase: ${filename}`);
     
     // Return the public URL path
-    res.json({ success: true, url: `/uploads/${req.file.filename}` });
+    res.json({ success: true, url: publicUrlData.publicUrl });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "File upload failed" });
