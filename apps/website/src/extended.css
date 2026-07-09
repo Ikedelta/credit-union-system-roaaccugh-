@@ -176,9 +176,23 @@ textarea.form-control {
   .team-card-image {
     aspect-ratio: 4/5;
   }
-  /* Map iframe: reduce height on mobile */
   iframe[title="Google Maps Location of ROAACCU"] {
     height: 250px !important;
+  }
+  
+  /* Make all grids 1 column on mobile/tablet */
+  .grid.lg\:grid-cols-4,
+  .grid.md\:grid-cols-2,
+  .grid.md\:grid-cols-3,
+  .grid.lg\:grid-cols-3,
+  .grid.lg\:grid-cols-2 {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+  }
+  
+  /* Team grid: 1-2 col on tablet */
+  .team-modern-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)) !important;
   }
 }
 
@@ -193,21 +207,16 @@ textarea.form-control {
     grid-template-columns: 1fr;
     gap: 2rem;
   }
-  /* Team grid: 2 col on small phones */
+  /* Team grid: 1 col on small phones */
   .team-modern-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 1rem !important;
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
   }
   .team-card-info h3 {
-    font-size: 0.8rem;
+    font-size: 1rem;
   }
   .team-card-info p {
-    font-size: 0.65rem;
-  }
-  /* Products: 2-col grid on mobile */
-  .grid.lg\:grid-cols-4 {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
+    font-size: 0.85rem;
   }
   /* About panels: reduce padding on tiny screens */
   .about-panels > div {
