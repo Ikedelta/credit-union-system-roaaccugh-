@@ -112,8 +112,8 @@ const CMS: React.FC = () => {
     return (
       <div className="widget glass-panel" style={{ marginBottom: '1.5rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
-          <h3>{title}</h3>
-          <div style={{ display: 'flex', gap: '1rem' }}>
+          <h3 style={{ margin: 0 }}>{title}</h3>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
             <button className="btn btn-secondary" onClick={addListItem}>
               <Plus size={16} /> Add Item
             </button>
@@ -129,10 +129,10 @@ const CMS: React.FC = () => {
         )}
 
         {list.map((listItem, index) => (
-          <div key={listItem.id || index} style={{ border: '1px solid var(--border-color)', padding: '1.5rem', borderRadius: '12px', marginBottom: '1.5rem', background: 'var(--bg-white)', boxShadow: 'var(--shadow-sm)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', paddingBottom: '1rem', borderBottom: '1px solid var(--border-color)' }}>
+          <div key={listItem.id || index} style={{ border: '1px solid var(--border-color)', padding: '1.25rem', borderRadius: '12px', marginBottom: '1.5rem', background: 'var(--bg-white)', boxShadow: 'var(--shadow-sm)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', paddingBottom: '0.75rem', borderBottom: '1px solid var(--border-color)' }}>
               <strong style={{ color: 'var(--primary-color)' }}>Item #{index + 1}</strong>
-              <button className="btn btn-ghost" style={{ color: 'red', padding: '0.5rem' }} onClick={() => removeListItem(index)} title="Remove Item">
+              <button className="btn btn-ghost" style={{ color: 'red', padding: '0.4rem', height: 'auto', minHeight: 'unset' }} onClick={() => removeListItem(index)} title="Remove Item">
                 <Trash2 size={16} />
               </button>
             </div>
@@ -143,12 +143,14 @@ const CMS: React.FC = () => {
                   {f.type === 'textarea' ? (
                     <textarea rows={3} className="form-control" value={listItem[f.name] || ''} onChange={(e) => updateListItem(index, f.name, e.target.value)} />
                   ) : f.type === 'image' ? (
-                    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', background: '#f8fafc', padding: '0.5rem', borderRadius: '8px' }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center', background: '#f8fafc', padding: '0.75rem', borderRadius: '8px' }}>
                       {listItem[f.name] && <img src={listItem[f.name].startsWith('http') ? listItem[f.name] : `http://localhost:3000${listItem[f.name]}`} alt="Preview" style={{ width: '80px', height: '60px', objectFit: 'cover', borderRadius: '4px', border: '1px solid var(--border-color)' }} />}
-                      <input type="text" className="form-control" value={listItem[f.name] || ''} onChange={(e) => updateListItem(index, f.name, e.target.value)} placeholder="Image URL or click Upload..." style={{ flex: 1 }} />
-                      <button className="btn btn-secondary" onClick={() => { setUploadingImageFor({key, index, field: f.name}); fileInputRef.current?.click(); }}>
-                        <UploadCloud size={16} /> Upload
-                      </button>
+                      <div style={{ display: 'flex', flex: '1 1 250px', gap: '0.5rem' }}>
+                        <input type="text" className="form-control" value={listItem[f.name] || ''} onChange={(e) => updateListItem(index, f.name, e.target.value)} placeholder="Image URL or click Upload..." style={{ flex: 1, minWidth: 0 }} />
+                        <button className="btn btn-secondary" onClick={() => { setUploadingImageFor({key, index, field: f.name}); fileInputRef.current?.click(); }} style={{ whiteSpace: 'nowrap' }}>
+                          <UploadCloud size={16} /> Upload
+                        </button>
+                      </div>
                     </div>
                   ) : (
                     <input type="text" className="form-control" value={listItem[f.name] || ''} onChange={(e) => updateListItem(index, f.name, e.target.value)} />
