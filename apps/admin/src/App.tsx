@@ -15,6 +15,10 @@ import AuditLogs from './pages/AuditLogs';
 import Media from './pages/Media';
 import { Loader2 } from 'lucide-react';
 import LoadingScreen from './components/LoadingScreen';
+import axios from 'axios';
+
+// Prevent indefinite loading by setting a global timeout for the admin panel
+axios.defaults.timeout = 10000; // 10 seconds timeout
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { admin, loading } = useAuth();
