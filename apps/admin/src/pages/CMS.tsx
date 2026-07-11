@@ -195,7 +195,7 @@ const CMS: React.FC = () => {
   };
 
   const renderGeneralFields = () => {
-    const fieldsToRender = ['established_year', 'about_logo', 'contact_email', 'contact_phone', 'contact_address', 'footer_text', 'stats_members', 'stats_branches', 'stats_assets', 'stats_years'];
+    const fieldsToRender = ['established_year', 'established_subtitle', 'about_logo', 'contact_email', 'contact_phone', 'contact_address', 'footer_text', 'stats_members', 'stats_branches', 'stats_assets', 'stats_years'];
     return (
       <>
         {fieldsToRender.map(key => {

@@ -170,7 +170,7 @@ export function Home() {
                 />
                 <div className="home-split-badge">
                   <strong>{get('established_year', 'Est. 2014')}</strong>
-                  <span>Registered Co-operative</span>
+                  <span>{get('established_subtitle', 'Registered Co-operative')}</span>
                 </div>
               </div>
             </RevealOnScroll>
