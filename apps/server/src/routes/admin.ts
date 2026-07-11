@@ -253,6 +253,28 @@ router.patch("/loans/:id/status", async (req, res) => {
     const { status } = req.body;
     const application = await prisma.loanApplication.update({ where: { id: parseInt(req.params.id) }, data: { status } });
     await createAuditLog(adminReq.adminId, `${status}_LOAN`, `Loan ID: ${application.id}`);
+
+    // Send SMS Notification
+    if (application.telNo && process.env.ARKESEL_API_KEY) {
+      const formatted = normalizeGhanaNumber(application.telNo);
+      try {
+        await fetch("https://sms.arkesel.com/api/v2/sms/send", {
+          method: "POST",
+          headers: {
+            "api-key": process.env.ARKESEL_API_KEY,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            sender: process.env.SMS_SENDER_ID || "ROAACCU",
+            message: `Hello ${application.fullName}, your ROAACCU loan application status has been updated to: ${status}.`,
+            recipients: [formatted],
+          }),
+        });
+      } catch (smsErr) {
+        console.error("Failed to send loan status update SMS:", smsErr);
+      }
+    }
+
     res.json(application);
   } catch (err) {
     res.status(500).json({ error: "Failed to update status" });
