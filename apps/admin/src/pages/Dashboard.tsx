@@ -11,6 +11,7 @@ const Dashboard: React.FC = () => {
     loans: 0,
     welfare: 0,
     messages: 0,
+    smsBalance: "...",
   });
 
   const [recentActivity, setRecentActivity] = useState<any[]>([]);
@@ -18,18 +19,28 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const [memberships, loans, welfare, messages] = await Promise.all([
+        const [memberships, loans, welfare, messages, smsTest] = await Promise.all([
           axios.get('/api/admin/memberships'),
           axios.get('/api/admin/loans'),
           axios.get('/api/admin/welfare'),
           axios.get('/api/admin/messages'),
+          axios.get('/api/admin/sms/test').catch(() => ({ data: { kairos_response: 'Error' } })),
         ]);
+
+        let balance = 'N/A';
+        try {
+          if (smsTest.data?.kairos_response) {
+             const kr = smsTest.data.kairos_response;
+             balance = kr.balance !== undefined ? kr.balance : (kr.data?.balance || kr.data || 'Live');
+          }
+        } catch(e) {}
 
         setStats({
           memberships: memberships.data.length,
           loans: loans.data.length,
           welfare: welfare.data.length,
           messages: messages.data.length,
+          smsBalance: String(balance),
         });
 
         // Combine and sort recent activity
@@ -81,7 +92,8 @@ const Dashboard: React.FC = () => {
     { title: 'Total Memberships', value: stats.memberships, icon: Users, color: '#3b82f6', bg: 'rgba(59, 130, 246, 0.1)' },
     { title: 'Loan Applications', value: stats.loans, icon: CreditCard, color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' },
     { title: 'Welfare Requests', value: stats.welfare, icon: HeartHandshake, color: '#8b5cf6', bg: 'rgba(139, 92, 246, 0.1)' },
-    { title: 'Contact Messages', value: stats.messages, icon: MessageSquare, color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.1)' },
+    { title: 'Contact Messages', value: stats.messages, icon: MessageSquare, color: '#ec4899', bg: 'rgba(236, 72, 153, 0.1)' },
+    { title: 'SMS Points / Balance', value: stats.smsBalance, icon: Zap, color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.1)' },
   ];
 
   return (
