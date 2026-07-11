@@ -62,6 +62,11 @@ export function Home() {
                 position: 'absolute', inset: 0,
                 background: 'linear-gradient(105deg, rgba(28, 16, 94, 0.95) 0%, rgba(28, 16, 94, 0.6) 55%, rgba(28, 16, 94, 0.2) 100%)',
               }} />
+              {/* Overlay — bottom up for buttons */}
+              <div style={{
+                position: 'absolute', inset: 0,
+                background: 'linear-gradient(to top, rgba(28, 16, 94, 0.85) 0%, rgba(28, 16, 94, 0) 50%)',
+              }} />
 
               {/* Content */}
               <div className="container hero-slide-container" style={{ alignItems: 'stretch' }}>
