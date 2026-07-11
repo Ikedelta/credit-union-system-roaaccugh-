@@ -125,9 +125,9 @@ export function JoinNow() {
                   {status === 'error' && <div style={{ padding: '1rem', background: '#fee2e2', color: '#991b1b', borderRadius: '8px', marginBottom: '1.5rem' }}>Failed to submit application. Please try again.</div>}
                   
                   {/* STEP 1: Personal Info */}
-                  <div style={{ display: step === 1 ? 'block' : 'none' }} className="wizard-step-content">
+                  <div style={{ display: step === 1 ? 'block' : 'none' }} className="wizard-step-content premium-card">
                     <h3 style={{ color: 'var(--primary-color)', marginBottom: '1.5rem', fontSize: '1.4rem' }}>Personal Information</h3>
-                    <div className="grid md:grid-cols-2 gap-5">
+                    <div className="form-grid form-grid-2">
                       <div className="form-group">
                         <label className="form-label">First Name</label>
                         <input type="text" name="firstName" className="form-control" required={step === 1} />
@@ -167,16 +167,16 @@ export function JoinNow() {
                         <input type="email" name="email" className="form-control" required={step === 1} />
                       </div>
                     </div>
-                    <div className="form-group" style={{ marginTop: '0.5rem' }}>
+                    <div className="form-group form-group-full">
                       <label className="form-label">Postal Address</label>
                       <textarea name="postalAddress" className="form-control" style={{ minHeight: '100px' }} required={step === 1}></textarea>
                     </div>
                   </div>
 
                   {/* STEP 2: Beneficiaries */}
-                  <div style={{ display: step === 2 ? 'block' : 'none' }} className="wizard-step-content">
+                  <div style={{ display: step === 2 ? 'block' : 'none' }} className="wizard-step-content premium-card">
                     <h3 style={{ color: 'var(--primary-color)', marginBottom: '1.5rem', fontSize: '1.4rem' }}>Beneficiaries</h3>
-                    <div className="grid md:grid-cols-3 gap-5" style={{ marginBottom: '1rem' }}>
+                    <div className="form-grid form-grid-2" style={{ marginBottom: '1rem' }}>
                       <div className="form-group">
                         <label className="form-label">Beneficiary 1 Name</label>
                         <input type="text" name="beneficiary1Name" className="form-control" required={step === 2} />
@@ -193,7 +193,7 @@ export function JoinNow() {
                   </div>
 
                   {/* STEP 3: Identification */}
-                  <div style={{ display: step === 3 ? 'block' : 'none' }} className="wizard-step-content">
+                  <div style={{ display: step === 3 ? 'block' : 'none' }} className="wizard-step-content premium-card">
                     <h3 style={{ color: 'var(--primary-color)', marginBottom: '1.5rem', fontSize: '1.4rem' }}>Identification</h3>
                     <div className="form-group">
                       <label className="form-label">Ghana Card Number</label>

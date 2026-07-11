@@ -140,9 +140,9 @@ export function ApplyLoan() {
                   )}
 
                   {/* Section 1 */}
-                  <div style={{ display: step === 1 ? 'block' : 'none' }} className="wizard-step-content">
+                  <div style={{ display: step === 1 ? 'block' : 'none' }} className="wizard-step-content premium-card">
                     <h3 style={{ color: 'var(--primary-color)', marginBottom: '1.5rem', fontSize: '1.4rem' }}>Personal Information</h3>
-                    <div className="grid md:grid-cols-2 gap-4">
+                    <div className="form-grid form-grid-2">
                     <div className="form-group">
                       <label className="form-label">Account Number</label>
                       <input type="number" name="accountNumber" className="form-control" required={step === 1} />
@@ -167,7 +167,7 @@ export function ApplyLoan() {
                       <label className="form-label">Town / Location</label>
                       <input type="text" name="townLocation" className="form-control" required={step === 1} />
                     </div>
-                    <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+                    <div className="form-group form-group-full">
                       <label className="form-label">GPS Address</label>
                       <input type="text" name="gpsAddress" className="form-control" required={step === 1} />
                     </div>
@@ -185,9 +185,9 @@ export function ApplyLoan() {
                   </div>
 
                   {/* Section 2 */}
-                  <div style={{ display: step === 2 ? 'block' : 'none' }} className="wizard-step-content">
+                  <div style={{ display: step === 2 ? 'block' : 'none' }} className="wizard-step-content premium-card">
                     <h3 style={{ color: 'var(--primary-color)', marginBottom: '1.5rem', fontSize: '1.4rem' }}>Loan Details</h3>
-                    <div className="grid md:grid-cols-2 gap-4">
+                    <div className="form-grid form-grid-2">
                     <div className="form-group">
                       <label className="form-label">Loan Amount (GHS)</label>
                       <input type="number" name="amount" className="form-control" required={step === 2} />
@@ -221,13 +221,14 @@ export function ApplyLoan() {
                   </div>
 
                   {/* Section 3 */}
-                  <div style={{ display: step === 3 ? 'block' : 'none' }} className="wizard-step-content">
+                  <div style={{ display: step === 3 ? 'block' : 'none' }} className="wizard-step-content premium-card">
                     <h3 style={{ color: 'var(--primary-color)', marginBottom: '1.5rem', fontSize: '1.4rem' }}>Identification</h3>
+                    <div className="form-grid form-grid-2">
                     <div className="form-group">
                       <label className="form-label">Ghana Card Number</label>
                       <input type="text" name="ghanaCardNumber" className="form-control" required={step === 3} />
                     </div>
-
+                    </div>
 
                     <div className="wizard-actions">
                       <button type="button" className="btn btn-outline" onClick={prevStep} disabled={status === 'loading'}>

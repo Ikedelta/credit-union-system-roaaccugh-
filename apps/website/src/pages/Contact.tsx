@@ -76,7 +76,7 @@ export function Contact() {
             <form onSubmit={handleSubmit}>
               {status === 'success' && <div style={{ padding: '0.875rem 1rem', background: '#dcfce7', color: '#166534', borderRadius: '8px', marginBottom: '1rem', fontSize: '0.9rem' }}>✓ Message sent successfully!</div>}
               {status === 'error' && <div style={{ padding: '0.875rem 1rem', background: '#fee2e2', color: '#991b1b', borderRadius: '8px', marginBottom: '1rem', fontSize: '0.9rem' }}>Failed to send. Please try again.</div>}
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="form-grid form-grid-2">
                 <div className="form-group">
                   <label className="form-label">Your Name</label>
                   <input type="text" name="name" className="form-control" placeholder="John Doe" required />
