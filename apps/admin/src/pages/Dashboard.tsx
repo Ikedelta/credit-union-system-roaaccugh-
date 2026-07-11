@@ -13,6 +13,8 @@ const Dashboard: React.FC = () => {
     messages: 0,
   });
 
+  const [recentActivity, setRecentActivity] = useState<any[]>([]);
+
   useEffect(() => {
     const fetchStats = async () => {
       try {
@@ -29,6 +31,44 @@ const Dashboard: React.FC = () => {
           welfare: welfare.data.length,
           messages: messages.data.length,
         });
+
+        // Combine and sort recent activity
+        let activityList: any[] = [];
+        
+        loans.data.slice(0, 5).forEach((item: any) => {
+          activityList.push({
+            icon: CreditCard,
+            title: `Loan Request: GH₵ ${item.amount}`,
+            time: item.createdAt,
+            color: '#10b981',
+            bg: 'rgba(16, 185, 129, 0.1)'
+          });
+        });
+
+        memberships.data.slice(0, 5).forEach((item: any) => {
+          activityList.push({
+            icon: Users,
+            title: `New Membership: ${item.firstName} ${item.lastName}`,
+            time: item.createdAt,
+            color: '#3b82f6',
+            bg: 'rgba(59, 130, 246, 0.1)'
+          });
+        });
+
+        messages.data.slice(0, 5).forEach((item: any) => {
+          activityList.push({
+            icon: MessageSquare,
+            title: `New Message: ${item.subject || 'Contact Form'}`,
+            time: item.createdAt,
+            color: '#f59e0b',
+            bg: 'rgba(245, 158, 11, 0.1)'
+          });
+        });
+
+        // Sort by newest first
+        activityList.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());
+        setRecentActivity(activityList.slice(0, 5));
+
       } catch (err) {
         console.error("Failed to fetch dashboard stats", err);
       }
@@ -42,12 +82,6 @@ const Dashboard: React.FC = () => {
     { title: 'Loan Applications', value: stats.loans, icon: CreditCard, color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' },
     { title: 'Welfare Requests', value: stats.welfare, icon: HeartHandshake, color: '#8b5cf6', bg: 'rgba(139, 92, 246, 0.1)' },
     { title: 'Contact Messages', value: stats.messages, icon: MessageSquare, color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.1)' },
-  ];
-
-  const recentActivity = [
-    { icon: Users, title: 'New Membership Application', time: '2 hours ago', color: '#3b82f6', bg: 'rgba(59, 130, 246, 0.1)' },
-    { icon: CreditCard, title: 'Loan Request: GHS 5,000', time: '5 hours ago', color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' },
-    { icon: MessageSquare, title: 'New message from Contact Form', time: '1 day ago', color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.1)' },
   ];
 
   return (
@@ -90,7 +124,7 @@ const Dashboard: React.FC = () => {
                 </div>
                 <div className="activity-details">
                   <p>{activity.title}</p>
-                  <span className="activity-time">{activity.time}</span>
+                  <span className="activity-time">{new Date(activity.time).toLocaleString()}</span>
                 </div>
               </div>
             ))}
