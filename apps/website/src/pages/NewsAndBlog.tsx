@@ -52,7 +52,7 @@ export function NewsAndBlog() {
                   <div style={{ fontSize: '0.85rem', color: 'var(--primary-color)', fontWeight: 600, marginBottom: '0.5rem' }}>
                     {news.date}
                   </div>
-                  <h3 style={{ fontSize: '1.25rem', marginBottom: '1rem', lineHeight: 1.4, color: 'var(--text-color)' }}>
+                  <h3 style={{ fontSize: '1.25rem', marginBottom: '1rem', lineHeight: 1.4, color: 'var(--secondary-color)' }}>
                     {news.title}
                   </h3>
                   <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: 1.6, flex: 1, marginBottom: '1.5rem' }}>
