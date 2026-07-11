@@ -63,18 +63,16 @@ export function Home() {
 
               {/* Content */}
               <div className="container hero-slide-container" style={{ alignItems: 'stretch' }}>
-                <div className="hero-slide-content">
-                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                    <p className="hero-slide-eyebrow">
-                      {slide.eyebrow}
-                    </p>
-                    <h1 className="hero-slide-title">
-                      {slide.title}
-                    </h1>
-                    <p className="hero-slide-subtitle" style={{ marginBottom: '2rem' }}>
-                      {slide.subtitle}
-                    </p>
-                  </div>
+                <div className="hero-slide-content" style={{ justifyContent: 'center' }}>
+                  <p className="hero-slide-eyebrow">
+                    {slide.eyebrow}
+                  </p>
+                  <h1 className="hero-slide-title">
+                    {slide.title}
+                  </h1>
+                  <p className="hero-slide-subtitle">
+                    {slide.subtitle}
+                  </p>
                   {/* Hero CTA Buttons - Inside the flow to prevent mobile overlap */}
                   <div className="hero-cta">
                     <Link to="/join-now" className="btn btn-secondary animate-pulse-secondary">

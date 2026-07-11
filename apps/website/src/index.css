@@ -610,6 +610,17 @@ a {
   background: var(--primary-color) !important;
 }
 
+/* Fix Hero Slider Pagination Position (Lift above Alert Ticker) */
+.hero-swiper .swiper-pagination {
+  bottom: 60px !important;
+}
+
+@media (max-width: 640px) {
+  .hero-swiper .swiper-pagination {
+    bottom: 80px !important;
+  }
+}
+
 @media (max-width: 1024px) {
   .mobile-menu-btn {
     display: block;
