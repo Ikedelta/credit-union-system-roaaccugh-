@@ -1577,12 +1577,12 @@ main.hero-page {
   z-index: 2;
   display: flex;
   align-items: center;
-  padding-top: 80px; /* Offset to prevent overlap with mobile navbar */
+  padding-top: 100px; /* Mobile navbar clearance */
 }
 
 @media (min-width: 640px) {
   .hero-slide-container {
-    padding-top: 100px; /* Offset for desktop navbar */
+    padding-top: 180px; /* Desktop navbar clearance */
   }
 }
 
@@ -1591,12 +1591,12 @@ main.hero-page {
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding-bottom: 120px;
+  padding-bottom: 80px;
 }
 
 @media (max-width: 640px) {
   .hero-slide-content {
-    padding-bottom: 75px;
+    padding-bottom: 60px;
   }
 }
 
