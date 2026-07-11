@@ -1607,6 +1607,9 @@ main.hero-page {
   letter-spacing: 3px;
   text-transform: uppercase;
   margin-bottom: 1.25rem;
+  opacity: 0;
+}
+.swiper-slide-active .hero-slide-eyebrow {
   animation: fadeInUp 0.8s ease forwards;
 }
 
@@ -1624,6 +1627,9 @@ main.hero-page {
   line-height: 1.08;
   letter-spacing: -0.02em;
   margin-bottom: 1.5rem;
+  opacity: 0;
+}
+.swiper-slide-active .hero-slide-title {
   animation: fadeInUp 0.9s ease forwards;
   animation-delay: 0.1s;
 }
@@ -1639,10 +1645,12 @@ main.hero-page {
   font-size: clamp(0.95rem, 2vw, 1.15rem);
   line-height: 1.6;
   margin-bottom: 2.5rem;
+  max-width: 520px;
+  opacity: 0;
+}
+.swiper-slide-active .hero-slide-subtitle {
   animation: fadeInUp 1s ease forwards;
   animation-delay: 0.2s;
-  opacity: 0;
-  max-width: 520px;
 }
 
 @media (max-width: 640px) {

@@ -40,6 +40,8 @@ export function Home() {
         <Swiper
           modules={[Autoplay, Pagination, EffectFade]}
           effect="fade"
+          fadeEffect={{ crossFade: true }}
+          watchSlidesProgress={true}
           speed={1200}
           autoplay={{ delay: 6000, disableOnInteraction: false }}
           pagination={{ clickable: true }}
@@ -91,12 +93,12 @@ export function Home() {
       {getJSON('alert_ticker', [
         { text: "Notice: Upcoming Annual General Meeting on August 15, 2026. All members are invited!" }
       ]).length > 0 && (
-        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'rgba(28, 16, 94, 0.75)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', color: '#fff', display: 'flex', alignItems: 'stretch', borderTop: '1px solid rgba(255,255,255,0.1)', zIndex: 20 }}>
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'rgba(28, 16, 94, 0.98)', color: '#fff', display: 'flex', alignItems: 'stretch', borderTop: '1px solid rgba(255,255,255,0.1)', zIndex: 20 }}>
           <div style={{ background: 'var(--secondary-color)', padding: '0.85rem 1.5rem', fontWeight: 700, textTransform: 'uppercase', fontSize: '0.85rem', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '0.5rem', boxShadow: '2px 0 10px rgba(0,0,0,0.2)', zIndex: 2 }}>
             <span style={{ animation: 'pulse 2s infinite' }}>🔔</span> Alerts
           </div>
           <div style={{ flex: 1, overflow: 'hidden', padding: '0 1rem', display: 'flex', alignItems: 'center', whiteSpace: 'nowrap' }}>
-            <div style={{ animation: 'marquee 25s linear infinite', display: 'inline-block', paddingLeft: '100%' }}>
+            <div style={{ animation: 'marquee 25s linear infinite', display: 'inline-block', paddingLeft: '100%', willChange: 'transform' }}>
               {getJSON('alert_ticker', [
                 { text: "Notice: Upcoming Annual General Meeting on August 15, 2026. All members are invited!" }
               ]).map((alert: any, i: number) => (
