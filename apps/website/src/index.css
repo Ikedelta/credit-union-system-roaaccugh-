@@ -1654,8 +1654,22 @@ main.hero-page {
 .hero-cta {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 1.5rem;
   align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 640px) {
+  .hero-cta {
+    flex-direction: column;
+    width: 100%;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  .hero-cta .btn {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 /* ── Global Form System ── */

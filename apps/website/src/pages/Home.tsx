@@ -73,9 +73,9 @@ export function Home() {
                   <p className="hero-slide-subtitle">
                     {slide.subtitle}
                   </p>
-                  {/* Hero CTA Buttons - Inside the flow to prevent mobile overlap */}
+                  {/* Hero CTA Buttons - Static and nicely laid out */}
                   <div className="hero-cta">
-                    <Link to="/join-now" className="btn btn-secondary animate-pulse-secondary">
+                    <Link to="/join-now" className="btn btn-secondary">
                       Become a Member <ArrowRight size={16} />
                     </Link>
                     <Link to="/about" className="btn btn-ghost">
