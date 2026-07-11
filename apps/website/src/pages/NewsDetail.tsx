@@ -13,7 +13,7 @@ export function NewsDetail() {
 
   // Find the news item either by ID or fallback to array index
   const newsItem: any = newsItems.find((item: any, index: number) => 
-    item.id === id || index.toString() === id
+    item.id?.toString() === id || index.toString() === id
   );
 
   if (!newsItem) {
