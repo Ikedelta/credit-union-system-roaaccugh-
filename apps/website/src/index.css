@@ -613,8 +613,13 @@ a {
   font-size: 20px !important;
   font-weight: bold;
 }
+.swiper-pagination-bullet {
+  background: rgba(255, 255, 255, 0.5) !important;
+  opacity: 1 !important;
+}
 .swiper-pagination-bullet-active {
-  background: var(--primary-color) !important;
+  background: #ffffff !important;
+  transform: scale(1.2);
 }
 
 /* Fix Hero Slider Pagination Position (Lift above Alert Ticker) */
