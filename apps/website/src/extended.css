@@ -193,10 +193,10 @@
     gap: 2rem;
   }
 
-  /* Team grid: 1 col on small phones */
+  /* Team grid: 2 cols on small phones to avoid huge images */
   .team-modern-grid {
-    grid-template-columns: 1fr !important;
-    gap: 1.5rem !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1rem !important;
   }
 
   .team-card-info h3 {
