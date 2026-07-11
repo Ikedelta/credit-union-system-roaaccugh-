@@ -291,12 +291,12 @@ const CMS: React.FC = () => {
   };
 
   const renderBranchesTab = () => {
-    return renderListEditor('branches_list', 'Branches', { name: '', location: '', contact: '', manager: '', image: '' }, [
+    return renderListEditor('branches_list', 'Branches', { name: '', location: '', contact: '', email: '', image: '' }, [
       { name: 'image', label: 'Branch Image', type: 'image' },
       { name: 'name', label: 'Branch Name', type: 'text' },
       { name: 'location', label: 'Physical Location', type: 'text' },
       { name: 'contact', label: 'Contact Phone', type: 'text' },
-      { name: 'manager', label: 'Manager Name (Optional)', type: 'text' }
+      { name: 'email', label: 'Email Address (Optional)', type: 'email' }
     ]);
   };
 

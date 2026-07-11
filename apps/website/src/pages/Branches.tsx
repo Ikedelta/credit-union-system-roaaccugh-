@@ -1,6 +1,6 @@
 import { PageHeader } from '../components/PageHeader';
 import { RevealOnScroll } from '../components/RevealOnScroll';
-import { MapPin, Phone, User } from 'lucide-react';
+import { MapPin, Phone, Mail } from 'lucide-react';
 import { useCMS } from '../context/CMSContext';
 
 export function Branches() {
@@ -11,39 +11,39 @@ export function Branches() {
       name: "HEAD OFFICE",
       location: "Agona Ahanta",
       contact: "0302 999 374",
-      manager: "John Doe",
+      email: "info@roaaccugh.com",
       image: ""
     },
     {
       name: "AGONA AHANTA BRANCH",
       location: "Near Police Barrier",
       contact: "0256 111 557 / 031………",
-      manager: "Jane Smith",
+      email: "agona@roaaccugh.com",
       image: ""
     },
     {
       name: "ASSIN FOSO",
       location: "Behind Mama Doris Drug Store",
       contact: "0256 111 552 / 0312 290 799",
-      manager: "Peter Jones"
+      email: "assin@roaaccugh.com"
     },
     {
       name: "MANSO AMENFI",
       location: "Opposite PUMA Filling Station",
       contact: "0256 111 559 / 0312 290 818",
-      manager: ""
+      email: ""
     },
     {
       name: "WASSA SIMPA BRANCH",
       location: "Near Total Filling Station",
       contact: "0256 111 551 / 0302 999 375",
-      manager: ""
+      email: ""
     },
     {
       name: "NZEMA AIYINASE BRANCH",
       location: "Opposite Blameless Supermaket",
       contact: "0256 111 554 / 0312 294 679",
-      manager: ""
+      email: ""
     }
   ]);
 
@@ -96,10 +96,10 @@ export function Branches() {
                     </div>
                   )}
 
-                  {branch.manager && (
+                  {branch.email && (
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                      <User size={20} color="var(--secondary-color)" style={{ flexShrink: 0 }} />
-                      <span style={{ color: 'var(--text-color)' }}>{branch.manager}</span>
+                      <Mail size={20} color="var(--secondary-color)" style={{ flexShrink: 0 }} />
+                      <span style={{ color: 'var(--text-color)' }}>{branch.email}</span>
                     </div>
                   )}
                 </div>
