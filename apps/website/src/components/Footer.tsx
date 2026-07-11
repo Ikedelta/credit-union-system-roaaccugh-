@@ -1,4 +1,5 @@
-import { Mail, Phone, MapPin, ArrowRight, Globe, Facebook, Twitter, Instagram, Linkedin, Youtube } from 'lucide-react';
+import { Mail, Phone, MapPin, ArrowRight, Globe } from 'lucide-react';
+import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaYoutube } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { useCMS } from '../context/CMSContext';
 
@@ -13,12 +14,12 @@ export function Footer({ setActiveModal: _setActiveModal }: FooterProps) {
 
   const getIcon = (platform: string) => {
     switch (platform.toLowerCase()) {
-      case 'facebook': return Facebook;
+      case 'facebook': return FaFacebook;
       case 'twitter': 
-      case 'x': return Twitter;
-      case 'instagram': return Instagram;
-      case 'linkedin': return Linkedin;
-      case 'youtube': return Youtube;
+      case 'x': return FaTwitter;
+      case 'instagram': return FaInstagram;
+      case 'linkedin': return FaLinkedin;
+      case 'youtube': return FaYoutube;
       default: return Globe;
     }
   };

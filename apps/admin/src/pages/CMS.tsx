@@ -1,19 +1,20 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import { Save, Loader2, Plus, Trash2, UploadCloud, Link as LinkIcon, Facebook, Twitter, Instagram, Linkedin, Youtube, Github, Globe } from 'lucide-react';
+import { Save, Loader2, Plus, Trash2, UploadCloud, Link as LinkIcon, Globe } from 'lucide-react';
+import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaYoutube, FaGithub } from 'react-icons/fa';
 import LoadingScreen from '../components/LoadingScreen';
 import { supabase } from '../utils/supabase';
 import { v4 as uuidv4 } from 'uuid';
 
 const getSocialIcon = (platform: string) => {
   switch (platform.toLowerCase()) {
-    case 'facebook': return Facebook;
+    case 'facebook': return FaFacebook;
     case 'twitter': 
-    case 'x': return Twitter;
-    case 'instagram': return Instagram;
-    case 'linkedin': return Linkedin;
-    case 'youtube': return Youtube;
-    case 'github': return Github;
+    case 'x': return FaTwitter;
+    case 'instagram': return FaInstagram;
+    case 'linkedin': return FaLinkedin;
+    case 'youtube': return FaYoutube;
+    case 'github': return FaGithub;
     default: return Globe;
   }
 };
