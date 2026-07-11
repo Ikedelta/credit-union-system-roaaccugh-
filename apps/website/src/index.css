@@ -105,12 +105,14 @@ a {
 }
 
 .section {
-  padding: 4rem 0;
+  padding-top: 4rem;
+  padding-bottom: 4rem;
 }
 
 @media (max-width: 768px) {
   .section {
-    padding: 2.5rem 0;
+    padding-top: 2.5rem;
+    padding-bottom: 2.5rem;
   }
 }
 
