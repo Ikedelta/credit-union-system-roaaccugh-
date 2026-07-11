@@ -18,6 +18,7 @@
     "packages/*"
   ],
   "scripts": {
+    "postinstall": "cd apps/server && npx prisma generate",
     "dev": "concurrently \"npm run dev -w apps/server\" \"npm run dev -w apps/website\" \"npm run dev -w apps/admin\"",
     "build": "npm run build --workspaces",
     "test": "npm run test --workspaces"
