@@ -104,6 +104,12 @@ a {
   }
 }
 
+@media (max-width: 768px) {
+  .container {
+    padding: 0 1.25rem;
+  }
+}
+
 .section {
   padding-top: 4rem;
   padding-bottom: 4rem;

@@ -42,7 +42,7 @@ export function NewsDetail() {
         bgImage={newsItem.image || "/slider1.jpg"}
       />
       
-      <main className="section container" style={{ maxWidth: '900px', margin: '0 auto', paddingTop: '3rem' }}>
+      <main className="section container" style={{ maxWidth: '900px', margin: '0 auto', paddingTop: 'clamp(1.5rem, 5vw, 3rem)' }}>
         
         {/* Back Button */}
         <button 
@@ -59,7 +59,7 @@ export function NewsDetail() {
             <Calendar size={18} />
             <span>{newsItem.date}</span>
           </div>
-          <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', lineHeight: 1.2, color: 'var(--secondary-color)', marginBottom: '1.5rem' }}>
+          <h1 style={{ fontSize: 'clamp(1.75rem, 5vw, 2.75rem)', lineHeight: 1.3, color: 'var(--secondary-color)', marginBottom: '1.5rem', wordBreak: 'break-word' }}>
             {newsItem.title}
           </h1>
         </header>
@@ -76,7 +76,7 @@ export function NewsDetail() {
         )}
 
         {/* Main Content */}
-        <div style={{ fontSize: '1.1rem', lineHeight: 1.8, color: 'var(--text-color)', marginBottom: '4rem' }}>
+        <div style={{ fontSize: 'clamp(1rem, 2.5vw, 1.125rem)', lineHeight: 1.8, color: 'var(--text-color)', marginBottom: '4rem', wordBreak: 'break-word' }}>
           {newsItem.content.split('\n').map((paragraph: string, idx: number) => (
             <p key={idx} style={{ marginBottom: '1.5rem' }}>
               {paragraph}
@@ -136,8 +136,8 @@ export function NewsDetail() {
                     e.currentTarget.style.transform = 'translateY(0)';
                   }}
                 >
-                  <ExternalLink size={20} />
-                  <span>{link.label || link.url}</span>
+                  <ExternalLink size={20} style={{ flexShrink: 0 }} />
+                  <span style={{ wordBreak: 'break-word' }}>{link.label || link.url}</span>
                 </a>
               ))}
             </div>
