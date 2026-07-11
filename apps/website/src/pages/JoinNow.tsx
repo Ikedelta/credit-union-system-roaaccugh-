@@ -159,6 +159,19 @@ export function JoinNow() {
                         <input type="text" name="occupation" className="form-control" required={step === 1} />
                       </div>
                       <div className="form-group">
+                        <label className="form-label">Gender</label>
+                        <select name="gender" className="form-control" required={step === 1}>
+                          <option value="">Select Gender</option>
+                          <option value="Male">Male</option>
+                          <option value="Female">Female</option>
+                          <option value="Other">Other</option>
+                        </select>
+                      </div>
+                      <div className="form-group">
+                        <label className="form-label">Nationality</label>
+                        <input type="text" name="nationality" className="form-control" defaultValue="Ghanaian" required={step === 1} />
+                      </div>
+                      <div className="form-group">
                         <label className="form-label">Town / Location</label>
                         <input type="text" name="residentialAddress" className="form-control" required={step === 1} />
                       </div>

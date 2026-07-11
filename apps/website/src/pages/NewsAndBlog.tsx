@@ -42,7 +42,7 @@ export function NewsAndBlog() {
                 {news.image && (
                   <div style={{ height: '200px', overflow: 'hidden' }}>
                     <img 
-                      src={news.image.startsWith('http') ? news.image : `http://localhost:3000${news.image}`} 
+                      src={news.image.startsWith('http') ? news.image : (news.image.startsWith('/uploads') ? `http://localhost:3000${news.image}` : news.image)} 
                       alt={news.title} 
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
                     />

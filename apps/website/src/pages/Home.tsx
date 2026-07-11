@@ -53,7 +53,7 @@ export function Home() {
               {/* Background */}
               <div style={{
                 position: 'absolute', inset: 0,
-                backgroundImage: `url(${slide.image && slide.image.startsWith('http') ? slide.image : (slide.image?.startsWith('/') ? 'http://localhost:3000' + slide.image : slide.image)})`,
+                backgroundImage: `url(${slide.image && slide.image.startsWith('http') ? slide.image : (slide.image?.startsWith('/uploads') ? 'http://localhost:3000' + slide.image : slide.image)})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
               }} />

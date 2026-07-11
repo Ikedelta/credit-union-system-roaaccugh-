@@ -45,7 +45,7 @@ export function BoardAndManagement() {
                 <RevealOnScroll key={`board-${i}`} delay={i * 0.08}>
                   <div className="team-card">
                     <div className="team-card-image">
-                      <img src={member.image?.startsWith('http') ? member.image : `http://localhost:3000${member.image}`} alt={member.name} />
+                      <img src={member.image?.startsWith('http') ? member.image : (member.image?.startsWith('/uploads') ? `http://localhost:3000${member.image}` : member.image)} alt={member.name} />
                     </div>
                     <div className="team-card-info">
                       <h3>{member.name}</h3>
@@ -66,7 +66,7 @@ export function BoardAndManagement() {
                   <RevealOnScroll key={`sup-${i}`} delay={i * 0.08}>
                     <div className="team-card">
                       <div className="team-card-image">
-                        <img src={member.image?.startsWith('http') ? member.image : `http://localhost:3000${member.image}`} alt={member.name} />
+                        <img src={member.image?.startsWith('http') ? member.image : (member.image?.startsWith('/uploads') ? `http://localhost:3000${member.image}` : member.image)} alt={member.name} />
                       </div>
                       <div className="team-card-info">
                         <h3>{member.name}</h3>
@@ -90,7 +90,7 @@ export function BoardAndManagement() {
                   <RevealOnScroll key={`mgt-${i}`} delay={i * 0.08}>
                     <div className="team-card">
                       <div className="team-card-image">
-                        <img src={member.image?.startsWith('http') ? member.image : `http://localhost:3000${member.image}`} alt={member.name} />
+                        <img src={member.image?.startsWith('http') ? member.image : (member.image?.startsWith('/uploads') ? `http://localhost:3000${member.image}` : member.image)} alt={member.name} />
                       </div>
                       <div className="team-card-info">
                         <h3>{member.name}</h3>

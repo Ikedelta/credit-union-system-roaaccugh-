@@ -175,7 +175,7 @@ const CMS: React.FC = () => {
                     <textarea rows={6} className="form-control" value={listItem[f.name] || ''} onChange={(e) => updateListItem(index, f.name, e.target.value)} />
                   ) : f.type === 'image' ? (
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center', background: '#f8fafc', padding: '0.75rem', borderRadius: '8px' }}>
-                      {listItem[f.name] && <img src={listItem[f.name].startsWith('http') ? listItem[f.name] : `http://localhost:3000${listItem[f.name]}`} alt="Preview" style={{ width: '80px', height: '60px', objectFit: 'cover', borderRadius: '4px', border: '1px solid var(--border-color)' }} />}
+                      {listItem[f.name] && <img src={listItem[f.name].startsWith('http') ? listItem[f.name] : (listItem[f.name].startsWith('/uploads') ? `http://localhost:3000${listItem[f.name]}` : listItem[f.name])} alt="Preview" style={{ width: '80px', height: '60px', objectFit: 'cover', borderRadius: '4px', border: '1px solid var(--border-color)' }} />}
                       <div style={{ display: 'flex', flex: '1 1 250px', gap: '0.5rem' }}>
                         <input type="text" className="form-control" value={listItem[f.name] || ''} onChange={(e) => updateListItem(index, f.name, e.target.value)} placeholder="Image URL or click Upload..." style={{ flex: 1, minWidth: 0 }} />
                         <button className="btn btn-secondary" onClick={() => { setUploadingImageFor({key, index, field: f.name}); fileInputRef.current?.click(); }} style={{ whiteSpace: 'nowrap' }}>
@@ -187,7 +187,7 @@ const CMS: React.FC = () => {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', background: '#f8fafc', padding: '1rem', borderRadius: '8px' }}>
                       {(listItem[f.name] || []).map((imgUrl: string, imgIndex: number) => (
                         <div key={imgIndex} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                          {imgUrl && <img src={imgUrl.startsWith('http') ? imgUrl : `http://localhost:3000${imgUrl}`} style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} />}
+                          {imgUrl && <img src={imgUrl.startsWith('http') ? imgUrl : (imgUrl.startsWith('/uploads') ? `http://localhost:3000${imgUrl}` : imgUrl)} style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} />}
                           <input type="text" placeholder="Image URL" className="form-control" value={imgUrl || ''} onChange={(e) => {
                             const newImages = [...(listItem[f.name] || [])];
                             newImages[imgIndex] = e.target.value;

@@ -71,7 +71,7 @@ export function Branches() {
               }} className="branch-card hover:-translate-y-1 hover:shadow-md">
                 <div style={{ height: '200px', width: '100%', overflow: 'hidden', background: '#f8fafc' }}>
                   {branch.image ? (
-                    <img src={branch.image.startsWith('http') ? branch.image : `http://localhost:3000${branch.image}`} alt={branch.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img src={branch.image.startsWith('http') ? branch.image : (branch.image.startsWith('/uploads') ? `http://localhost:3000${branch.image}` : branch.image)} alt={branch.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   ) : (
                     <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
                       <MapPin size={48} opacity={0.2} />

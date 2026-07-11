@@ -31,7 +31,7 @@ export function NewsDetail() {
   // Helper to format URLs
   const formatImageUrl = (url: string) => {
     if (!url) return '';
-    return url.startsWith('http') ? url : `http://localhost:3000${url}`;
+    return url.startsWith('http') ? url : (url.startsWith('/uploads') ? `http://localhost:3000${url}` : url);
   };
 
   return (

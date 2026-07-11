@@ -103,7 +103,7 @@ export function Products() {
                   
                   {/* Image Area */}
                   <div style={{ position: 'relative', width: '100%', height: '220px', background: config.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
-                    <img src={product.image?.startsWith('http') ? product.image : `http://localhost:3000${product.image}`} alt={product.title} className="animate-float" style={{ width: '100%', height: '100%', objectFit: 'contain', mixBlendMode: 'multiply', animationDuration: '4s' }} />
+                    <img src={product.image?.startsWith('http') ? product.image : (product.image?.startsWith('/uploads') ? `http://localhost:3000${product.image}` : product.image)} alt={product.title} className="animate-float" style={{ width: '100%', height: '100%', objectFit: 'contain', mixBlendMode: 'multiply', animationDuration: '4s' }} />
                     <div style={{ position: 'absolute', top: '1rem', right: '1rem' }}>
                       <span className={config.badgeClass}>{config.label}</span>
                     </div>
