@@ -23,7 +23,10 @@ const supabase = supabaseUrl
 
 // Use memory storage for uploads before pushing to Supabase
 const storage = multer.memoryStorage();
-const upload = multer({ storage });
+const upload = multer({ 
+  storage,
+  limits: { fileSize: 7 * 1024 * 1024 } // 7MB limit
+});
 
 // Initialize Nodemailer Transport
 const transporter = nodemailer.createTransport({

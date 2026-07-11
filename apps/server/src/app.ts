@@ -16,10 +16,10 @@ app.use(helmet());
 app.use(cors());
 
 // Parse JSON requests
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 
 // Parse form data
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Parse cookies
 app.use(cookieParser());

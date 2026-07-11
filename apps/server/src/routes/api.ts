@@ -23,7 +23,10 @@ const JWT_SECRET = process.env.JWT_SECRET || "your-super-secret-jwt-key-change-i
 
 // Multer config - memory storage for Vercel
 const storage = multer.memoryStorage();
-const upload = multer({ storage });
+const upload = multer({ 
+  storage,
+  limits: { fileSize: 7 * 1024 * 1024 } // 7MB limit
+});
 
 // Member Login
 router.post("/member/login", async (req, res) => {
