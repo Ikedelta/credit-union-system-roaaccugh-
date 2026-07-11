@@ -11,17 +11,20 @@
   "devDependencies": {
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
+    "@types/uuid": "^10.0.0",
     "@vitejs/plugin-react": "^6.0.3",
     "typescript": "~6.0.2",
     "vite": "^8.1.1"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.110.2",
     "axios": "^1.18.1",
     "date-fns": "^4.4.0",
     "lucide-react": "^1.23.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-router-dom": "^7.18.1",
-    "recharts": "^3.9.2"
+    "recharts": "^3.9.2",
+    "uuid": "^14.0.1"
   }
 }

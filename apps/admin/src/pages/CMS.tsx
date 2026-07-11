@@ -2,6 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { Save, Loader2, Plus, Trash2, UploadCloud } from 'lucide-react';
 import LoadingScreen from '../components/LoadingScreen';
+import { supabase } from '../utils/supabase';
+import { v4 as uuidv4 } from 'uuid';
 
 interface ContentItem {
   key: string;
@@ -75,10 +77,22 @@ const CMS: React.FC = () => {
     const item = getItem(key, 'JSON', '[]');
     
     try {
-      const res = await axios.post('/api/admin/upload', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
-      const imageUrl = res.data.url;
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${uuidv4()}.${fileExt}`;
+
+      const { data, error } = await supabase.storage
+        .from('cms-media')
+        .upload(fileName, file, { cacheControl: '3600', upsert: false });
+
+      if (error) {
+        throw error;
+      }
+
+      const { data: publicUrlData } = supabase.storage
+        .from('cms-media')
+        .getPublicUrl(fileName);
+
+      const imageUrl = publicUrlData.publicUrl;
       
       const parsed = JSON.parse(item.value);
       parsed[index][field] = imageUrl;

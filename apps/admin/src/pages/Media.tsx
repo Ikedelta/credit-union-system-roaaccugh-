@@ -2,6 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { Trash2, Copy, Loader2, UploadCloud, Image as ImageIcon } from 'lucide-react';
 import LoadingScreen from '../components/LoadingScreen';
+import { supabase } from '../utils/supabase';
+import { v4 as uuidv4 } from 'uuid';
 
 interface MediaFile {
   name: string;
@@ -40,9 +42,17 @@ const Media: React.FC = () => {
 
     setUploading(true);
     try {
-      await axios.post('/api/admin/upload', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${uuidv4()}.${fileExt}`;
+
+      const { data, error } = await supabase.storage
+        .from('cms-media')
+        .upload(fileName, file, { cacheControl: '3600', upsert: false });
+
+      if (error) {
+        throw error;
+      }
+
       fetchMedia(); // Refresh list after upload
     } catch (err) {
       console.error(err);
