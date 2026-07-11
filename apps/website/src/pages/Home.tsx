@@ -66,15 +66,17 @@ export function Home() {
               {/* Content */}
               <div className="container hero-slide-container" style={{ alignItems: 'stretch' }}>
                 <div className="hero-slide-content" style={{ justifyContent: 'center' }}>
-                  <p className="hero-slide-eyebrow">
-                    {slide.eyebrow}
-                  </p>
-                  <h1 className="hero-slide-title">
-                    {slide.title}
-                  </h1>
-                  <p className="hero-slide-subtitle">
-                    {slide.subtitle}
-                  </p>
+                  <div className="hero-text-content">
+                    <p className="hero-slide-eyebrow">
+                      {slide.eyebrow}
+                    </p>
+                    <h1 className="hero-slide-title">
+                      {slide.title}
+                    </h1>
+                    <p className="hero-slide-subtitle">
+                      {slide.subtitle}
+                    </p>
+                  </div>
                   {/* Hero CTA Buttons - Static and nicely laid out */}
                   <div className="hero-cta">
                     <Link to="/join-now" className="btn btn-secondary">
@@ -93,11 +95,11 @@ export function Home() {
       {getJSON('alert_ticker', [
         { text: "Notice: Upcoming Annual General Meeting on August 15, 2026. All members are invited!" }
       ]).length > 0 && (
-        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'var(--secondary-color)', color: '#fff', display: 'flex', alignItems: 'stretch', borderTop: '1px solid rgba(255,255,255,0.1)', zIndex: 20 }}>
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, color: '#fff', display: 'flex', alignItems: 'stretch', borderTop: '1px solid rgba(255,255,255,0.1)', zIndex: 20 }}>
           <div style={{ background: 'var(--primary-color)', padding: '0.85rem 1.5rem', fontWeight: 700, textTransform: 'uppercase', fontSize: '0.85rem', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '0.5rem', boxShadow: '2px 0 10px rgba(0,0,0,0.2)', zIndex: 2 }}>
             <span style={{ animation: 'pulse 2s infinite' }}>🔔</span> Alerts
           </div>
-          <div style={{ flex: 1, overflow: 'hidden', padding: '0 1rem', display: 'flex', alignItems: 'center', whiteSpace: 'nowrap' }}>
+          <div style={{ flex: 1, background: 'var(--secondary-color)', overflow: 'hidden', padding: '0 1rem', display: 'flex', alignItems: 'center', whiteSpace: 'nowrap' }}>
             <div style={{ animation: 'marquee 25s linear infinite', display: 'inline-block', paddingLeft: '100%', willChange: 'transform' }}>
               {getJSON('alert_ticker', [
                 { text: "Notice: Upcoming Annual General Meeting on August 15, 2026. All members are invited!" }

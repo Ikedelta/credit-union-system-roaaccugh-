@@ -1587,11 +1587,26 @@ main.hero-page {
 }
 
 .hero-slide-content {
-  max-width: 680px;
+  width: 100%;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
   height: 100%;
   padding-bottom: 80px;
+}
+
+.hero-text-content {
+  max-width: 680px;
+}
+
+@media (max-width: 992px) {
+  .hero-slide-content {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center !important;
+  }
 }
 
 @media (max-width: 640px) {
