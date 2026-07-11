@@ -1,6 +1,7 @@
 import { PageHeader } from '../components/PageHeader';
 import { RevealOnScroll } from '../components/RevealOnScroll';
 import { useCMS } from '../context/CMSContext';
+import { Link } from 'react-router-dom';
 
 export function NewsAndBlog() {
   const { getJSON } = useCMS();
@@ -57,9 +58,9 @@ export function NewsAndBlog() {
                   <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: 1.6, flex: 1, marginBottom: '1.5rem' }}>
                     {news.content.length > 150 ? `${news.content.substring(0, 150)}...` : news.content}
                   </p>
-                  <button className="btn btn-ghost" style={{ padding: 0, color: 'var(--secondary-color)', alignSelf: 'flex-start' }} onClick={() => alert(news.content)}>
+                  <Link to={`/news/${news.id || i}`} className="btn btn-ghost" style={{ padding: 0, color: 'var(--secondary-color)', alignSelf: 'flex-start', display: 'inline-block', textDecoration: 'none' }}>
                     Read Full Story &rarr;
-                  </button>
+                  </Link>
                 </div>
               </article>
             </RevealOnScroll>

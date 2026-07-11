@@ -15,6 +15,7 @@ import { Contact } from '../pages/Contact';
 import { Faq } from '../pages/Faq';
 import { Branches } from '../pages/Branches';
 import { NewsAndBlog } from '../pages/NewsAndBlog';
+import { NewsDetail } from '../pages/NewsDetail';
 
 export function AppRouter() {
   return (
@@ -26,6 +27,7 @@ export function AppRouter() {
           <Route path="about" element={<About />} />
           <Route path="board-and-management" element={<BoardAndManagement />} />
           <Route path="news" element={<NewsAndBlog />} />
+          <Route path="news/:id" element={<NewsDetail />} />
           <Route path="services" element={<Services />} />
           <Route path="products" element={<Products />} />
           <Route path="contact" element={<Contact />} />

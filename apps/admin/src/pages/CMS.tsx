@@ -125,13 +125,13 @@ const CMS: React.FC = () => {
     let list: any[] = [];
     try { list = JSON.parse(item.value); } catch(e) {}
 
-    const addListItem = () => handleJsonChange(key, [...list, { ...template, id: Date.now() }]);
+    const addListItem = () => handleJsonChange(key, [...list, { ...template, id: Date.now().toString() }]);
     const removeListItem = (index: number) => {
       const newList = [...list];
       newList.splice(index, 1);
       handleJsonChange(key, newList);
     };
-    const updateListItem = (index: number, field: string, value: string) => {
+    const updateListItem = (index: number, field: string, value: any) => {
       const newList = [...list];
       newList[index][field] = value;
       handleJsonChange(key, newList);
@@ -169,10 +169,10 @@ const CMS: React.FC = () => {
             </div>
             <div className="grid md:grid-cols-2 gap-4">
               {fields.map(f => (
-                <div key={f.name} style={{ gridColumn: f.type === 'textarea' || f.type === 'image' ? '1 / -1' : 'auto' }}>
+                <div key={f.name} style={{ gridColumn: f.type === 'textarea' || f.type === 'image' || f.type === 'image_list' || f.type === 'link_list' ? '1 / -1' : 'auto' }}>
                   <label className="form-label">{f.label}</label>
                   {f.type === 'textarea' ? (
-                    <textarea rows={3} className="form-control" value={listItem[f.name] || ''} onChange={(e) => updateListItem(index, f.name, e.target.value)} />
+                    <textarea rows={6} className="form-control" value={listItem[f.name] || ''} onChange={(e) => updateListItem(index, f.name, e.target.value)} />
                   ) : f.type === 'image' ? (
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center', background: '#f8fafc', padding: '0.75rem', borderRadius: '8px' }}>
                       {listItem[f.name] && <img src={listItem[f.name].startsWith('http') ? listItem[f.name] : `http://localhost:3000${listItem[f.name]}`} alt="Preview" style={{ width: '80px', height: '60px', objectFit: 'cover', borderRadius: '4px', border: '1px solid var(--border-color)' }} />}
@@ -182,6 +182,54 @@ const CMS: React.FC = () => {
                           <UploadCloud size={16} /> Upload
                         </button>
                       </div>
+                    </div>
+                  ) : f.type === 'image_list' ? (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', background: '#f8fafc', padding: '1rem', borderRadius: '8px' }}>
+                      {(listItem[f.name] || []).map((imgUrl: string, imgIndex: number) => (
+                        <div key={imgIndex} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                          {imgUrl && <img src={imgUrl.startsWith('http') ? imgUrl : `http://localhost:3000${imgUrl}`} style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} />}
+                          <input type="text" placeholder="Image URL" className="form-control" value={imgUrl || ''} onChange={(e) => {
+                            const newImages = [...(listItem[f.name] || [])];
+                            newImages[imgIndex] = e.target.value;
+                            updateListItem(index, f.name, newImages);
+                          }} />
+                          <button className="btn btn-ghost" style={{color: 'red', padding: '0.4rem'}} onClick={() => {
+                            const newImages = [...(listItem[f.name] || [])];
+                            newImages.splice(imgIndex, 1);
+                            updateListItem(index, f.name, newImages);
+                          }}><Trash2 size={16} /></button>
+                        </div>
+                      ))}
+                      <button className="btn btn-secondary" style={{ alignSelf: 'flex-start' }} onClick={() => {
+                        const newImages = [...(listItem[f.name] || []), ''];
+                        updateListItem(index, f.name, newImages);
+                      }}>+ Add Image</button>
+                    </div>
+                  ) : f.type === 'link_list' ? (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', background: '#f8fafc', padding: '1rem', borderRadius: '8px' }}>
+                      {(listItem[f.name] || []).map((link: any, linkIndex: number) => (
+                        <div key={linkIndex} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                          <input type="text" placeholder="Link Label" className="form-control" value={link.label || ''} style={{ flex: 1, minWidth: '150px' }} onChange={(e) => {
+                            const newLinks = [...(listItem[f.name] || [])];
+                            newLinks[linkIndex] = { ...newLinks[linkIndex], label: e.target.value };
+                            updateListItem(index, f.name, newLinks);
+                          }} />
+                          <input type="text" placeholder="URL" className="form-control" value={link.url || ''} style={{ flex: 2, minWidth: '200px' }} onChange={(e) => {
+                            const newLinks = [...(listItem[f.name] || [])];
+                            newLinks[linkIndex] = { ...newLinks[linkIndex], url: e.target.value };
+                            updateListItem(index, f.name, newLinks);
+                          }} />
+                          <button className="btn btn-ghost" style={{color: 'red', padding: '0.4rem'}} onClick={() => {
+                            const newLinks = [...(listItem[f.name] || [])];
+                            newLinks.splice(linkIndex, 1);
+                            updateListItem(index, f.name, newLinks);
+                          }}><Trash2 size={16} /></button>
+                        </div>
+                      ))}
+                      <button className="btn btn-secondary" style={{ alignSelf: 'flex-start' }} onClick={() => {
+                        const newLinks = [...(listItem[f.name] || []), { label: '', url: '' }];
+                        updateListItem(index, f.name, newLinks);
+                      }}>+ Add Link</button>
                     </div>
                   ) : (
                     <input type="text" className="form-control" value={listItem[f.name] || ''} onChange={(e) => updateListItem(index, f.name, e.target.value)} />
@@ -341,11 +389,13 @@ const CMS: React.FC = () => {
         {renderListEditor('alert_ticker', 'Alert Ticker', { text: '' }, [
           { name: 'text', label: 'Alert Message', type: 'text' }
         ])}
-        {renderListEditor('news_list', 'News & Blog', { title: '', date: '', image: '', content: '' }, [
-          { name: 'image', label: 'Thumbnail Image', type: 'image' },
+        {renderListEditor('news_list', 'News & Blog', { id: Date.now().toString(), title: '', date: '', image: '', content: '', gallery: [], links: [] }, [
+          { name: 'image', label: 'Thumbnail / Main Image', type: 'image' },
           { name: 'title', label: 'Headline Title', type: 'text' },
           { name: 'date', label: 'Date', type: 'text' },
-          { name: 'content', label: 'Article Content', type: 'textarea' }
+          { name: 'content', label: 'Article Content (Full details)', type: 'textarea' },
+          { name: 'gallery', label: 'Additional Gallery Images', type: 'image_list' },
+          { name: 'links', label: 'Reference Links', type: 'link_list' }
         ])}
       </>
     );
