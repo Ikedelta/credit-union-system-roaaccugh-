@@ -4,6 +4,7 @@ import { Send, Loader2 } from 'lucide-react';
 import LoadingScreen from '../components/LoadingScreen';
 
 const Sms: React.FC = () => {
+  const [targetGroup, setTargetGroup] = useState<string>('MANUAL');
   const [recipientsStr, setRecipientsStr] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -31,27 +32,31 @@ const Sms: React.FC = () => {
     e.preventDefault();
     setLoading(true);
     setResult(null);
-    
-    // Split comma-separated string into array of numbers
-    const recipients = recipientsStr.split(',').map(r => r.trim()).filter(r => r.length > 0);
-    
-    if (recipients.length === 0) {
-      setResult("Please enter at least one valid recipient.");
-      setLoading(false);
-      return;
-    }
+    setSendResults([]);
 
     try {
-      const res = await axios.post('/api/admin/sms/send', { recipients, message });
-      setResult(res.data.message || "Messages sent successfully!");
-      setSendResults(res.data.results || []);
+      if (targetGroup === 'MANUAL') {
+        const recipients = recipientsStr.split(',').map(r => r.trim()).filter(r => r.length > 0);
+        if (recipients.length === 0) {
+          setResult("Please enter at least one valid recipient.");
+          setLoading(false);
+          return;
+        }
+        const res = await axios.post('/api/admin/sms/send', { recipients, message });
+        setResult(res.data.message || "Messages sent successfully!");
+        setSendResults(res.data.results || []);
+      } else {
+        const res = await axios.post('/api/admin/sms/broadcast', { targetGroup, message });
+        setResult(res.data.message || "Broadcast sent successfully!");
+        setSendResults(res.data.results || []);
+      }
+      
       setRecipientsStr('');
       setMessage('');
       fetchLogs();
     } catch (err: any) {
       console.error(err);
       setResult(err.response?.data?.error || "Failed to send messages. Please try again.");
-      setSendResults([]);
     } finally {
       setLoading(false);
     }
@@ -65,14 +70,14 @@ const Sms: React.FC = () => {
         {/* Left Column: Send SMS Form */}
         <div className="widget glass-panel">
           <p style={{ marginBottom: '1.5rem', color: 'var(--text-secondary)' }}>
-            Use this tool to send SMS broadcasts to members. Enter comma-separated phone numbers below.
+            Use this tool to send SMS broadcasts to members or specific groups.
           </p>
           
           {result && (
             <div style={{ padding: '1rem', background: sendResults.some(r => r.status === 'FAILED') ? 'rgba(239, 68, 68, 0.08)' : 'rgba(16, 185, 129, 0.1)', color: sendResults.some(r => r.status === 'FAILED') ? 'var(--danger)' : 'var(--success)', borderRadius: 'var(--radius-sm)', marginBottom: '1rem' }}>
               <strong>{result}</strong>
               {sendResults.length > 0 && (
-                <ul style={{ marginTop: '0.5rem', paddingLeft: '1.25rem', fontSize: '0.85rem' }}>
+                <ul style={{ marginTop: '0.5rem', paddingLeft: '1.25rem', fontSize: '0.85rem', maxHeight: '150px', overflowY: 'auto' }}>
                   {sendResults.map((r, i) => (
                     <li key={i} style={{ color: r.status === 'SENT' ? 'var(--success)' : 'var(--danger)' }}>
                       {r.recipient} — <strong>{r.status}</strong>{r.arkeselResponse ? ` (${r.arkeselResponse})` : ''}
@@ -85,16 +90,32 @@ const Sms: React.FC = () => {
 
           <form onSubmit={handleSend} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
             <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>Recipients (Comma-separated)</label>
-              <textarea 
-                rows={3} 
-                value={recipientsStr} 
-                onChange={e => setRecipientsStr(e.target.value)} 
-                placeholder="e.g., +233201234567, 0241234567"
-                required 
-                style={{ width: '100%', padding: '0.75rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', resize: 'vertical' }}
-              />
+              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>Target Group</label>
+              <select 
+                className="form-control" 
+                value={targetGroup} 
+                onChange={(e) => setTargetGroup(e.target.value)}
+              >
+                <option value="MANUAL">Manual Entry (Comma-separated)</option>
+                <option value="MEMBERS">All Members</option>
+                <option value="ADMINS">All Admins / Staff</option>
+                <option value="LOAN_APPLICANTS">All Loan Applicants</option>
+              </select>
             </div>
+
+            {targetGroup === 'MANUAL' && (
+              <div>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>Recipients (Comma-separated)</label>
+                <textarea 
+                  rows={3} 
+                  value={recipientsStr} 
+                  onChange={e => setRecipientsStr(e.target.value)} 
+                  placeholder="e.g., +233201234567, 0241234567"
+                  required={targetGroup === 'MANUAL'}
+                  style={{ width: '100%', padding: '0.75rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', resize: 'vertical' }}
+                />
+              </div>
+            )}
             
             <div>
               <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>Message</label>

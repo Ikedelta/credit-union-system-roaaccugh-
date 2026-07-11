@@ -164,12 +164,12 @@ export function Home() {
             <RevealOnScroll direction="right">
               <div className="home-split-image" style={{ background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'clamp(1rem, 5vw, 3rem)' }}>
                 <img
-                  src="/logo.png"
+                  src={get('about_logo', '/logo.png')}
                   alt="ROAACCU Logo"
                   style={{ objectFit: 'contain', width: '100%', height: '100%', maxHeight: '400px' }}
                 />
                 <div className="home-split-badge">
-                  <strong>Est. 2014</strong>
+                  <strong>{get('established_year', 'Est. 2014')}</strong>
                   <span>Registered Co-operative</span>
                 </div>
               </div>

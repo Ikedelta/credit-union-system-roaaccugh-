@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import nodemailer from "nodemailer";
 import { createClient } from '@supabase/supabase-js';
 import { authenticateAdmin, authenticateSuperAdmin, AuthRequest } from "../middleware/auth";
 
@@ -23,6 +24,17 @@ const supabase = supabaseUrl
 // Use memory storage for uploads before pushing to Supabase
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
+
+// Initialize Nodemailer Transport
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST || "smtp.gmail.com",
+  port: parseInt(process.env.SMTP_PORT || "587"),
+  secure: process.env.SMTP_SECURE === "true",
+  auth: {
+    user: process.env.SMTP_USER || "",
+    pass: process.env.SMTP_PASS || "",
+  },
+});
 
 // --- HELPER: AUDIT LOGGING ---
 const createAuditLog = async (adminId: number | undefined, action: string, details?: string) => {
@@ -417,6 +429,83 @@ router.post("/sms/send", async (req, res) => {
   }
 });
 
+router.post("/sms/broadcast", async (req, res) => {
+  try {
+    const { targetGroup, message } = req.body;
+    const adminReq = req as AuthRequest;
+
+    if (!targetGroup || !message) {
+      return res.status(400).json({ error: "Missing targetGroup or message" });
+    }
+
+    let recipients: string[] = [];
+    if (targetGroup === "MEMBERS") {
+      const members = await prisma.member.findMany({ where: { telNo: { not: null } } });
+      recipients = members.map(m => m.telNo).filter(Boolean) as string[];
+    } else if (targetGroup === "ADMINS") {
+      const admins = await prisma.admin.findMany({ where: { telNo: { not: null } } });
+      recipients = admins.map(a => a.telNo).filter(Boolean) as string[];
+    } else if (targetGroup === "LOAN_APPLICANTS") {
+      const loans = await prisma.loanApplication.findMany({ where: { telNo: { not: null } } });
+      recipients = loans.map(l => l.telNo).filter(Boolean) as string[];
+    } else {
+      return res.status(400).json({ error: "Invalid target group" });
+    }
+
+    if (recipients.length === 0) {
+      return res.status(400).json({ error: "No recipients found in the selected group." });
+    }
+
+    const ARKESEL_API_KEY = process.env.ARKESEL_API_KEY;
+    const SENDER_ID = process.env.SMS_SENDER_ID || "ROAACCU";
+
+    if (!ARKESEL_API_KEY) {
+      return res.status(500).json({ error: "SMS API key not configured on the server." });
+    }
+
+    const results = [];
+    for (const recipient of recipients) {
+      const formatted = normalizeGhanaNumber(recipient);
+      try {
+        const apiRes = await fetch("https://sms.arkesel.com/api/v2/sms/send", {
+          method: "POST",
+          headers: {
+            "api-key": ARKESEL_API_KEY,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            sender: SENDER_ID,
+            message: message.trim(),
+            recipients: [formatted],
+          }),
+        });
+
+        const rawText = await apiRes.text();
+        let data: any = {};
+        try { data = JSON.parse(rawText); } catch { data = { message: rawText }; }
+
+        const isSuccess = data.status === "success";
+        await prisma.smsLog.create({
+          data: { recipient: formatted, message: message.trim(), status: isSuccess ? "SENT" : "FAILED", senderId: adminReq.adminId },
+        });
+
+        results.push({ recipient, formatted, status: isSuccess ? "SENT" : "FAILED" });
+      } catch (err) {
+        await prisma.smsLog.create({ data: { recipient: formatted, message: message.trim(), status: "FAILED", senderId: adminReq.adminId } });
+        results.push({ recipient, formatted, status: "FAILED" });
+      }
+    }
+
+    const sentCount = results.filter(r => r.status === "SENT").length;
+    await createAuditLog(adminReq.adminId, "BROADCAST_SMS", `Group: ${targetGroup}, Sent: ${sentCount}`);
+
+    res.json({ success: true, message: `Broadcast complete: ${sentCount} sent.`, results });
+  } catch (err) {
+    console.error("[SMS Broadcast]", err);
+    res.status(500).json({ error: "Server error during broadcast." });
+  }
+});
+
 // ============================================================
 // SUPERADMIN ONLY ROUTES
 // ============================================================
@@ -432,12 +521,48 @@ router.get("/users", authenticateSuperAdmin, async (req, res) => {
 
 router.post("/users", authenticateSuperAdmin, async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password, role, telNo } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await prisma.admin.create({
-      data: { name, email, password: hashedPassword, role: role || "ADMIN" },
-      select: { id: true, name: true, email: true, role: true },
+      data: { name, email, password: hashedPassword, role: role || "ADMIN", telNo },
+      select: { id: true, name: true, email: true, role: true, telNo: true },
     });
+
+    // Send Welcome Email (if configured)
+    if (process.env.SMTP_USER) {
+      try {
+        await transporter.sendMail({
+          from: `"ROAACCU Admin" <${process.env.SMTP_USER}>`,
+          to: email,
+          subject: "Welcome to ROAACCU Admin Dashboard",
+          text: `Hello ${name},\n\nYour admin account has been created successfully.\n\nRole: ${role || "ADMIN"}\nEmail: ${email}\nPassword: ${password}\n\nPlease login and change your password immediately.`,
+        });
+      } catch (emailErr) {
+        console.error("Failed to send welcome email to admin:", emailErr);
+      }
+    }
+
+    // Send Welcome SMS (if telNo is provided and configured)
+    if (telNo && process.env.ARKESEL_API_KEY) {
+      const formatted = normalizeGhanaNumber(telNo);
+      try {
+        await fetch("https://sms.arkesel.com/api/v2/sms/send", {
+          method: "POST",
+          headers: {
+            "api-key": process.env.ARKESEL_API_KEY,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            sender: process.env.SMS_SENDER_ID || "ROAACCU",
+            message: `Hello ${name}, your ROAACCU Admin account has been created. Check your email for login details.`,
+            recipients: [formatted],
+          }),
+        });
+      } catch (smsErr) {
+        console.error("Failed to send welcome SMS to admin:", smsErr);
+      }
+    }
+
     res.json(user);
   } catch (err: any) {
     if (err.code === 'P2002') {

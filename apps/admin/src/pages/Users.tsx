@@ -39,7 +39,7 @@ const Users: React.FC = () => {
     try {
       await axios.post('/api/admin/users', formData);
       setShowModal(false);
-      setFormData({ name: '', email: '', password: '', role: 'ADMIN' });
+      setFormData({ name: '', email: '', password: '', role: 'ADMIN', telNo: '' } as any);
       fetchUsers();
     } catch (err: any) {
       console.error(err);
@@ -141,6 +141,16 @@ const Users: React.FC = () => {
                   onChange={e => setFormData({ ...formData, email: e.target.value })} 
                   required 
                   placeholder="e.g. john@roaaccugh.com"
+                />
+              </div>
+              <div>
+                <label className="form-label">Phone Number (For SMS Notifications)</label>
+                <input 
+                  type="tel" 
+                  className="form-control"
+                  value={(formData as any).telNo || ''} 
+                  onChange={e => setFormData({ ...formData, telNo: e.target.value } as any)} 
+                  placeholder="e.g. +233201234567"
                 />
               </div>
               <div>
