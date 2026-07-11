@@ -221,7 +221,7 @@
 /* --- Global Mobile UI Cleanup --- */
 @media (max-width: 480px) {
   .container {
-    padding: 0 1.25rem !important;
+    padding: 0 1.75rem !important;
   }
 
   .btn {
