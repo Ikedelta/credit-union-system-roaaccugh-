@@ -149,7 +149,7 @@ export function ApplyLoan() {
                     </div>
                     <div className="form-group">
                       <label className="form-label">Full Name</label>
-                      <input type="text" name="fullName" className="form-control" required={step === 1} />
+                      <input type="text" name="fullName" className="form-control" placeholder="Kofi Asante" required={step === 1} />
                     </div>
                     <div className="form-group">
                       <label className="form-label">Contact Number</label>

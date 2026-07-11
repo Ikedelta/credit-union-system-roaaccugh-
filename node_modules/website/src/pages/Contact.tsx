@@ -79,7 +79,7 @@ export function Contact() {
               <div className="form-grid form-grid-2">
                 <div className="form-group">
                   <label className="form-label">Your Name</label>
-                  <input type="text" name="name" className="form-control" placeholder="John Doe" required />
+                  <input type="text" name="name" className="form-control" placeholder="Kofi Asante" required />
                 </div>
                 <div className="form-group">
                   <label className="form-label">Email Address</label>

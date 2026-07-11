@@ -130,11 +130,11 @@ export function JoinNow() {
                     <div className="form-grid form-grid-2">
                       <div className="form-group">
                         <label className="form-label">First Name</label>
-                        <input type="text" name="firstName" className="form-control" required={step === 1} />
+                        <input type="text" name="firstName" className="form-control" placeholder="Kofi" required={step === 1} />
                       </div>
                       <div className="form-group">
                         <label className="form-label">Last Name</label>
-                        <input type="text" name="lastName" className="form-control" required={step === 1} />
+                        <input type="text" name="lastName" className="form-control" placeholder="Asante" required={step === 1} />
                       </div>
                       <div className="form-group">
                         <label className="form-label">Mobile Number</label>
@@ -179,7 +179,7 @@ export function JoinNow() {
                     <div className="form-grid form-grid-2" style={{ marginBottom: '1rem' }}>
                       <div className="form-group">
                         <label className="form-label">Beneficiary 1 Name</label>
-                        <input type="text" name="beneficiary1Name" className="form-control" required={step === 2} />
+                        <input type="text" name="beneficiary1Name" className="form-control" placeholder="Kofi Asante" required={step === 2} />
                       </div>
                       <div className="form-group">
                         <label className="form-label">Relationship</label>
