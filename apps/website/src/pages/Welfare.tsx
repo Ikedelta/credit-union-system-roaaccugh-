@@ -79,16 +79,7 @@ export function Welfare() {
             <label className="form-label">Your Ghana Card Number</label>
             <input type="text" name="ghanaCardNumber" className="form-control" required />
           </div>
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="form-group">
-              <label className="form-label">Upload Card (Front)</label>
-              <input type="file" name="ghanaCardFront" className="form-control" style={{ overflow: 'hidden', textOverflow: 'ellipsis' }} accept=".jpg,.png,.jpeg,.webp" required />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Upload Card (Back)</label>
-              <input type="file" name="ghanaCardBack" className="form-control" style={{ overflow: 'hidden', textOverflow: 'ellipsis' }} accept=".jpg,.png,.jpeg,.webp" required />
-            </div>
-          </div>
+
 
           <h3 style={{ color: 'var(--primary-color)', marginBottom: '1.5rem', marginTop: '2rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '0.5rem' }}>Beneficiary Details</h3>
 
@@ -101,14 +92,7 @@ export function Welfare() {
               <label className="form-label">Beneficiary's Ghana Card Number</label>
               <input type="text" name="beneficiaryGhanaCard" className="form-control" required />
             </div>
-            <div className="form-group">
-              <label className="form-label">Upload Beneficiary Card (Front)</label>
-              <input type="file" name="beneficiaryCardFront" className="form-control" style={{ overflow: 'hidden', textOverflow: 'ellipsis' }} accept=".jpg,.png,.jpeg,.webp" required />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Upload Beneficiary Card (Back)</label>
-              <input type="file" name="beneficiaryCardBack" className="form-control" style={{ overflow: 'hidden', textOverflow: 'ellipsis' }} accept=".jpg,.png,.jpeg,.webp" required />
-            </div>
+
           </div>
 
           <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '2rem' }} disabled={status === 'loading'}>

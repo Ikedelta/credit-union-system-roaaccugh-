@@ -199,20 +199,7 @@ export function JoinNow() {
                       <label className="form-label">Ghana Card Number</label>
                       <input type="text" name="ghanaCardNo" className="form-control" required={step === 3} />
                     </div>
-                    <div className="grid md:grid-cols-2 gap-5" style={{ marginTop: '0.5rem' }}>
-                      <div className="form-group">
-                        <label className="form-label">Upload Card (Front)</label>
-                        <div style={{ border: '2px dashed rgba(28, 16, 94, 0.2)', padding: '2rem', borderRadius: '12px', textAlign: 'center', backgroundColor: '#f8fafc', transition: 'var(--transition)', overflow: 'hidden' }}>
-                          <input type="file" name="ghanaCardFront" style={{ width: '100%', textOverflow: 'ellipsis' }} accept=".jpg,.png,.jpeg,.webp" required={step === 3} />
-                        </div>
-                      </div>
-                      <div className="form-group">
-                        <label className="form-label">Upload Card (Back)</label>
-                        <div style={{ border: '2px dashed rgba(28, 16, 94, 0.2)', padding: '2rem', borderRadius: '12px', textAlign: 'center', backgroundColor: '#f8fafc', transition: 'var(--transition)', overflow: 'hidden' }}>
-                          <input type="file" name="ghanaCardBack" style={{ width: '100%', textOverflow: 'ellipsis' }} accept=".jpg,.png,.jpeg,.webp" required={step === 3} />
-                        </div>
-                      </div>
-                    </div>
+
                     <p style={{ textAlign: 'center', marginTop: '1.25rem', fontSize: '0.85rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
                       <ShieldCheck size={16} style={{ color: 'var(--primary-light)' }} />
                       Your information is securely encrypted and strictly confidential.

@@ -1,4 +1,4 @@
-import { ArrowRight, ShieldCheck, TrendingUp, Users, ChevronRight } from 'lucide-react';
+import { ArrowRight, ShieldCheck, TrendingUp, Users, ChevronRight, CheckCircle2, Phone, Zap, Banknote, Building2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination, EffectFade } from 'swiper/modules';
@@ -7,6 +7,10 @@ import { useCMS } from '../context/CMSContext';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/effect-fade';
+
+const IconMap: Record<string, any> = {
+  ShieldCheck, TrendingUp, Users, CheckCircle2, Phone, Zap, Banknote, Building2
+};
 
 export function Home() {
   const { get, getJSON } = useCMS();
@@ -18,6 +22,13 @@ export function Home() {
       eyebrow: "Me Daakye Anidaso",
       title: "Your Future Starts Here",
       subtitle: "Ghana's trusted financial co-operative — built by members, for members. Join over 11,000 people growing together.",
+    },
+    {
+      id: 2,
+      image: "/slider3.jpg",
+      eyebrow: "Secure Your Finances",
+      title: "Empowering Your Growth",
+      subtitle: "Experience financial freedom with our low-interest loans and high-yield savings designed for you.",
     }
   ]);
 
@@ -52,7 +63,7 @@ export function Home() {
 
               {/* Content */}
               <div className="container hero-slide-container" style={{ alignItems: 'stretch' }}>
-                <div className="hero-slide-content" style={{ display: 'flex', flexDirection: 'column', height: '100%', paddingBottom: '60px' }}>
+                <div className="hero-slide-content">
                   <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                     <p className="hero-slide-eyebrow">
                       {slide.eyebrow}
@@ -64,9 +75,9 @@ export function Home() {
                       {slide.subtitle}
                     </p>
                   </div>
-                  {/* Invisible spacer buttons to reserve exact space in the slide */}
-                  <div className="hero-cta" style={{ visibility: 'hidden', pointerEvents: 'none' }}>
-                    <Link to="/join-now" className="btn btn-secondary">
+                  {/* Hero CTA Buttons - Inside the flow to prevent mobile overlap */}
+                  <div className="hero-cta">
+                    <Link to="/join-now" className="btn btn-secondary animate-pulse-secondary">
                       Become a Member <ArrowRight size={16} />
                     </Link>
                     <Link to="/about" className="btn btn-ghost">
@@ -78,51 +89,39 @@ export function Home() {
             </SwiperSlide>
           ))}
         </Swiper>
-
-        {/* Static Buttons Overlay (outside the slider so they don't fade) */}
-        <div className="container hero-slide-container" style={{ position: 'absolute', inset: 0, zIndex: 10, pointerEvents: 'none', alignItems: 'stretch' }}>
-          <div className="hero-slide-content" style={{ display: 'flex', flexDirection: 'column', height: '100%', paddingBottom: '60px' }}>
-            <div style={{ flex: 1 }}></div>
-            <div className="hero-cta" style={{ pointerEvents: 'auto' }}>
-              <Link to="/join-now" className="btn btn-secondary animate-pulse-secondary">
-                Become a Member <ArrowRight size={16} />
-              </Link>
-              <Link to="/about" className="btn btn-ghost">
-                Our Story
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* ── Alert Ticker ── */}
       {getJSON('alert_ticker', [
         { text: "Notice: Upcoming Annual General Meeting on August 15, 2026. All members are invited!" }
       ]).length > 0 && (
-        <section style={{ background: '#f59e0b', color: '#fff', padding: '0.75rem 0', overflow: 'hidden', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center' }}>
-          <div style={{ background: '#d97706', padding: '0.75rem 1.5rem', fontWeight: 600, textTransform: 'uppercase', fontSize: '0.85rem', letterSpacing: '1px', zIndex: 10, position: 'relative' }}>
-            Alerts
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'rgba(28, 16, 94, 0.75)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', color: '#fff', display: 'flex', alignItems: 'stretch', borderTop: '1px solid rgba(255,255,255,0.1)', zIndex: 20 }}>
+          <div style={{ background: 'var(--secondary-color)', padding: '0.85rem 1.5rem', fontWeight: 700, textTransform: 'uppercase', fontSize: '0.85rem', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '0.5rem', boxShadow: '2px 0 10px rgba(0,0,0,0.2)', zIndex: 2 }}>
+            <span style={{ animation: 'pulse 2s infinite' }}>🔔</span> Alerts
           </div>
-          <div style={{ flex: 1, overflow: 'hidden' }}>
-            <div style={{ display: 'inline-block', paddingLeft: '100%', animation: 'marquee 25s linear infinite' }}>
+          <div style={{ flex: 1, overflow: 'hidden', padding: '0 1rem', display: 'flex', alignItems: 'center', whiteSpace: 'nowrap' }}>
+            <div style={{ animation: 'marquee 25s linear infinite', display: 'inline-block', paddingLeft: '100%' }}>
               {getJSON('alert_ticker', [
                 { text: "Notice: Upcoming Annual General Meeting on August 15, 2026. All members are invited!" }
               ]).map((alert: any, i: number) => (
-                <span key={i} style={{ marginRight: '4rem', fontSize: '0.95rem', fontWeight: 500 }}>
-                  <span style={{ marginRight: '0.5rem' }}>🔔</span>
+                <span key={i} style={{ fontSize: '0.95rem', fontWeight: 500, marginRight: '4rem', textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}>
                   {alert.text}
                 </span>
               ))}
             </div>
           </div>
           <style>{`
+            @keyframes pulse {
+              0% { transform: scale(1); opacity: 1; }
+              50% { transform: scale(1.2); opacity: 0.8; }
+              100% { transform: scale(1); opacity: 1; }
+            }
             @keyframes marquee {
-              0% { transform: translate(0, 0); }
-              100% { transform: translate(-100%, 0); }
+              0% { transform: translateX(0); }
+              100% { transform: translateX(-100%); }
             }
           `}</style>
-        </section>
+        </div>
       )}
+      </section>
 
       {/* ── Stats Strip ── */}
       <section style={{ background: 'var(--primary-color)' }}>
@@ -177,18 +176,19 @@ export function Home() {
                   {get('about_text', "ROAACCU — Road Officers' and Allies' Co-operative Credit Union — is a member-owned financial institution serving Ghanaians with integrity since 2014. We exist to improve our members' financial wellbeing, not to generate profit for shareholders.")}
                 </p>
                 <div className="about-features">
-                  <div className="about-feature">
-                    <ShieldCheck size={20} color="var(--secondary-color)" />
-                    <span>Bank of Ghana Licensed</span>
-                  </div>
-                  <div className="about-feature">
-                    <TrendingUp size={20} color="var(--secondary-color)" />
-                    <span>Competitive Interest Rates</span>
-                  </div>
-                  <div className="about-feature">
-                    <Users size={20} color="var(--secondary-color)" />
-                    <span>Member-Owned & Governed</span>
-                  </div>
+                  {getJSON('home_features', [
+                    { icon: 'ShieldCheck', text: 'Bank of Ghana Licensed' },
+                    { icon: 'TrendingUp', text: 'Competitive Interest Rates' },
+                    { icon: 'Users', text: '11,800+ Active Members' }
+                  ]).map((feature: any, i: number) => {
+                    const IconComponent = IconMap[feature.icon] || ShieldCheck;
+                    return (
+                      <div className="about-feature" key={i}>
+                        <IconComponent size={20} color="var(--secondary-color)" />
+                        <span>{feature.text}</span>
+                      </div>
+                    );
+                  })}
                 </div>
                 <Link to="/about" className="btn btn-primary" style={{ marginTop: '2rem' }}>
                   Learn About Us <ChevronRight size={16} />

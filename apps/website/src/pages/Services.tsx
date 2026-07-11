@@ -1,18 +1,25 @@
-import { Phone, Zap, Banknote, Building2, ShieldCheck } from 'lucide-react';
+import { Phone, Zap, Banknote, Building2, ShieldCheck, CheckCircle2, TrendingUp, Users } from 'lucide-react';
 import { PageHeader } from '../components/PageHeader';
 import { RevealOnScroll } from '../components/RevealOnScroll';
+import { useCMS } from '../context/CMSContext';
+
+const IconMap: Record<string, any> = {
+  Phone, Zap, Banknote, Building2, ShieldCheck, CheckCircle2, TrendingUp, Users
+};
 
 const iconColors = ['', 'gold'];
 
 export function Services() {
-  const services = [
-    { title: 'USSD *889*55#', desc: 'Check your account balance and deposit into your account anywhere, anytime.', icon: Phone },
-    { title: 'Mobile Money', desc: 'Seamlessly deposit, withdraw & send funds across all major networks.', icon: Zap },
-    { title: 'Ezwich', desc: 'Enjoy reliable and convenient ezwich services at all our branches.', icon: Banknote },
-    { title: 'Cheque Clearing', desc: 'Fast and secure clearing for all cheques bearing your name.', icon: Building2 },
-    { title: 'Cheque Account', desc: 'Make payments efficiently and securely using our customized cheques.', icon: ShieldCheck },
-    { title: 'ATM Services', desc: '24/7 ATM access for all members providing round-the-clock convenience.', icon: Banknote },
-  ];
+  const { getJSON } = useCMS();
+
+  const services = getJSON('services_list', [
+    { title: 'USSD *889*55#', desc: 'Check your account balance and deposit into your account anywhere, anytime.', icon: 'Phone' },
+    { title: 'Mobile Money', desc: 'Seamlessly deposit, withdraw & send funds across all major networks.', icon: 'Zap' },
+    { title: 'Ezwich', desc: 'Enjoy reliable and convenient ezwich services at all our branches.', icon: 'Banknote' },
+    { title: 'Cheque Clearing', desc: 'Fast and secure clearing for all cheques bearing your name.', icon: 'Building2' },
+    { title: 'Cheque Account', desc: 'Make payments efficiently and securely using our customized cheques.', icon: 'ShieldCheck' },
+    { title: 'ATM Services', desc: '24/7 ATM access for all members providing round-the-clock convenience.', icon: 'Banknote' },
+  ]);
 
   return (
     <>
@@ -35,7 +42,10 @@ export function Services() {
           <RevealOnScroll key={i} delay={i * 0.07}>
               <div className="card" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
                 <div className={`card-icon ${iconColors[i % iconColors.length]}`} style={{ marginBottom: '1.5rem' }}>
-                  <service.icon size={24} />
+                  {(() => {
+                    const IconComponent = IconMap[service.icon] || ShieldCheck;
+                    return <IconComponent size={24} />;
+                  })()}
                 </div>
                 <h3 className="card-title" style={{ fontSize: '1.1rem', marginBottom: '0.75rem' }}>{service.title}</h3>
                 <p className="card-text" style={{ flex: 1, fontSize: '0.95rem', lineHeight: 1.65 }}>{service.desc}</p>

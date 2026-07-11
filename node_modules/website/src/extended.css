@@ -7,6 +7,7 @@
   max-width: 800px;
   margin: 0 auto;
 }
+
 .faq-item {
   background: var(--bg-white);
   border-radius: 16px;
@@ -14,12 +15,14 @@
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
   overflow: hidden;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid rgba(0,0,0,0.03);
+  border: 1px solid rgba(0, 0, 0, 0.03);
 }
+
 .faq-item:hover {
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
   border-color: rgba(16, 110, 234, 0.3);
 }
+
 .faq-question {
   width: 100%;
   text-align: left;
@@ -36,11 +39,13 @@
   gap: 0.75rem;
   line-height: 1.4;
 }
+
 .faq-answer {
   padding: 0 1.5rem 1.5rem;
   color: var(--text-muted);
   display: none;
 }
+
 .faq-item.active .faq-answer {
   display: block;
 }
@@ -52,16 +57,23 @@
 
 /* Responsive Wizard Header */
 @media (max-width: 768px) {
-  .form-wizard-card { padding: 1.5rem; }
+  .form-wizard-card {
+    padding: 1.5rem;
+  }
+
   .wizard-step-circle {
     width: 32px !important;
     height: 32px !important;
     font-size: 0.85rem;
     border-width: 2px !important;
   }
+
   .wizard-step-label {
     font-size: 0.75rem !important;
+    max-width: 120px;
+    word-break: normal;
   }
+
   .wizard-header {
     margin-bottom: 2rem !important;
   }
@@ -71,6 +83,7 @@
   margin-bottom: 1.25rem;
   text-align: left;
 }
+
 .form-label {
   display: block;
   font-size: 0.9rem;
@@ -78,6 +91,7 @@
   color: var(--primary-color);
   margin-bottom: 0.5rem;
 }
+
 .form-control {
   width: 100%;
   padding: 0.85rem 1.25rem;
@@ -89,19 +103,23 @@
   color: var(--text-main);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
 .form-control::placeholder {
   color: #94a3b8;
 }
+
 .form-control:hover {
   background-color: #f1f5f9;
   border-color: #94a3b8;
 }
+
 .form-control:focus {
   outline: none;
   background-color: var(--white);
   border-color: var(--secondary-color);
   box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.15);
 }
+
 textarea.form-control {
   resize: vertical;
   min-height: 100px;
@@ -114,7 +132,7 @@ textarea.form-control {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -122,6 +140,7 @@ textarea.form-control {
   padding: 1rem;
   backdrop-filter: blur(4px);
 }
+
 .modal-content {
   background: var(--bg-white);
   border-radius: var(--border-radius);
@@ -131,6 +150,7 @@ textarea.form-control {
   position: relative;
   overflow: hidden;
 }
+
 .modal-header {
   padding: 1.5rem;
   border-bottom: 1px solid #f1f5f9;
@@ -138,9 +158,11 @@ textarea.form-control {
   justify-content: space-between;
   align-items: center;
 }
+
 .modal-body {
   padding: 1.5rem;
 }
+
 .modal-close {
   background: transparent;
   border: none;
@@ -148,38 +170,45 @@ textarea.form-control {
   cursor: pointer;
   color: var(--text-muted);
 }
+
 .modal-close:hover {
   color: var(--primary-color);
 }
 
 /* ── Additional Mobile Overrides ── */
 @media (max-width: 768px) {
+
   /* About page: image responsive */
-  .about-panels > div {
+  .about-panels>div {
     padding: 1.75rem 1.5rem !important;
   }
+
   /* FAQ: smaller question font on mobile */
   .faq-question {
     font-size: 0.95rem;
     padding: 1.25rem;
   }
+
   .faq-answer {
     padding: 0 1.25rem 1.25rem;
     font-size: 0.9rem;
   }
+
   /* Footer: 2-col on tablet instead of stacking all 4 to 1 */
   .footer .grid {
     grid-template-columns: 1fr 1fr;
     gap: 2.5rem 2rem;
   }
+
   /* Team grid: ensure images aren't too tall on mobile */
   .team-card-image {
     aspect-ratio: 4/5;
   }
+
   iframe[title="Google Maps Location of ROAACCU"] {
     height: 250px !important;
   }
-  
+
   /* Make all grids 1 column on mobile/tablet */
   .grid.lg\:grid-cols-4,
   .grid.md\:grid-cols-2,
@@ -189,7 +218,7 @@ textarea.form-control {
     grid-template-columns: 1fr !important;
     gap: 1.5rem !important;
   }
-  
+
   /* Team grid: 1-2 col on tablet */
   .team-modern-grid {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)) !important;
@@ -197,31 +226,38 @@ textarea.form-control {
 }
 
 @media (max-width: 480px) {
+
   /* FAQ: even smaller on tiny screens */
   .faq-question {
     font-size: 0.88rem;
     padding: 1rem;
   }
+
   /* Footer: 1-col on phones */
   .footer .grid {
     grid-template-columns: 1fr;
     gap: 2rem;
   }
+
   /* Team grid: 1 col on small phones */
   .team-modern-grid {
     grid-template-columns: 1fr !important;
     gap: 1.5rem !important;
   }
+
   .team-card-info h3 {
     font-size: 1rem;
   }
+
   .team-card-info p {
     font-size: 0.85rem;
   }
+
   /* About panels: reduce padding on tiny screens */
-  .about-panels > div {
+  .about-panels>div {
     padding: 1.25rem 1rem !important;
   }
+
   /* Reduce section margins for tiny screens */
   .about-panels {
     margin-top: 2rem !important;
@@ -233,7 +269,7 @@ textarea.form-control {
   .container {
     padding: 0 1.25rem !important;
   }
-  
+
   .btn {
     padding: 0.75rem 1rem !important;
     font-size: 0.9rem !important;
@@ -248,7 +284,9 @@ textarea.form-control {
     border-radius: 16px !important;
   }
 
-  .card, .premium-card, .service-card {
+  .card,
+  .premium-card,
+  .service-card {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
     border: 1px solid rgba(0, 0, 0, 0.06) !important;
   }
@@ -256,18 +294,18 @@ textarea.form-control {
   .page-header {
     padding: 4rem 1rem 3rem !important;
   }
-  
+
   h2 {
     font-size: 1.7rem !important;
     line-height: 1.25 !important;
     letter-spacing: -0.5px !important;
   }
-  
+
   .eyebrow-label {
     font-size: 0.75rem !important;
     margin-bottom: 0.5rem !important;
   }
-  
+
   .card-text {
     font-size: 0.9rem !important;
     line-height: 1.6 !important;

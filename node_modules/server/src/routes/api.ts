@@ -102,15 +102,9 @@ router.get("/contact", async (req, res) => {
 // Join Form (Member Application)
 router.post(
   "/join",
-  upload.fields([{ name: "ghanaCardFront" }, { name: "ghanaCardBack" }]),
+  upload.none(),
   async (req, res) => {
     try {
-      const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-      // In production (Vercel), these should be uploaded to S3/Cloudinary.
-      // For now, since it's memory storage, we'll store a placeholder or base64.
-      const frontUrl = files["ghanaCardFront"]?.[0] ? "placeholder_front.jpg" : null;
-      const backUrl = files["ghanaCardBack"]?.[0] ? "placeholder_back.jpg" : null;
-
       const data = req.body;
       await prisma.memberApplication.create({
         data: {
@@ -135,8 +129,8 @@ router.post(
           bankBranch: data.bankBranch,
           accountNumber: data.accountNumber,
           ghanaCardNumber: data.ghanaCardNo,
-          ghanaCardFrontUrl: frontUrl,
-          ghanaCardBackUrl: backUrl,
+          ghanaCardFrontUrl: null,
+          ghanaCardBackUrl: null,
         },
       });
 
@@ -151,13 +145,9 @@ router.post(
 // Loan Application
 router.post(
   "/loan",
-  upload.fields([{ name: "ghanaCardFront" }, { name: "ghanaCardBack" }]),
+  upload.none(),
   async (req, res) => {
     try {
-      const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-      const frontUrl = files["ghanaCardFront"]?.[0]?.filename || null;
-      const backUrl = files["ghanaCardBack"]?.[0]?.filename || null;
-
       const data = req.body;
       await prisma.loanApplication.create({
         data: {
@@ -175,8 +165,8 @@ router.post(
           dateNeeded: data.dateNeeded,
           purpose: data.purpose,
           ghanaCardNumber: data.ghanaCardNumber,
-          ghanaCardFrontUrl: frontUrl,
-          ghanaCardBackUrl: backUrl,
+          ghanaCardFrontUrl: null,
+          ghanaCardBackUrl: null,
         },
       });
 
@@ -191,20 +181,9 @@ router.post(
 // Welfare Application
 router.post(
   "/welfare",
-  upload.fields([
-    { name: "ghanaCardFront" },
-    { name: "ghanaCardBack" },
-    { name: "beneficiaryCardFront" },
-    { name: "beneficiaryCardBack" },
-  ]),
+  upload.none(),
   async (req, res) => {
     try {
-      const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-      const frontUrl = files["ghanaCardFront"]?.[0]?.filename || null;
-      const backUrl = files["ghanaCardBack"]?.[0]?.filename || null;
-      const bFrontUrl = files["beneficiaryCardFront"]?.[0]?.filename || null;
-      const bBackUrl = files["beneficiaryCardBack"]?.[0]?.filename || null;
-
       const data = req.body;
       await prisma.welfareApplication.create({
         data: {
@@ -215,12 +194,12 @@ router.post(
           occupation: data.occupation,
           townLocation: data.townLocation,
           ghanaCardNumber: data.ghanaCardNumber,
-          ghanaCardFrontUrl: frontUrl,
-          ghanaCardBackUrl: backUrl,
+          ghanaCardFrontUrl: null,
+          ghanaCardBackUrl: null,
           beneficiaryName: data.beneficiaryName,
           beneficiaryGhanaCard: data.beneficiaryGhanaCard,
-          beneficiaryCardFrontUrl: bFrontUrl,
-          beneficiaryCardBackUrl: bBackUrl,
+          beneficiaryCardFrontUrl: null,
+          beneficiaryCardBackUrl: null,
         },
       });
 

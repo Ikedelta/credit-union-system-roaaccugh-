@@ -227,20 +227,7 @@ export function ApplyLoan() {
                       <label className="form-label">Ghana Card Number</label>
                       <input type="text" name="ghanaCardNumber" className="form-control" required={step === 3} />
                     </div>
-                    <div className="grid md:grid-cols-2 gap-4" style={{ marginTop: '1rem' }}>
-                      <div className="form-group">
-                        <label className="form-label">Upload Card (Front)</label>
-                        <div style={{ border: '2px dashed #cbd5e1', padding: '1.5rem', borderRadius: '12px', textAlign: 'center', backgroundColor: '#f8fafc', overflow: 'hidden' }}>
-                          <input type="file" name="ghanaCardFront" style={{ width: '100%', textOverflow: 'ellipsis' }} accept=".jpg,.png,.jpeg,.webp" required={step === 3} />
-                        </div>
-                      </div>
-                      <div className="form-group">
-                        <label className="form-label">Upload Card (Back)</label>
-                        <div style={{ border: '2px dashed #cbd5e1', padding: '1.5rem', borderRadius: '12px', textAlign: 'center', backgroundColor: '#f8fafc', overflow: 'hidden' }}>
-                          <input type="file" name="ghanaCardBack" style={{ width: '100%', textOverflow: 'ellipsis' }} accept=".jpg,.png,.jpeg,.webp" required={step === 3} />
-                        </div>
-                      </div>
-                    </div>
+
 
                     <div className="wizard-actions">
                       <button type="button" className="btn btn-outline" onClick={prevStep} disabled={status === 'loading'}>

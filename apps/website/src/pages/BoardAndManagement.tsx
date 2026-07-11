@@ -5,13 +5,16 @@ import { useCMS } from '../context/CMSContext';
 export function BoardAndManagement() {
   const { getJSON } = useCMS();
 
-  const teamMembers = getJSON('about_team', [
+  const boardMembers = getJSON('board_of_directors', [
     { name: "Mr. Joseph Appiah", role: "Chairman", image: "https://roaaccugh.com/assets/img/team/joe.jpg" },
     { name: "Mr. Ebenezer Oppong", role: "Vice Chairman", image: "https://roaaccugh.com/assets/img/team/eben.jpg" },
     { name: "Mrs. Ethel Quandoh", role: "Secretary", image: "https://roaaccugh.com/assets/img/team/ethel.jpg" },
     { name: "Mr. Anthony K. Adiaba", role: "Treasurer", image: "https://roaaccugh.com/assets/img/team/adiaba.jpg" },
     { name: "Mr. Emmanuel B. Tsibuah(Esq)", role: "Member", image: "https://roaaccugh.com/assets/img/team/law.JPG" }
   ]);
+
+  const supervisoryMembers = getJSON('supervisory_committee', []);
+  const managementMembers = getJSON('management_team', []);
 
   return (
     <>
@@ -34,20 +37,72 @@ export function BoardAndManagement() {
             </div>
           </RevealOnScroll>
 
-          <div className="team-modern-grid">
-            {teamMembers.map((member: any, i: number) => (
-              <RevealOnScroll key={i} delay={i * 0.08}>
-                <div className="team-card">
-                  <div className="team-card-image">
-                    <img src={member.image?.startsWith('http') ? member.image : `http://localhost:3000${member.image}`} alt={member.name} />
+          {/* Board of Directors */}
+          <div style={{ marginBottom: '4rem' }}>
+            <h3 style={{ fontSize: '1.8rem', color: 'var(--primary-color)', marginBottom: '1.5rem', borderBottom: '2px solid var(--border-color)', paddingBottom: '0.5rem' }}>Board of Directors</h3>
+            <div className="team-modern-grid">
+              {boardMembers.map((member: any, i: number) => (
+                <RevealOnScroll key={`board-${i}`} delay={i * 0.08}>
+                  <div className="team-card">
+                    <div className="team-card-image">
+                      <img src={member.image?.startsWith('http') ? member.image : `http://localhost:3000${member.image}`} alt={member.name} />
+                    </div>
+                    <div className="team-card-info">
+                      <h3>{member.name}</h3>
+                      <p>{member.role}</p>
+                    </div>
                   </div>
-                  <div className="team-card-info">
-                    <h3>{member.name}</h3>
-                    <p>{member.role}</p>
-                  </div>
-                </div>
-              </RevealOnScroll>
-            ))}
+                </RevealOnScroll>
+              ))}
+            </div>
+          </div>
+
+          {/* Supervisory Committee */}
+          <div style={{ marginBottom: '4rem' }}>
+            <h3 style={{ fontSize: '1.8rem', color: 'var(--primary-color)', marginBottom: '1.5rem', borderBottom: '2px solid var(--border-color)', paddingBottom: '0.5rem' }}>Supervisory Committee</h3>
+            {supervisoryMembers.length > 0 ? (
+              <div className="team-modern-grid">
+                {supervisoryMembers.map((member: any, i: number) => (
+                  <RevealOnScroll key={`sup-${i}`} delay={i * 0.08}>
+                    <div className="team-card">
+                      <div className="team-card-image">
+                        <img src={member.image?.startsWith('http') ? member.image : `http://localhost:3000${member.image}`} alt={member.name} />
+                      </div>
+                      <div className="team-card-info">
+                        <h3>{member.name}</h3>
+                        <p>{member.role}</p>
+                      </div>
+                    </div>
+                  </RevealOnScroll>
+                ))}
+              </div>
+            ) : (
+              <p style={{ color: 'var(--text-muted)' }}>No members updated yet.</p>
+            )}
+          </div>
+
+          {/* Management */}
+          <div style={{ marginBottom: '2rem' }}>
+            <h3 style={{ fontSize: '1.8rem', color: 'var(--primary-color)', marginBottom: '1.5rem', borderBottom: '2px solid var(--border-color)', paddingBottom: '0.5rem' }}>Management</h3>
+            {managementMembers.length > 0 ? (
+              <div className="team-modern-grid">
+                {managementMembers.map((member: any, i: number) => (
+                  <RevealOnScroll key={`mgt-${i}`} delay={i * 0.08}>
+                    <div className="team-card">
+                      <div className="team-card-image">
+                        <img src={member.image?.startsWith('http') ? member.image : `http://localhost:3000${member.image}`} alt={member.name} />
+                      </div>
+                      <div className="team-card-info">
+                        <h3>{member.name}</h3>
+                        <p>{member.role}</p>
+                      </div>
+                    </div>
+                  </RevealOnScroll>
+                ))}
+              </div>
+            ) : (
+              <p style={{ color: 'var(--text-muted)' }}>No members updated yet.</p>
+            )}
           </div>
         </div>
       </main>

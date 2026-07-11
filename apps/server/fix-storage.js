@@ -2,6 +2,19 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 async function main() {
+  console.log('Ensuring cms-media bucket exists...');
+  
+  try {
+    await prisma.$executeRawUnsafe(`
+      INSERT INTO storage.buckets (id, name, public) 
+      VALUES ('cms-media', 'cms-media', true)
+      ON CONFLICT (id) DO UPDATE SET public = true;
+    `);
+    console.log('Bucket cms-media created/updated successfully!');
+  } catch(e) { 
+    console.error('Failed to create bucket:', e.message);
+  }
+
   console.log('Applying Supabase Storage Policies for cms-media...');
   
   try {

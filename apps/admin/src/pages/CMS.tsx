@@ -204,6 +204,11 @@ const CMS: React.FC = () => {
           { name: 'title', label: 'Main Title', type: 'text' },
           { name: 'subtitle', label: 'Subtitle / Description', type: 'textarea' },
         ])}
+        
+        {renderListEditor('home_features', 'Homepage Features (Bullet Points)', { icon: 'ShieldCheck', text: 'New Feature' }, [
+          { name: 'icon', label: 'Lucide Icon Name (e.g., ShieldCheck, TrendingUp, Users)', type: 'text' },
+          { name: 'text', label: 'Feature Text', type: 'text' }
+        ])}
       </>
     );
   };
@@ -243,7 +248,19 @@ const CMS: React.FC = () => {
           { name: 'desc', label: 'Value Description', type: 'text' }
         ])}
 
-        {renderListEditor('about_team', 'Executive Board / Team', { name: '', role: '', image: '' }, [
+        {renderListEditor('board_of_directors', 'Board of Directors', { name: '', role: '', image: '' }, [
+          { name: 'image', label: 'Profile Picture', type: 'image' },
+          { name: 'name', label: 'Full Name', type: 'text' },
+          { name: 'role', label: 'Position / Role', type: 'text' }
+        ])}
+
+        {renderListEditor('supervisory_committee', 'Supervisory Committee', { name: '', role: '', image: '' }, [
+          { name: 'image', label: 'Profile Picture', type: 'image' },
+          { name: 'name', label: 'Full Name', type: 'text' },
+          { name: 'role', label: 'Position / Role', type: 'text' }
+        ])}
+
+        {renderListEditor('management_team', 'Management Team', { name: '', role: '', image: '' }, [
           { name: 'image', label: 'Profile Picture', type: 'image' },
           { name: 'name', label: 'Full Name', type: 'text' },
           { name: 'role', label: 'Position / Role', type: 'text' }
@@ -279,6 +296,14 @@ const CMS: React.FC = () => {
     ]);
   };
 
+  const renderServicesTab = () => {
+    return renderListEditor('services_list', 'Services Page Items', { title: '', desc: '', icon: 'Phone' }, [
+      { name: 'icon', label: 'Lucide Icon Name (e.g., Phone, Zap, Banknote, Building2, ShieldCheck)', type: 'text' },
+      { name: 'title', label: 'Service Title', type: 'text' },
+      { name: 'desc', label: 'Service Description', type: 'textarea' }
+    ]);
+  };
+
   const renderNewsTab = () => {
     return (
       <>
@@ -311,10 +336,11 @@ const CMS: React.FC = () => {
         <button className={`btn ${activeTab === 'news' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('news')}>News & Alerts</button>
         <button className={`btn ${activeTab === 'faqs' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('faqs')}>FAQs</button>
         <button className={`btn ${activeTab === 'branches' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('branches')}>Branches</button>
-        <button className={`btn ${activeTab === 'products' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('products')}>Products/Services</button>
+        <button className={`btn ${activeTab === 'products' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('products')}>Products</button>
+        <button className={`btn ${activeTab === 'services' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('services')}>Services</button>
       </div>
 
-      <div className="dashboard-widgets">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
         {activeTab === 'general' && renderGeneralFields()}
         {activeTab === 'home' && renderHomeTab()}
         {activeTab === 'about' && renderAboutTab()}
@@ -322,6 +348,7 @@ const CMS: React.FC = () => {
         {activeTab === 'faqs' && renderFaqsTab()}
         {activeTab === 'branches' && renderBranchesTab()}
         {activeTab === 'products' && renderProductsTab()}
+        {activeTab === 'services' && renderServicesTab()}
       </div>
     </div>
   );

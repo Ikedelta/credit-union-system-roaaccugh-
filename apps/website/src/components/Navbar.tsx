@@ -25,7 +25,7 @@ export function Navbar({ setActiveModal: _setActiveModal }: NavbarProps) {
   }, [isMobileMenuOpen]);
 
   const toggleDropdown = (name: string, e: React.MouseEvent) => {
-    if (window.innerWidth <= 768) {
+    if (window.innerWidth <= 1024) {
       e.preventDefault();
       setActiveDropdown(activeDropdown === name ? null : name);
     }

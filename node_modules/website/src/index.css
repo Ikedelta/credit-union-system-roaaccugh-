@@ -88,7 +88,7 @@ a {
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 1.25rem;
+  padding: 0 1.75rem;
 }
 
 @media (min-width: 768px) {
@@ -555,7 +555,7 @@ a {
   animation: fadeIn 0.2s ease-out forwards;
 }
 
-@media (min-width: 769px) {
+@media (min-width: 1025px) {
   .dropdown:hover > .dropdown-content,
   .nested-dropdown:hover > .nested-dropdown-content {
     display: block;
@@ -609,7 +609,7 @@ a {
   background: var(--primary-color) !important;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .mobile-menu-btn {
     display: block;
     z-index: 1002;
@@ -791,7 +791,13 @@ a {
 
 /* Adjust main content padding to account for fixed header */
 main {
-  padding-top: 5rem;
+  padding-top: 7.5rem;
+}
+
+@media (max-width: 1024px) {
+  main {
+    padding-top: 6rem;
+  }
 }
 
 /* Hero full-screen pages (home) — the hero is height:100vh so needs no top padding */
@@ -1169,16 +1175,20 @@ main.hero-page {
 @media (max-width: 800px) {
   .stats-strip {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 0;
   }
   .stat-strip-divider { display: none; }
   .stat-strip-item {
-    padding: 1rem;
+    padding: 1.25rem 1rem;
     border-bottom: 1px solid rgba(255,255,255,0.08);
   }
   .stat-strip-item:nth-child(odd) {
     border-right: 1px solid rgba(255,255,255,0.08);
+  }
+  .stat-strip-item:nth-child(3),
+  .stat-strip-item:nth-child(4) {
+    border-bottom: none;
   }
 }
 
@@ -1414,8 +1424,13 @@ main.hero-page {
 /* ── Team Modern Grid ── */
 .team-modern-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr;
   gap: 1.5rem;
+}
+@media (min-width: 480px) {
+  .team-modern-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 @media (min-width: 640px) {
   .team-modern-grid {
@@ -1541,6 +1556,16 @@ main.hero-page {
 
 .hero-slide-content {
   max-width: 680px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding-bottom: 120px;
+}
+
+@media (max-width: 640px) {
+  .hero-slide-content {
+    padding-bottom: 75px;
+  }
 }
 
 .hero-slide-eyebrow {
@@ -1732,7 +1757,7 @@ textarea.form-control {
   font-weight: 600;
   color: var(--text-light);
   text-align: center;
-  max-width: 80px;
+  max-width: 120px;
   line-height: 1.2;
 }
 
@@ -1774,18 +1799,28 @@ textarea.form-control {
     font-size: 0.8rem;
   }
   .wizard-step-label {
-    font-size: 0.7rem !important;
-    max-width: 64px;
+    font-size: 0.75rem !important;
+    max-width: 100px;
+    word-break: normal;
   }
 }
 
 /* ── Responsive Premium Card ── */
 @media (max-width: 480px) {
   .premium-card {
-    padding: 1.5rem 1rem;
+    padding: 1.25rem 0.85rem;
+    margin-left: -0.5rem;
+    margin-right: -0.5rem;
+    width: calc(100% + 1rem);
+    border-radius: 12px;
   }
   .form-wizard-card {
-    padding: 1.25rem !important;
+    padding: 1.25rem 0.85rem !important;
+  }
+  /* Fix wizard track going outside on small screens */
+  .wizard-header {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
   }
 }
 
