@@ -1,9 +1,22 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import { Save, Loader2, Plus, Trash2, UploadCloud } from 'lucide-react';
+import { Save, Loader2, Plus, Trash2, UploadCloud, Link as LinkIcon, Facebook, Twitter, Instagram, Linkedin, Youtube, Github, Globe } from 'lucide-react';
 import LoadingScreen from '../components/LoadingScreen';
 import { supabase } from '../utils/supabase';
 import { v4 as uuidv4 } from 'uuid';
+
+const getSocialIcon = (platform: string) => {
+  switch (platform.toLowerCase()) {
+    case 'facebook': return Facebook;
+    case 'twitter': 
+    case 'x': return Twitter;
+    case 'instagram': return Instagram;
+    case 'linkedin': return Linkedin;
+    case 'youtube': return Youtube;
+    case 'github': return Github;
+    default: return Globe;
+  }
+};
 
 interface ContentItem {
   key: string;
@@ -145,7 +158,10 @@ const CMS: React.FC = () => {
         {list.map((listItem, index) => (
           <div key={listItem.id || index} style={{ border: '1px solid var(--border-color)', padding: '1.25rem', borderRadius: '12px', marginBottom: '1.5rem', background: 'var(--bg-white)', boxShadow: 'var(--shadow-sm)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', paddingBottom: '0.75rem', borderBottom: '1px solid var(--border-color)' }}>
-              <strong style={{ color: 'var(--primary-color)' }}>Item #{index + 1}</strong>
+              <strong style={{ color: 'var(--primary-color)', display: 'flex', alignItems: 'center', gap: '0.5rem', textTransform: 'capitalize' }}>
+                {key === 'social_links' && listItem.platform ? React.createElement(getSocialIcon(listItem.platform), { size: 18 }) : null}
+                {key === 'social_links' && listItem.platform ? listItem.platform : `Item #${index + 1}`}
+              </strong>
               <button className="btn btn-ghost" style={{ color: 'red', padding: '0.4rem', height: 'auto', minHeight: 'unset' }} onClick={() => removeListItem(index)} title="Remove Item">
                 <Trash2 size={16} />
               </button>

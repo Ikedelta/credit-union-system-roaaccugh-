@@ -1,4 +1,4 @@
-import { Mail, Phone, MapPin, ArrowRight, Globe } from 'lucide-react';
+import { Mail, Phone, MapPin, ArrowRight, Globe, Facebook, Twitter, Instagram, Linkedin, Youtube } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useCMS } from '../context/CMSContext';
 
@@ -13,10 +13,12 @@ export function Footer({ setActiveModal: _setActiveModal }: FooterProps) {
 
   const getIcon = (platform: string) => {
     switch (platform.toLowerCase()) {
-      case 'facebook': return Globe; // Fallback to globe if social icons are missing
-      case 'twitter': return Globe;
-      case 'instagram': return Globe;
-      case 'linkedin': return Globe;
+      case 'facebook': return Facebook;
+      case 'twitter': 
+      case 'x': return Twitter;
+      case 'instagram': return Instagram;
+      case 'linkedin': return Linkedin;
+      case 'youtube': return Youtube;
       default: return Globe;
     }
   };
