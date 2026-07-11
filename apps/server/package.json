@@ -13,6 +13,7 @@
     "start": "node dist/server.js"
   },
   "dependencies": {
+    "@kairosafrika/sms": "^1.0.15",
     "@prisma/client": "^5.22.0",
     "@supabase/supabase-js": "^2.110.2",
     "bcrypt": "^6.0.0",
@@ -27,6 +28,7 @@
     "multer": "^2.2.0",
     "nodemailer": "^9.0.3",
     "prisma": "^5.22.0",
+    "rxjs": "^7.8.2",
     "tslib": "^2.8.1"
   },
   "devDependencies": {

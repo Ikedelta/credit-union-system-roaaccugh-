@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const multer_1 = __importDefault(require("multer"));
 const client_1 = require("@prisma/client");
+const sms_1 = require("../utils/sms");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const auth_1 = require("../middleware/auth");
@@ -175,21 +176,10 @@ router.post("/loan", upload.none(), async (req, res) => {
             },
         });
         // Send SMS Notification
-        if (data.telNo && process.env.ARKESEL_API_KEY) {
+        if (data.telNo && process.env.KAIROS_API_KEY) {
             const formatted = normalizeGhanaNumber(data.telNo);
             try {
-                await fetch("https://sms.arkesel.com/api/v2/sms/send", {
-                    method: "POST",
-                    headers: {
-                        "api-key": process.env.ARKESEL_API_KEY,
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        sender: process.env.SMS_SENDER_ID || "ROAACCU",
-                        message: `Hello ${data.fullName}, your ROAACCU loan application has been received and is currently under review. We will notify you when the status changes.`,
-                        recipients: [formatted],
-                    }),
-                });
+                await (0, sms_1.sendSms)(formatted, `Hello ${data.fullName}, your ROAACCU loan application has been received and is currently under review. We will notify you when the status changes.`);
             }
             catch (smsErr) {
                 console.error("Failed to send loan submission SMS:", smsErr);

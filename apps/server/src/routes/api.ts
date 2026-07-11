@@ -1,8 +1,9 @@
 import { Router } from "express";
 import multer from "multer";
 import path from "path";
-import fs from "fs";
+import express from "express";
 import { PrismaClient } from "@prisma/client";
+import { sendSms } from "../utils/sms";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { authenticateMember, MemberAuthRequest } from "../middleware/auth";
@@ -185,21 +186,10 @@ router.post(
       });
 
       // Send SMS Notification
-      if (data.telNo && process.env.ARKESEL_API_KEY) {
+      if (data.telNo && process.env.KAIROS_API_KEY) {
         const formatted = normalizeGhanaNumber(data.telNo);
         try {
-          await fetch("https://sms.arkesel.com/api/v2/sms/send", {
-            method: "POST",
-            headers: {
-              "api-key": process.env.ARKESEL_API_KEY,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              sender: process.env.SMS_SENDER_ID || "ROAACCU",
-              message: `Hello ${data.fullName}, your ROAACCU loan application has been received and is currently under review. We will notify you when the status changes.`,
-              recipients: [formatted],
-            }),
-          });
+          await sendSms(formatted, `Hello ${data.fullName}, your ROAACCU loan application has been received and is currently under review. We will notify you when the status changes.`);
         } catch (smsErr) {
           console.error("Failed to send loan submission SMS:", smsErr);
         }

@@ -9,6 +9,6 @@ const app_1 = __importDefault(require("./app"));
 const PORT = process.env.PORT || 5000;
 app_1.default.listen(PORT, () => {
     console.log(`🚀 Server is running on http://localhost:${PORT}`);
-    console.log(`📱 Arkesel SMS: ${process.env.ARKESEL_API_KEY ? '✅ Configured' : '❌ Missing API Key'}`);
+    console.log(`📱 Kairos Afrika SMS: ${process.env.KAIROS_API_KEY && process.env.KAIROS_API_SECRET ? '✅ Configured' : '❌ Missing API Keys'}`);
 });
 //# sourceMappingURL=server.js.map

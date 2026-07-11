@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const client_1 = require("@prisma/client");
+const sms_1 = require("../utils/sms");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const multer_1 = __importDefault(require("multer"));
@@ -242,21 +243,10 @@ router.patch("/loans/:id/status", async (req, res) => {
         const application = await prisma.loanApplication.update({ where: { id: parseInt(req.params.id) }, data: { status } });
         await createAuditLog(adminReq.adminId, `${status}_LOAN`, `Loan ID: ${application.id}`);
         // Send SMS Notification
-        if (application.telNo && process.env.ARKESEL_API_KEY) {
+        if (application.telNo && process.env.KAIROS_API_KEY) {
             const formatted = normalizeGhanaNumber(application.telNo);
             try {
-                await fetch("https://sms.arkesel.com/api/v2/sms/send", {
-                    method: "POST",
-                    headers: {
-                        "api-key": process.env.ARKESEL_API_KEY,
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        sender: process.env.SMS_SENDER_ID || "ROAACCU",
-                        message: `Hello ${application.fullName}, your ROAACCU loan application status has been updated to: ${status}.`,
-                        recipients: [formatted],
-                    }),
-                });
+                await (0, sms_1.sendSms)(formatted, `Hello ${application.fullName}, your ROAACCU loan application status has been updated to: ${status}.`);
             }
             catch (smsErr) {
                 console.error("Failed to send loan status update SMS:", smsErr);
@@ -326,7 +316,7 @@ router.put("/content/:key", async (req, res) => {
         res.status(500).json({ error: "Failed to update content" });
     }
 });
-// --- SMS (Arkesel Integration) ---
+// --- SMS (Kairos Afrika Integration) ---
 router.get("/sms", async (req, res) => {
     try {
         const logs = await prisma.smsLog.findMany({ orderBy: { createdAt: "desc" } });
@@ -336,33 +326,22 @@ router.get("/sms", async (req, res) => {
         res.status(500).json({ error: "Failed to fetch SMS logs" });
     }
 });
-// Diagnostic: verify Arkesel API key + check balance
+// Diagnostic: verify Kairos API key + check balance
 router.get("/sms/test", async (req, res) => {
-    const ARKESEL_API_KEY = process.env.ARKESEL_API_KEY;
-    if (!ARKESEL_API_KEY) {
-        return res.status(500).json({ error: "ARKESEL_API_KEY not set in .env" });
-    }
     try {
-        const apiRes = await fetch("https://sms.arkesel.com/api/v2/clients/balance-details", {
-            headers: { "api-key": ARKESEL_API_KEY },
-        });
-        const data = await apiRes.json();
-        res.json({ configured: true, arkesel_response: data });
+        const data = await (0, sms_1.checkSmsBalance)();
+        res.json({ configured: true, kairos_response: data });
     }
     catch (err) {
-        res.status(500).json({ error: "Failed to reach Arkesel API", details: String(err) });
+        res.status(500).json({ error: "Failed to reach Kairos Afrika API", details: String(err) });
     }
 });
 router.post("/sms/send", async (req, res) => {
     try {
         const { recipients, message } = req.body;
         const adminReq = req;
-        const ARKESEL_API_KEY = process.env.ARKESEL_API_KEY;
-        // NOTE: SENDER_ID must be registered on Arkesel dashboard.
-        // Use "TEST" for testing, or register "ROAACCU" at https://sms.arkesel.com
-        const SENDER_ID = process.env.SMS_SENDER_ID || "ROAACCU";
-        if (!ARKESEL_API_KEY) {
-            return res.status(500).json({ error: "SMS API key not configured on the server." });
+        if (!process.env.KAIROS_API_KEY) {
+            return res.status(500).json({ error: "SMS API keys not configured on the server." });
         }
         if (!recipients || !Array.isArray(recipients) || recipients.length === 0) {
             return res.status(400).json({ error: "No recipients provided." });
@@ -374,41 +353,21 @@ router.post("/sms/send", async (req, res) => {
         for (const recipient of recipients) {
             const formatted = normalizeGhanaNumber(recipient);
             try {
-                const apiRes = await fetch("https://sms.arkesel.com/api/v2/sms/send", {
-                    method: "POST",
-                    headers: {
-                        "api-key": ARKESEL_API_KEY,
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        sender: SENDER_ID,
-                        message: message.trim(),
-                        recipients: [formatted],
-                    }),
-                });
-                const rawText = await apiRes.text();
-                let data = {};
-                try {
-                    data = JSON.parse(rawText);
-                }
-                catch {
-                    data = { message: rawText };
-                }
-                console.log(`[SMS] ${recipient} → ${formatted}: status=${data.status}, response=${rawText}`);
-                const isSuccess = data.status === "success";
+                const response = await (0, sms_1.sendSms)(formatted, message.trim());
+                console.log(`[SMS] ${recipient} → ${formatted}: success`, response);
                 await prisma.smsLog.create({
                     data: {
                         recipient: formatted,
                         message: message.trim(),
-                        status: isSuccess ? "SENT" : "FAILED",
+                        status: "SENT",
                         senderId: adminReq.adminId,
                     },
                 });
                 results.push({
                     recipient,
                     formatted,
-                    status: isSuccess ? "SENT" : "FAILED",
-                    detail: isSuccess ? `Delivered to ${formatted}` : (data.message || data.code || "Rejected by network"),
+                    status: "SENT",
+                    detail: `Delivered to ${formatted}`,
                 });
             }
             catch (perErr) {
@@ -457,40 +416,18 @@ router.post("/sms/broadcast", async (req, res) => {
         if (recipients.length === 0) {
             return res.status(400).json({ error: "No recipients found in the selected group." });
         }
-        const ARKESEL_API_KEY = process.env.ARKESEL_API_KEY;
-        const SENDER_ID = process.env.SMS_SENDER_ID || "ROAACCU";
-        if (!ARKESEL_API_KEY) {
-            return res.status(500).json({ error: "SMS API key not configured on the server." });
+        if (!process.env.KAIROS_API_KEY) {
+            return res.status(500).json({ error: "SMS API keys not configured on the server." });
         }
         const results = [];
         for (const recipient of recipients) {
             const formatted = normalizeGhanaNumber(recipient);
             try {
-                const apiRes = await fetch("https://sms.arkesel.com/api/v2/sms/send", {
-                    method: "POST",
-                    headers: {
-                        "api-key": ARKESEL_API_KEY,
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        sender: SENDER_ID,
-                        message: message.trim(),
-                        recipients: [formatted],
-                    }),
-                });
-                const rawText = await apiRes.text();
-                let data = {};
-                try {
-                    data = JSON.parse(rawText);
-                }
-                catch {
-                    data = { message: rawText };
-                }
-                const isSuccess = data.status === "success";
+                await (0, sms_1.sendSms)(formatted, message.trim());
                 await prisma.smsLog.create({
-                    data: { recipient: formatted, message: message.trim(), status: isSuccess ? "SENT" : "FAILED", senderId: adminReq.adminId },
+                    data: { recipient: formatted, message: message.trim(), status: "SENT", senderId: adminReq.adminId },
                 });
-                results.push({ recipient, formatted, status: isSuccess ? "SENT" : "FAILED" });
+                results.push({ recipient, formatted, status: "SENT" });
             }
             catch (err) {
                 await prisma.smsLog.create({ data: { recipient: formatted, message: message.trim(), status: "FAILED", senderId: adminReq.adminId } });
@@ -541,21 +478,10 @@ router.post("/users", auth_1.authenticateSuperAdmin, async (req, res) => {
             }
         }
         // Send Welcome SMS (if telNo is provided and configured)
-        if (telNo && process.env.ARKESEL_API_KEY) {
+        if (telNo && process.env.KAIROS_API_KEY) {
             const formatted = normalizeGhanaNumber(telNo);
             try {
-                await fetch("https://sms.arkesel.com/api/v2/sms/send", {
-                    method: "POST",
-                    headers: {
-                        "api-key": process.env.ARKESEL_API_KEY,
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        sender: process.env.SMS_SENDER_ID || "ROAACCU",
-                        message: `Hello ${name}, your ROAACCU Admin account has been created. Check your email for login details.`,
-                        recipients: [formatted],
-                    }),
-                });
+                await (0, sms_1.sendSms)(formatted, `Hello ${name}, your ROAACCU Admin account has been created. Check your email for login details.`);
             }
             catch (smsErr) {
                 console.error("Failed to send welcome SMS to admin:", smsErr);
