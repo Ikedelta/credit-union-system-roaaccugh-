@@ -1,6 +1,6 @@
 import { KairosSMS } from "@kairosafrika/sms";
 import { lastValueFrom } from "rxjs";
-import dotenv from "dotenv";
+import * as dotenv from "dotenv";
 
 dotenv.config();
 
@@ -10,11 +10,8 @@ const SENDER_ID = process.env.SMS_SENDER_ID || "ROAACCU";
 
 /**
  * Sends a single SMS message using Kairos Afrika
- * @param to The recipient phone number
- * @param message The text message content
- * @returns A promise that resolves when the message is accepted by the API
  */
-export async function sendSms(to: string, message: string): Promise<any> {
+export const sendSms = async (to: string, message: string): Promise<boolean> => {
   if (!KAIROS_API_KEY || !KAIROS_API_SECRET) {
     throw new Error("KAIROS_API_KEY or KAIROS_API_SECRET not set in environment variables.");
   }
@@ -26,18 +23,23 @@ export async function sendSms(to: string, message: string): Promise<any> {
         { to, from: SENDER_ID, message }
       ).asQuick()
     );
-    return response;
-  } catch (error) {
-    console.error(`[Kairos SMS] Failed to send SMS to ${to}:`, error);
-    throw error;
+    
+    // Kairos wraps HTTP errors in a success: false payload without throwing
+    if (response && response.success === false) {
+      console.error(`[Kairos SMS] API Error:`, response.statusMessage);
+      return false;
+    }
+    return true;
+  } catch (error: any) {
+    console.error(`[Kairos SMS] Failed to send SMS to ${to}:`, error?.message || String(error));
+    return false;
   }
-}
+};
 
 /**
  * Pings the Kairos API to check SMS balance.
- * Returns the balance data object.
  */
-export async function checkSmsBalance(): Promise<any> {
+export const checkSmsBalance = async (): Promise<any> => {
   if (!KAIROS_API_KEY || !KAIROS_API_SECRET) {
     throw new Error("KAIROS_API_KEY or KAIROS_API_SECRET not set in environment variables.");
   }
@@ -47,9 +49,17 @@ export async function checkSmsBalance(): Promise<any> {
     const response = await lastValueFrom(
       KairosSMS.account({ apiKey: KAIROS_API_KEY, apiSecret: KAIROS_API_SECRET }).balance()
     );
-    return response;
-  } catch (error) {
-    console.error("[Kairos SMS] Failed to check balance:", error);
-    throw error;
+    
+    // Sanitize the response to prevent circular JSON errors if Kairos returns an Axios Error object inside `data`
+    return {
+      success: response?.success,
+      statusCode: response?.statusCode,
+      statusMessage: response?.statusMessage,
+      // Only include data if it's a number/string/simple object, avoid Error objects
+      data: response?.data instanceof Error ? response.data.message : response?.data
+    };
+  } catch (error: any) {
+    console.error("[Kairos SMS] Failed to check balance:", error?.message || String(error));
+    throw new Error("Failed to check balance");
   }
-}
+};
