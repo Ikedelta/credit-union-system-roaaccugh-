@@ -206,9 +206,9 @@ router.post(
       }
 
       res.json({ success: true });
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      res.status(500).json({ error: "Failed to submit application" });
+      res.status(500).json({ error: "Failed to submit application", details: err?.message || String(err) });
     }
   }
 );
