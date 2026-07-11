@@ -79,52 +79,6 @@
   }
 }
 
-.form-group {
-  margin-bottom: 1.25rem;
-  text-align: left;
-}
-
-.form-label {
-  display: block;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--primary-color);
-  margin-bottom: 0.5rem;
-}
-
-.form-control {
-  width: 100%;
-  padding: 0.85rem 1.25rem;
-  border: 1.5px solid #cbd5e1;
-  border-radius: 12px;
-  background-color: #f8fafc;
-  font-family: inherit;
-  font-size: 1rem;
-  color: var(--text-main);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.form-control::placeholder {
-  color: #94a3b8;
-}
-
-.form-control:hover {
-  background-color: #f1f5f9;
-  border-color: #94a3b8;
-}
-
-.form-control:focus {
-  outline: none;
-  background-color: var(--white);
-  border-color: var(--secondary-color);
-  box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.15);
-}
-
-textarea.form-control {
-  resize: vertical;
-  min-height: 100px;
-}
-
 /* Modals */
 .modal-overlay {
   position: fixed;

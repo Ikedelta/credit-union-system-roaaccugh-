@@ -177,11 +177,6 @@ export function ApplyLoan() {
                     <textarea name="directionToHouse" className="form-control" style={{ minHeight: '80px' }} required={step === 1}></textarea>
                     </div>
                     
-                    <div className="wizard-actions" style={{ justifyContent: 'flex-end' }}>
-                      <button type="button" className="btn btn-primary" onClick={nextStep}>
-                        Next Step <ArrowRight size={16} />
-                      </button>
-                    </div>
                   </div>
 
                   {/* Section 2 */}
@@ -210,14 +205,6 @@ export function ApplyLoan() {
                     <textarea name="purpose" className="form-control" style={{ minHeight: '80px' }} required={step === 2}></textarea>
                     </div>
                     
-                    <div className="wizard-actions">
-                      <button type="button" className="btn btn-outline" onClick={prevStep}>
-                        <ArrowLeft size={16} /> Previous
-                      </button>
-                      <button type="button" className="btn btn-primary" onClick={nextStep}>
-                        Next Step <ArrowRight size={16} />
-                      </button>
-                    </div>
                   </div>
 
                   {/* Section 3 */}
@@ -230,14 +217,39 @@ export function ApplyLoan() {
                     </div>
                     </div>
 
-                    <div className="wizard-actions">
-                      <button type="button" className="btn btn-outline" onClick={prevStep} disabled={status === 'loading'}>
-                        <ArrowLeft size={16} /> Previous
+                  </div>
+
+                  {/* Navigation Actions */}
+                  <div className="wizard-actions">
+                    <button 
+                      type="button" 
+                      className="btn btn-ghost" 
+                      onClick={prevStep} 
+                      disabled={status === 'loading'}
+                      style={{ visibility: step > 1 ? 'visible' : 'hidden', gap: '0.5rem' }}
+                    >
+                      <ArrowLeft size={18} /> Back
+                    </button>
+                    
+                    {step < 3 ? (
+                      <button 
+                        type="button" 
+                        className="btn btn-primary" 
+                        onClick={nextStep}
+                        style={{ gap: '0.5rem' }}
+                      >
+                        Next Step <ArrowRight size={18} />
                       </button>
-                      <button type="submit" className="btn btn-primary" disabled={status === 'loading'}>
+                    ) : (
+                      <button 
+                        type="submit" 
+                        className="btn btn-primary" 
+                        disabled={status === 'loading'}
+                        style={{ paddingLeft: '2rem', paddingRight: '2rem' }}
+                      >
                         {status === 'loading' ? 'Submitting...' : 'Submit Application'}
                       </button>
-                    </div>
+                    )}
                   </div>
 
                 </form>
