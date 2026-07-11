@@ -465,13 +465,13 @@ router.post("/sms/broadcast", async (req, res) => {
 
     let recipients: string[] = [];
     if (targetGroup === "MEMBERS") {
-      const members = await prisma.member.findMany({ where: { telNo: { not: null } } });
+      const members = await prisma.member.findMany();
       recipients = members.map(m => m.telNo).filter(Boolean) as string[];
     } else if (targetGroup === "ADMINS") {
-      const admins = await prisma.admin.findMany({ where: { telNo: { not: null } } });
+      const admins = await prisma.admin.findMany();
       recipients = admins.map(a => a.telNo).filter(Boolean) as string[];
     } else if (targetGroup === "LOAN_APPLICANTS") {
-      const loans = await prisma.loanApplication.findMany({ where: { telNo: { not: null } } });
+      const loans = await prisma.loanApplication.findMany();
       recipients = loans.map(l => l.telNo).filter(Boolean) as string[];
     } else {
       return res.status(400).json({ error: "Invalid target group" });

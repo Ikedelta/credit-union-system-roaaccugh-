@@ -96,26 +96,26 @@ export function Home() {
             </SwiperSlide>
           ))}
         </Swiper>
-      {/* ── Alert Ticker ── */}
-      {getJSON('alert_ticker', [
-        { text: "Notice: Upcoming Annual General Meeting on August 15, 2026. All members are invited!" }
-      ]).length > 0 && (
-        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, color: '#fff', display: 'flex', alignItems: 'stretch', borderTop: '1px solid rgba(255,255,255,0.1)', zIndex: 20 }}>
-          <div style={{ background: 'var(--primary-color)', padding: '0.85rem 1.5rem', fontWeight: 700, textTransform: 'uppercase', fontSize: '0.85rem', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '0.5rem', boxShadow: '2px 0 10px rgba(0,0,0,0.2)', zIndex: 2 }}>
-            <span style={{ animation: 'pulse 2s infinite' }}>🔔</span> Alerts
-          </div>
-          <div style={{ flex: 1, background: 'var(--secondary-color)', overflow: 'hidden', padding: '0 1rem', display: 'flex', alignItems: 'center', whiteSpace: 'nowrap' }}>
-            <div style={{ animation: 'marquee 25s linear infinite', display: 'inline-block', paddingLeft: '100%', willChange: 'transform' }}>
-              {getJSON('alert_ticker', [
-                { text: "Notice: Upcoming Annual General Meeting on August 15, 2026. All members are invited!" }
-              ]).map((alert: any, i: number) => (
-                <span key={i} style={{ fontSize: '0.95rem', fontWeight: 500, marginRight: '4rem', textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}>
-                  {alert.text}
-                </span>
-              ))}
-            </div>
-          </div>
-          <style>{`
+        {/* ── Alert Ticker ── */}
+        {getJSON('alert_ticker', [
+          { text: "Notice: Upcoming Annual General Meeting on August 15, 2026. All members are invited!" }
+        ]).length > 0 && (
+            <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, color: '#fff', display: 'flex', alignItems: 'stretch', borderTop: '1px solid rgba(255,255,255,0.1)', zIndex: 20 }}>
+              <div style={{ background: 'var(--primary-color)', padding: '0.85rem 1.5rem', fontWeight: 700, textTransform: 'uppercase', fontSize: '0.85rem', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '0.5rem', boxShadow: '2px 0 10px rgba(0,0,0,0.2)', zIndex: 2 }}>
+                <span style={{ animation: 'pulse 2s infinite' }}>🔔</span> Alerts
+              </div>
+              <div style={{ flex: 1, background: 'var(--secondary-color)', overflow: 'hidden', padding: '0 1rem', display: 'flex', alignItems: 'center', whiteSpace: 'nowrap' }}>
+                <div style={{ animation: 'marquee 25s linear infinite', display: 'inline-block', paddingLeft: '100%', willChange: 'transform' }}>
+                  {getJSON('alert_ticker', [
+                    { text: "Notice: Upcoming Annual General Meeting on August 15, 2026. All members are invited!" }
+                  ]).map((alert: any, i: number) => (
+                    <span key={i} style={{ fontSize: '0.95rem', fontWeight: 500, marginRight: '4rem', textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}>
+                      {alert.text}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <style>{`
             @keyframes pulse {
               0% { transform: scale(1); opacity: 1; }
               50% { transform: scale(1.2); opacity: 0.8; }
@@ -126,8 +126,8 @@ export function Home() {
               100% { transform: translateX(-100%); }
             }
           `}</style>
-        </div>
-      )}
+            </div>
+          )}
       </section>
 
       {/* ── Stats Strip ── */}
@@ -169,7 +169,7 @@ export function Home() {
                   style={{ objectFit: 'contain', width: '100%', height: '100%', maxHeight: '400px' }}
                 />
                 <div className="home-split-badge">
-                  <strong>{get('established_year', 'Est. 2014')}</strong>
+                  <strong>{get('established_year', 'Est. 2011')}</strong>
                   <span>{get('established_subtitle', 'Registered Co-operative')}</span>
                 </div>
               </div>
