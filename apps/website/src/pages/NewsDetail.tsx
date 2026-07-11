@@ -42,7 +42,7 @@ export function NewsDetail() {
         bgImage={newsItem.image || "/slider1.jpg"}
       />
       
-      <main className="section container" style={{ maxWidth: '900px', margin: '0 auto', paddingTop: 'clamp(1.5rem, 5vw, 3rem)' }}>
+      <main className="section container" style={{ maxWidth: '900px', margin: '0 auto', paddingTop: 'clamp(1.5rem, 5vw, 3rem)', paddingLeft: 'clamp(1.75rem, 6vw, 4rem)', paddingRight: 'clamp(1.75rem, 6vw, 4rem)' }}>
         
         {/* Back Button */}
         <button 
