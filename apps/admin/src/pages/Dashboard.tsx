@@ -48,7 +48,7 @@ const Dashboard: React.FC = () => {
         try {
           if (smsTestRes?.kairos_response) {
              const kr = smsTestRes.kairos_response;
-             balance = kr.balance !== undefined ? kr.balance : (kr.data?.balance || kr.data || 'Live');
+             balance = kr.credit !== undefined ? kr.credit : (kr.data?.credit !== undefined ? kr.data.credit : (kr.data?.balance || 'Live'));
           }
         } catch(e) {}
 
