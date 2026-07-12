@@ -26,7 +26,11 @@ const Login: React.FC = () => {
         navigate('/');
       }
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to login');
+      if (err.code === 'ERR_NETWORK') {
+        setError('Network error: Unable to connect to the server. Please ensure the backend is running.');
+      } else {
+        setError(err.response?.data?.error || 'Failed to login');
+      }
     } finally {
       setLoading(false);
     }

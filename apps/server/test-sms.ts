@@ -21,7 +21,7 @@ async function testSMS() {
     // } else {
     //   console.log("❌ Failed to send message.");
     // }
-    
+
   } catch (error) {
     console.error("❌ Test failed:", error);
   }
