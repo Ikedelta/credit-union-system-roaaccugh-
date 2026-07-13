@@ -3,7 +3,7 @@ import multer from "multer";
 import path from "path";
 import express from "express";
 import { PrismaClient } from "@prisma/client";
-import { sendSms } from "../utils/sms";
+import { sendSms, checkSmsBalance, getSmsTemplate } from "../utils/sms";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { authenticateMember, MemberAuthRequest } from "../middleware/auth";
@@ -21,6 +21,16 @@ function normalizeGhanaNumber(raw: string): string {
 const router = Router();
 const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET || "your-super-secret-jwt-key-change-in-production";
+
+// Add a quick unauthenticated route to test Kairos from Vercel directly
+router.get("/test-sms", async (req, res) => {
+  try {
+    const data = await checkSmsBalance();
+    res.json({ success: true, data });
+  } catch (err: any) {
+    res.json({ success: false, error: err?.message || String(err), stack: err?.stack });
+  }
+});
 
 // Multer config - memory storage for Vercel
 const storage = multer.memoryStorage();
@@ -189,7 +199,9 @@ router.post(
       if (data.telNo && process.env.KAIROS_API_KEY) {
         const formatted = normalizeGhanaNumber(data.telNo);
         try {
-          await sendSms(formatted, `Hello ${data.fullName}, your ROAACCU loan application has been received and is currently under review. We will notify you when the status changes.`);
+          let template = await getSmsTemplate("sms_template_loan_submission", "Hello {name}, your ROAACCU loan application has been received and is currently under review. We will notify you when the status changes.", prisma);
+          const message = template.replace(/{name}/g, data.fullName);
+          await sendSms(formatted, message);
         } catch (smsErr) {
           console.error("Failed to send loan submission SMS:", smsErr);
         }

@@ -38,6 +38,10 @@ const Dashboard: React.FC = () => {
         const welfareRes = results[2].status === 'fulfilled' ? results[2].value.data : [];
         const messagesRes = results[3].status === 'fulfilled' ? results[3].value.data : [];
         const smsTestRes = results[4].status === 'fulfilled' ? results[4].value.data : null;
+        
+        if (results[4].status === 'rejected') {
+          console.error("SMS API REJECTED:", results[4].reason);
+        }
 
         // Check if all essential APIs failed (server down or unauthorized)
         if (results.slice(0, 4).every(r => r.status === 'rejected')) {

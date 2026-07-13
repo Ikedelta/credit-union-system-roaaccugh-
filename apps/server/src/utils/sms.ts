@@ -63,3 +63,15 @@ export const checkSmsBalance = async (): Promise<any> => {
     throw new Error("Failed to check balance");
   }
 };
+
+/**
+ * Gets an SMS template from the database or returns a default message.
+ */
+export const getSmsTemplate = async (key: string, defaultMessage: string, prismaClient: any): Promise<string> => {
+  try {
+    const content = await prismaClient.websiteContent.findUnique({ where: { key } });
+    return content?.value || defaultMessage;
+  } catch (err) {
+    return defaultMessage;
+  }
+};

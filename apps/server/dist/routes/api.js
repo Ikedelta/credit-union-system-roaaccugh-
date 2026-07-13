@@ -26,6 +26,16 @@ function normalizeGhanaNumber(raw) {
 const router = (0, express_1.Router)();
 const prisma = new client_1.PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET || "your-super-secret-jwt-key-change-in-production";
+// Add a quick unauthenticated route to test Kairos from Vercel directly
+router.get("/test-sms", async (req, res) => {
+    try {
+        const data = await (0, sms_1.checkSmsBalance)();
+        res.json({ success: true, data });
+    }
+    catch (err) {
+        res.json({ success: false, error: err?.message || String(err), stack: err?.stack });
+    }
+});
 // Multer config - memory storage for Vercel
 const storage = multer_1.default.memoryStorage();
 const upload = (0, multer_1.default)({
@@ -179,7 +189,9 @@ router.post("/loan", upload.none(), async (req, res) => {
         if (data.telNo && process.env.KAIROS_API_KEY) {
             const formatted = normalizeGhanaNumber(data.telNo);
             try {
-                await (0, sms_1.sendSms)(formatted, `Hello ${data.fullName}, your ROAACCU loan application has been received and is currently under review. We will notify you when the status changes.`);
+                let template = await (0, sms_1.getSmsTemplate)("sms_template_loan_submission", "Hello {name}, your ROAACCU loan application has been received and is currently under review. We will notify you when the status changes.", prisma);
+                const message = template.replace(/{name}/g, data.fullName);
+                await (0, sms_1.sendSms)(formatted, message);
             }
             catch (smsErr) {
                 console.error("Failed to send loan submission SMS:", smsErr);

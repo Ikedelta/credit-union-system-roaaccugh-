@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { format } from 'date-fns';
-import { Check, X, Eye } from 'lucide-react';
+import { Check, X, Eye, Search } from 'lucide-react';
 import LoadingScreen from '../components/LoadingScreen';
 
 const Memberships: React.FC = () => {
   const [applications, setApplications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchApplications();
@@ -65,13 +66,37 @@ const Memberships: React.FC = () => {
 
   if (loading) return <LoadingScreen message="Loading memberships..." />;
 
+  const filteredApplications = applications.filter(app => {
+    const query = searchQuery.toLowerCase();
+    return (
+      app.firstName?.toLowerCase().includes(query) ||
+      app.lastName?.toLowerCase().includes(query) ||
+      app.email?.toLowerCase().includes(query) ||
+      app.telNo?.toLowerCase().includes(query) ||
+      app.occupation?.toLowerCase().includes(query)
+    );
+  });
+
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
         <h2 className="page-title" style={{ margin: 0 }}>Membership Applications</h2>
-        <button className="btn btn-outline" onClick={exportToCsv} disabled={applications.length === 0}>
-          Export to CSV
-        </button>
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          <div style={{ position: 'relative' }}>
+            <Search size={18} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
+            <input 
+              type="text" 
+              placeholder="Search members..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="form-control"
+              style={{ paddingLeft: '35px', width: '250px' }}
+            />
+          </div>
+          <button className="btn btn-outline" onClick={exportToCsv} disabled={applications.length === 0}>
+            Export to CSV
+          </button>
+        </div>
       </div>
       
       <div className="glass-panel table-container">
@@ -87,7 +112,7 @@ const Memberships: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {applications.map(app => (
+            {filteredApplications.map(app => (
               <tr key={app.id}>
                 <td>{format(new Date(app.createdAt), 'MMM dd, yyyy')}</td>
                 <td>

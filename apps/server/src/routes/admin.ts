@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { PrismaClient } from "@prisma/client";
-import { sendSms, checkSmsBalance } from "../utils/sms";
+import { sendSms, checkSmsBalance, getSmsTemplate } from "../utils/sms";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import multer from "multer";
@@ -262,7 +262,9 @@ router.patch("/loans/:id/status", async (req, res) => {
     if (application.telNo && process.env.KAIROS_API_KEY) {
       const formatted = normalizeGhanaNumber(application.telNo);
       try {
-        await sendSms(formatted, `Hello ${application.fullName}, your ROAACCU loan application status has been updated to: ${status}.`);
+        let template = await getSmsTemplate("sms_template_loan_status", "Hello {name}, your ROAACCU loan application status has been updated to: {status}.", prisma);
+        const message = template.replace(/{name}/g, application.fullName).replace(/{status}/g, status);
+        await sendSms(formatted, message);
       } catch (smsErr) {
         console.error("Failed to send loan status update SMS:", smsErr);
       }
@@ -513,7 +515,9 @@ router.post("/users", authenticateSuperAdmin, async (req, res) => {
     if (telNo && process.env.KAIROS_API_KEY) {
       const formatted = normalizeGhanaNumber(telNo);
       try {
-        await sendSms(formatted, `Hello ${name}, your ROAACCU Admin account has been created. Check your email for login details.`);
+        let template = await getSmsTemplate("sms_template_admin_welcome", "Hello {name}, your ROAACCU Admin account has been created. Check your email for login details.", prisma);
+        const message = template.replace(/{name}/g, name);
+        await sendSms(formatted, message);
       } catch (smsErr) {
         console.error("Failed to send welcome SMS to admin:", smsErr);
       }

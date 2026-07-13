@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { format } from 'date-fns';
-import { ShieldPlus, FileText, CheckCircle, XCircle, Check, X } from 'lucide-react';
+import { ShieldPlus, FileText, CheckCircle, XCircle, Check, X, Search } from 'lucide-react';
 import LoadingScreen from '../components/LoadingScreen';
 
 const Welfare: React.FC = () => {
   const [applications, setApplications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchApplications();
@@ -35,9 +36,34 @@ const Welfare: React.FC = () => {
 
   if (loading) return <LoadingScreen message="Loading welfare data..." />;
 
+  const filteredApplications = applications.filter(app => {
+    const query = searchQuery.toLowerCase();
+    return (
+      app.name?.toLowerCase().includes(query) ||
+      app.contact?.toLowerCase().includes(query) ||
+      app.accountNumber?.toLowerCase().includes(query) ||
+      app.beneficiaryName?.toLowerCase().includes(query)
+    );
+  });
+
   return (
     <div>
-      <h2 className="page-title">Welfare Requests</h2>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+        <h2 className="page-title" style={{ margin: 0 }}>Welfare Requests</h2>
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          <div style={{ position: 'relative' }}>
+            <Search size={18} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
+            <input 
+              type="text" 
+              placeholder="Search welfare..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="form-control"
+              style={{ paddingLeft: '35px', width: '250px' }}
+            />
+          </div>
+        </div>
+      </div>
       
       <div className="glass-panel table-container">
         <table>
@@ -52,7 +78,7 @@ const Welfare: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {applications.map(app => (
+            {filteredApplications.map(app => (
               <tr key={app.id}>
                 <td>{format(new Date(app.createdAt), 'MMM dd, yyyy')}</td>
                 <td>

@@ -401,6 +401,50 @@ const CMS: React.FC = () => {
     );
   };
 
+  const renderSmsTemplatesTab = () => {
+    const loanStatusItem = getItem('sms_template_loan_status', 'TEXT', 'Hello {name}, your ROAACCU loan application status has been updated to: {status}.');
+    const loanSubmissionItem = getItem('sms_template_loan_submission', 'TEXT', 'Hello {name}, your ROAACCU loan application has been received and is currently under review. We will notify you when the status changes.');
+    const adminWelcomeItem = getItem('sms_template_admin_welcome', 'TEXT', 'Hello {name}, your ROAACCU Admin account has been created. Check your email for login details.');
+
+    return (
+      <div className="widget glass-panel" style={{ marginBottom: '1.5rem' }}>
+        <h3 style={{ marginBottom: '1rem' }}>Automated SMS Templates</h3>
+        <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
+          Configure the automated SMS messages sent by the system. Use placeholders like {"{name}"} or {"{status}"} exactly as shown.
+        </p>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          <div>
+            <label className="form-label">Loan Status Update</label>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Variables: {"{name}"}, {"{status}"}</p>
+            <textarea rows={3} className="form-control" value={loanStatusItem.value} onChange={(e) => handleChange('sms_template_loan_status', e.target.value)} />
+            <button className="btn btn-primary" style={{ marginTop: '0.5rem' }} onClick={() => handleUpdate(loanStatusItem)} disabled={savingKey === 'sms_template_loan_status'}>
+              {savingKey === 'sms_template_loan_status' ? <Loader2 size={18} className="spinner" /> : <Save size={18} />} Save
+            </button>
+          </div>
+          <hr style={{ border: 'none', borderTop: '1px solid var(--border-color)' }} />
+          <div>
+            <label className="form-label">Loan Application Received</label>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Variables: {"{name}"}</p>
+            <textarea rows={3} className="form-control" value={loanSubmissionItem.value} onChange={(e) => handleChange('sms_template_loan_submission', e.target.value)} />
+            <button className="btn btn-primary" style={{ marginTop: '0.5rem' }} onClick={() => handleUpdate(loanSubmissionItem)} disabled={savingKey === 'sms_template_loan_submission'}>
+              {savingKey === 'sms_template_loan_submission' ? <Loader2 size={18} className="spinner" /> : <Save size={18} />} Save
+            </button>
+          </div>
+          <hr style={{ border: 'none', borderTop: '1px solid var(--border-color)' }} />
+          <div>
+            <label className="form-label">Admin Welcome Message</label>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Variables: {"{name}"}</p>
+            <textarea rows={3} className="form-control" value={adminWelcomeItem.value} onChange={(e) => handleChange('sms_template_admin_welcome', e.target.value)} />
+            <button className="btn btn-primary" style={{ marginTop: '0.5rem' }} onClick={() => handleUpdate(adminWelcomeItem)} disabled={savingKey === 'sms_template_admin_welcome'}>
+              {savingKey === 'sms_template_admin_welcome' ? <Loader2 size={18} className="spinner" /> : <Save size={18} />} Save
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   if (loading) return <LoadingScreen message="Loading CMS data..." />;
 
   return (
@@ -419,6 +463,7 @@ const CMS: React.FC = () => {
         <button className={`btn ${activeTab === 'branches' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('branches')}>Branches</button>
         <button className={`btn ${activeTab === 'products' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('products')}>Products</button>
         <button className={`btn ${activeTab === 'services' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('services')}>Services</button>
+        <button className={`btn ${activeTab === 'sms_templates' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('sms_templates')}>Automated SMS</button>
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
@@ -430,6 +475,7 @@ const CMS: React.FC = () => {
         {activeTab === 'branches' && renderBranchesTab()}
         {activeTab === 'products' && renderProductsTab()}
         {activeTab === 'services' && renderServicesTab()}
+        {activeTab === 'sms_templates' && renderSmsTemplatesTab()}
       </div>
     </div>
   );
