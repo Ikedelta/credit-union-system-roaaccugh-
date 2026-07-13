@@ -500,11 +500,18 @@ router.post("/users", authenticateSuperAdmin, async (req, res) => {
     // Send Welcome Email (if configured)
     if (process.env.SMTP_USER) {
       try {
+        let emailTemplate = await getSmsTemplate("email_template_admin_welcome", "Hello {name},\n\nYour admin account has been created successfully.\n\nRole: {role}\nEmail: {email}\nPassword: {password}\n\nPlease login and change your password immediately.", prisma);
+        const emailMessage = emailTemplate
+          .replace(/{name}/g, name)
+          .replace(/{role}/g, role || "ADMIN")
+          .replace(/{email}/g, email)
+          .replace(/{password}/g, password);
+
         await transporter.sendMail({
           from: `"ROAACCU Admin" <${process.env.SMTP_USER}>`,
           to: email,
           subject: "Welcome to ROAACCU Admin Dashboard",
-          text: `Hello ${name},\n\nYour admin account has been created successfully.\n\nRole: ${role || "ADMIN"}\nEmail: ${email}\nPassword: ${password}\n\nPlease login and change your password immediately.`,
+          text: emailMessage,
         });
       } catch (emailErr) {
         console.error("Failed to send welcome email to admin:", emailErr);

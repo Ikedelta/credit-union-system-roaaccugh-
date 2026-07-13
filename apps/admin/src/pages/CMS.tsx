@@ -401,16 +401,17 @@ const CMS: React.FC = () => {
     );
   };
 
-  const renderSmsTemplatesTab = () => {
+  const renderAutomatedMessagesTab = () => {
     const loanStatusItem = getItem('sms_template_loan_status', 'TEXT', 'Hello {name}, your ROAACCU loan application status has been updated to: {status}.');
     const loanSubmissionItem = getItem('sms_template_loan_submission', 'TEXT', 'Hello {name}, your ROAACCU loan application has been received and is currently under review. We will notify you when the status changes.');
-    const adminWelcomeItem = getItem('sms_template_admin_welcome', 'TEXT', 'Hello {name}, your ROAACCU Admin account has been created. Check your email for login details.');
+    const adminWelcomeSmsItem = getItem('sms_template_admin_welcome', 'TEXT', 'Hello {name}, your ROAACCU Admin account has been created. Check your email for login details.');
+    const adminWelcomeEmailItem = getItem('email_template_admin_welcome', 'TEXT', 'Hello {name},\n\nYour admin account has been created successfully.\n\nRole: {role}\nEmail: {email}\nPassword: {password}\n\nPlease login and change your password immediately.');
 
     return (
       <div className="widget glass-panel" style={{ marginBottom: '1.5rem' }}>
-        <h3 style={{ marginBottom: '1rem' }}>Automated SMS Templates</h3>
+        <h3 style={{ marginBottom: '1rem' }}>Automated Messages</h3>
         <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
-          Configure the automated SMS messages sent by the system. Use placeholders like {"{name}"} or {"{status}"} exactly as shown.
+          Configure the automated SMS and Email messages sent by the system. Use placeholders exactly as shown.
         </p>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -433,11 +434,20 @@ const CMS: React.FC = () => {
           </div>
           <hr style={{ border: 'none', borderTop: '1px solid var(--border-color)' }} />
           <div>
-            <label className="form-label">Admin Welcome Message</label>
+            <label className="form-label">Admin Welcome Message (SMS)</label>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Variables: {"{name}"}</p>
-            <textarea rows={3} className="form-control" value={adminWelcomeItem.value} onChange={(e) => handleChange('sms_template_admin_welcome', e.target.value)} />
-            <button className="btn btn-primary" style={{ marginTop: '0.5rem' }} onClick={() => handleUpdate(adminWelcomeItem)} disabled={savingKey === 'sms_template_admin_welcome'}>
+            <textarea rows={3} className="form-control" value={adminWelcomeSmsItem.value} onChange={(e) => handleChange('sms_template_admin_welcome', e.target.value)} />
+            <button className="btn btn-primary" style={{ marginTop: '0.5rem' }} onClick={() => handleUpdate(adminWelcomeSmsItem)} disabled={savingKey === 'sms_template_admin_welcome'}>
               {savingKey === 'sms_template_admin_welcome' ? <Loader2 size={18} className="spinner" /> : <Save size={18} />} Save
+            </button>
+          </div>
+          <hr style={{ border: 'none', borderTop: '1px solid var(--border-color)' }} />
+          <div>
+            <label className="form-label">Admin Welcome Message (Email)</label>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Variables: {"{name}"}, {"{role}"}, {"{email}"}, {"{password}"}</p>
+            <textarea rows={5} className="form-control" value={adminWelcomeEmailItem.value} onChange={(e) => handleChange('email_template_admin_welcome', e.target.value)} />
+            <button className="btn btn-primary" style={{ marginTop: '0.5rem' }} onClick={() => handleUpdate(adminWelcomeEmailItem)} disabled={savingKey === 'email_template_admin_welcome'}>
+              {savingKey === 'email_template_admin_welcome' ? <Loader2 size={18} className="spinner" /> : <Save size={18} />} Save
             </button>
           </div>
         </div>
@@ -463,7 +473,7 @@ const CMS: React.FC = () => {
         <button className={`btn ${activeTab === 'branches' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('branches')}>Branches</button>
         <button className={`btn ${activeTab === 'products' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('products')}>Products</button>
         <button className={`btn ${activeTab === 'services' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('services')}>Services</button>
-        <button className={`btn ${activeTab === 'sms_templates' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('sms_templates')}>Automated SMS</button>
+        <button className={`btn ${activeTab === 'automated_messages' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('automated_messages')}>Automated Messages</button>
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
@@ -475,7 +485,7 @@ const CMS: React.FC = () => {
         {activeTab === 'branches' && renderBranchesTab()}
         {activeTab === 'products' && renderProductsTab()}
         {activeTab === 'services' && renderServicesTab()}
-        {activeTab === 'sms_templates' && renderSmsTemplatesTab()}
+        {activeTab === 'automated_messages' && renderAutomatedMessagesTab()}
       </div>
     </div>
   );
