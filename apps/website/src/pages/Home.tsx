@@ -284,11 +284,11 @@ export function Home() {
               <span style={{ color: 'var(--secondary-color)' }}>Your money should work for you.</span>
             </h2>
             <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: '1.15rem', lineHeight: 1.7, maxWidth: '640px', margin: '0 auto 2.5rem' }}>
-              Membership takes less than 5 minutes. Start with as little as GHS 50 and unlock access to savings, loans, and comprehensive welfare benefits designed for your peace of mind.
+              Becoming a Shareholder takes less than 5 minutes. Start with as little as GHS 50 and unlock access to savings, loans, and comprehensive welfare benefits designed for your peace of mind.
             </p>
             <div style={{ display: 'flex', gap: '1.25rem', justifyContent: 'center', flexWrap: 'wrap' }} className="cta-button-group">
               <Link to="/join-now" className="btn btn-secondary" style={{ padding: '1rem 2rem', fontSize: 'clamp(0.95rem, 2vw, 1.1rem)', justifyContent: 'center', minWidth: '200px' }}>
-                Open Membership <ArrowRight size={18} />
+                Become a Shareholder <ArrowRight size={18} />
               </Link>
               <Link to="/apply-loan" className="btn btn-ghost" style={{ padding: '1rem 2rem', fontSize: 'clamp(0.95rem, 2vw, 1.1rem)', border: '2px solid rgba(255,255,255,0.3)', background: 'transparent', justifyContent: 'center', minWidth: '200px' }}>
                 Apply for a Loan

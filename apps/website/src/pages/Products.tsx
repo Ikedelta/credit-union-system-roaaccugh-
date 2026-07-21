@@ -6,13 +6,14 @@ import { RevealOnScroll } from '../components/RevealOnScroll';
 import { useCMS } from '../context/CMSContext';
 
 const typeConfig: Record<string, { label: string; badgeClass: string; bg: string }> = {
+  Shares:     { label: 'Shares',             badgeClass: 'type-badge type-badge-shares',     bg: '#f0fdf4' },
   Savings:    { label: 'Savings Account',    badgeClass: 'type-badge type-badge-savings',    bg: '#f8fafc' },
   Loan:       { label: 'Loan Product',       badgeClass: 'type-badge type-badge-loan',       bg: 'rgba(28, 16, 94, 0.03)' },
   Investment: { label: 'Investment',         badgeClass: 'type-badge type-badge-investment', bg: 'rgba(28, 16, 94, 0.05)' },
 };
 
 export function Products() {
-  const [activeTab, setActiveTab] = useState<'All' | 'Savings' | 'Loan'>('All');
+  const [activeTab, setActiveTab] = useState<'All' | 'Shares' | 'Savings' | 'Loan'>('All');
   const { getJSON } = useCMS();
 
   const products = getJSON('products_list', [
@@ -39,11 +40,20 @@ export function Products() {
       image: 'https://roaaccugh.com/assets/img/portfolio/RPL.jpg',
       desc: 'Tailored agricultural financing specifically designed to empower rubber farmers to expand their outgrower operations.',
       features: 'Up to GHS 500k capital, Flexible seasonal repayment, Fast processing time'
+    },
+    { 
+      id: 6,
+      title: 'Credit Union Shares',   
+      type: 'Shares',       
+      image: 'https://roaaccugh.com/assets/img/portfolio/shares.jpg',
+      desc: 'Become a part-owner of ROAACCU. Earn annual dividends and enjoy voting rights in our Annual General Meetings.',
+      features: 'Annual Dividends, Voting Rights, Wealth Accumulation'
     }
   ]);
 
   const filteredProducts = products.filter((p: any) => {
     if (activeTab === 'All') return true;
+    if (activeTab === 'Shares') return p.type === 'Shares';
     if (activeTab === 'Savings') return p.type === 'Savings' || p.type === 'Investment';
     if (activeTab === 'Loan') return p.type === 'Loan';
     return true;
@@ -67,7 +77,7 @@ export function Products() {
             <h2 style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)', marginBottom: '2rem' }}>Solutions for every milestone</h2>
             
             <div style={{ display: 'inline-flex', background: '#f1f5f9', padding: '0.4rem', borderRadius: '100px', gap: '0.5rem', flexWrap: 'wrap', justifyContent: 'center' }}>
-              {(['All', 'Savings', 'Loan'] as const).map(tab => (
+              {(['All', 'Shares', 'Savings', 'Loan'] as const).map(tab => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
@@ -84,7 +94,7 @@ export function Products() {
                     boxShadow: activeTab === tab ? '0 4px 12px rgba(28, 16, 94, 0.2)' : 'none'
                   }}
                 >
-                  {tab === 'All' ? 'All Products' : tab === 'Savings' ? 'Savings & Investments' : 'Loans & Credit'}
+                  {tab === 'All' ? 'All Products' : tab === 'Shares' ? 'Shares' : tab === 'Savings' ? 'Savings & Investment' : 'Loans'}
                 </button>
               ))}
             </div>

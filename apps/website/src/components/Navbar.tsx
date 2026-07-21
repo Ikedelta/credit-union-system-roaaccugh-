@@ -84,7 +84,7 @@ export function Navbar({ setActiveModal: _setActiveModal }: NavbarProps) {
               
               <div className={`dropdown ${activeDropdown === 'member' ? 'open' : ''}`}>
                 <div className="nav-link dropdown-toggle" onClick={(e) => toggleDropdown('member', e)}>
-                  Member <ChevronDown size={16} className={`dropdown-icon ${activeDropdown === 'member' ? 'rotate' : ''}`} />
+                  Shareholder <ChevronDown size={16} className={`dropdown-icon ${activeDropdown === 'member' ? 'rotate' : ''}`} />
                 </div>
                 <div className="dropdown-content">
                   <Link to="/apply-loan" className="nav-link">Apply Loan</Link>

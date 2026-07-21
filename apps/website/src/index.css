@@ -1104,6 +1104,7 @@ main.hero-page {
 .type-badge-loan { background: var(--primary-color); }
 .type-badge-savings { background: var(--secondary-color); }
 .type-badge-investment { background: var(--primary-dark); }
+.type-badge-shares { background: var(--accent-emerald); }
 
 /* ── Timeline / Step Indicators ── */
 .step-badge {

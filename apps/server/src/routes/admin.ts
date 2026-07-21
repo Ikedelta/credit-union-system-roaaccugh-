@@ -241,6 +241,18 @@ router.patch("/memberships/:id/status", async (req, res) => {
   }
 });
 
+router.delete("/memberships/:id", async (req, res) => {
+  try {
+    const adminReq = req as AuthRequest;
+    const id = parseInt(req.params.id);
+    await prisma.memberApplication.delete({ where: { id } });
+    await createAuditLog(adminReq.adminId, "DELETE_MEMBERSHIP", `Deleted Membership ID: ${id}`);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to delete membership application" });
+  }
+});
+
 // --- LOANS ---
 router.get("/loans", async (req, res) => {
   try {
@@ -276,6 +288,18 @@ router.patch("/loans/:id/status", async (req, res) => {
   }
 });
 
+router.delete("/loans/:id", async (req, res) => {
+  try {
+    const adminReq = req as AuthRequest;
+    const id = parseInt(req.params.id);
+    await prisma.loanApplication.delete({ where: { id } });
+    await createAuditLog(adminReq.adminId, "DELETE_LOAN", `Deleted Loan ID: ${id}`);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to delete loan application" });
+  }
+});
+
 // --- WELFARE ---
 router.get("/welfare", async (req, res) => {
   try {
@@ -298,6 +322,18 @@ router.patch("/welfare/:id/status", async (req, res) => {
   }
 });
 
+router.delete("/welfare/:id", async (req, res) => {
+  try {
+    const adminReq = req as AuthRequest;
+    const id = parseInt(req.params.id);
+    await prisma.welfareApplication.delete({ where: { id } });
+    await createAuditLog(adminReq.adminId, "DELETE_WELFARE", `Deleted Welfare ID: ${id}`);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to delete welfare application" });
+  }
+});
+
 // --- MESSAGES ---
 router.get("/messages", async (req, res) => {
   try {
@@ -305,6 +341,18 @@ router.get("/messages", async (req, res) => {
     res.json(messages);
   } catch (err) {
     res.status(500).json({ error: "Failed to fetch messages" });
+  }
+});
+
+router.delete("/messages/:id", async (req, res) => {
+  try {
+    const adminReq = req as AuthRequest;
+    const id = parseInt(req.params.id);
+    await prisma.contactMessage.delete({ where: { id } });
+    await createAuditLog(adminReq.adminId, "DELETE_MESSAGE", `Deleted Message ID: ${id}`);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to delete message" });
   }
 });
 

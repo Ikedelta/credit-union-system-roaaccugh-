@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { format } from 'date-fns';
-import { ShieldPlus, FileText, CheckCircle, XCircle, Check, X, Search } from 'lucide-react';
+import { ShieldPlus, FileText, CheckCircle, XCircle, Check, X, Search, Trash2 } from 'lucide-react';
 import LoadingScreen from '../components/LoadingScreen';
 
 const Welfare: React.FC = () => {
@@ -31,6 +31,17 @@ const Welfare: React.FC = () => {
     } catch (err) {
       console.error(err);
       alert("Failed to update status");
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!window.confirm('Are you sure you want to delete this welfare application?')) return;
+    try {
+      await axios.delete(`/api/admin/welfare/${id}`);
+      fetchApplications();
+    } catch (err: any) {
+      console.error(err);
+      alert(err.response?.data?.error || 'Failed to delete application');
     }
   };
 
@@ -114,6 +125,13 @@ const Welfare: React.FC = () => {
                         </button>
                       </>
                     )}
+                    <button 
+                      onClick={() => handleDelete(app.id)}
+                      style={{ background: 'transparent', border: 'none', color: 'var(--danger)', cursor: 'pointer', padding: '0.25rem' }}
+                      title="Delete"
+                    >
+                      <Trash2 size={16} />
+                    </button>
                   </div>
                 </td>
               </tr>

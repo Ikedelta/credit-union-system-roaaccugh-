@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { format } from 'date-fns';
-import { Check, X, Eye, Search } from 'lucide-react';
+import { Check, X, Eye, Search, Trash2 } from 'lucide-react';
 import LoadingScreen from '../components/LoadingScreen';
 
 const Memberships: React.FC = () => {
@@ -35,6 +35,17 @@ const Memberships: React.FC = () => {
     } catch (err) {
       console.error(err);
       alert("Failed to update status");
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!window.confirm('Are you sure you want to delete this membership application?')) return;
+    try {
+      await axios.delete(`/api/admin/memberships/${id}`);
+      fetchApplications();
+    } catch (err: any) {
+      console.error(err);
+      alert(err.response?.data?.error || 'Failed to delete application');
     }
   };
 
@@ -148,6 +159,13 @@ const Memberships: React.FC = () => {
                         </button>
                       </>
                     )}
+                    <button 
+                      onClick={() => handleDelete(app.id)}
+                      style={{ background: 'transparent', border: 'none', color: 'var(--danger)', cursor: 'pointer', padding: '0.25rem' }}
+                      title="Delete"
+                    >
+                      <Trash2 size={16} />
+                    </button>
                   </div>
                 </td>
               </tr>

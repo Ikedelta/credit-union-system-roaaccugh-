@@ -23,6 +23,17 @@ const Messages: React.FC = () => {
     }
   };
 
+  const handleDelete = async (id: number) => {
+    if (!window.confirm('Are you sure you want to delete this message?')) return;
+    try {
+      await axios.delete(`/api/admin/messages/${id}`);
+      fetchMessages();
+    } catch (err: any) {
+      console.error(err);
+      alert(err.response?.data?.error || 'Failed to delete message');
+    }
+  };
+
   if (loading) return <LoadingScreen message="Loading messages..." />;
 
   return (
@@ -39,8 +50,15 @@ const Messages: React.FC = () => {
                   From: <strong>{msg.name}</strong> ({msg.email})
                 </div>
               </div>
-              <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+              <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '1rem' }}>
                 {format(new Date(msg.createdAt), 'MMM dd, yyyy h:mm a')}
+                <button 
+                  onClick={() => handleDelete(msg.id)}
+                  style={{ background: 'transparent', border: 'none', color: 'var(--danger)', cursor: 'pointer', padding: '0' }}
+                  title="Delete Message"
+                >
+                  <Trash2 size={16} />
+                </button>
               </div>
             </div>
             <div style={{ padding: '1rem', background: 'rgba(0,0,0,0.2)', borderRadius: 'var(--radius-md)', whiteSpace: 'pre-wrap' }}>

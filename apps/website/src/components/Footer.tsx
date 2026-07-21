@@ -79,7 +79,7 @@ export function Footer({ setActiveModal: _setActiveModal }: FooterProps) {
 
           {/* Member Access */}
           <div>
-            <h3>Member Access</h3>
+            <h3>Shareholder Access</h3>
             {[
               { to: '/apply-loan', label: 'Apply for Loan' },
               { to: '/welfare', label: 'Join Welfare' },
