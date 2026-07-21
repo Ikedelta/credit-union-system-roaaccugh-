@@ -24,11 +24,22 @@ export function About() {
       
       <div className="grid lg:grid-cols-2 gap-12 items-center" style={{ marginBottom: '4rem' }}>
         <RevealOnScroll direction="right">
-          <div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', alignItems: 'center' }}>
             <img 
-              src={get('about_image', 'https://roaaccugh.com/assets/img/roaaccu4.jpg')} 
-              alt="Corporate Team" 
-              style={{ width: '100%', borderRadius: 'var(--border-radius-xl)', boxShadow: 'var(--shadow-lg)', display: 'block' }} 
+              src={get('about_image_1', 'https://roaaccugh.com/assets/img/roaaccu4.jpg')} 
+              alt="Corporate Team 1" 
+              className="hover-scale"
+              style={{ width: '100%', height: '100%', objectFit: 'cover', minHeight: '250px', borderRadius: 'var(--border-radius-xl)', boxShadow: 'var(--shadow-lg)', transform: 'translateY(-20px)', transition: 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)' }} 
+              onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-30px) scale(1.05)'}
+              onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(-20px) scale(1)'}
+            />
+            <img 
+              src={get('about_image_2', 'https://roaaccugh.com/assets/img/roaaccu4.jpg')} 
+              alt="Corporate Team 2" 
+              className="hover-scale"
+              style={{ width: '100%', height: '100%', objectFit: 'cover', minHeight: '250px', borderRadius: 'var(--border-radius-xl)', boxShadow: 'var(--shadow-lg)', transform: 'translateY(20px)', transition: 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)' }} 
+              onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(10px) scale(1.05)'}
+              onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(20px) scale(1)'}
             />
           </div>
         </RevealOnScroll>

@@ -300,7 +300,8 @@ const CMS: React.FC = () => {
     const textItem = getItem('about_text');
     const missionItem = getItem('about_mission');
     const visionItem = getItem('about_vision');
-    const aboutImageItem = getItem('about_image', 'IMAGE', 'https://roaaccugh.com/assets/img/roaaccu4.jpg');
+    const aboutImage1Item = getItem('about_image_1', 'IMAGE', 'https://roaaccugh.com/assets/img/roaaccu4.jpg');
+    const aboutImage2Item = getItem('about_image_2', 'IMAGE', 'https://roaaccugh.com/assets/img/roaaccu4.jpg');
     
     return (
       <>
@@ -308,12 +309,24 @@ const CMS: React.FC = () => {
           <h3 style={{ marginBottom: '1rem' }}>About Us Text</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <div>
-              <label className="form-label">About Us Side Image</label>
+              <label className="form-label">About Us Side Image 1 (Left/Top)</label>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center', background: '#f8fafc', padding: '0.75rem', borderRadius: '8px' }}>
-                {aboutImageItem.value && <img src={aboutImageItem.value} alt="Preview" style={{ width: '80px', height: '60px', objectFit: 'cover', borderRadius: '4px', border: '1px solid var(--border-color)' }} />}
+                {aboutImage1Item.value && <img src={aboutImage1Item.value} alt="Preview" style={{ width: '80px', height: '60px', objectFit: 'cover', borderRadius: '4px', border: '1px solid var(--border-color)' }} />}
                 <div style={{ display: 'flex', flex: '1 1 250px', gap: '0.5rem' }}>
-                  <input type="text" className="form-control" value={aboutImageItem.value} onChange={(e) => handleChange('about_image', e.target.value, 'IMAGE')} placeholder="Image URL or click Upload..." style={{ flex: 1, minWidth: 0 }} />
-                  <button className="btn btn-secondary" onClick={() => { setUploadingImageFor({key: 'about_image'}); fileInputRef.current?.click(); }} style={{ whiteSpace: 'nowrap' }}>
+                  <input type="text" className="form-control" value={aboutImage1Item.value} onChange={(e) => handleChange('about_image_1', e.target.value, 'IMAGE')} placeholder="Image URL or click Upload..." style={{ flex: 1, minWidth: 0 }} />
+                  <button className="btn btn-secondary" onClick={() => { setUploadingImageFor({key: 'about_image_1'}); fileInputRef.current?.click(); }} style={{ whiteSpace: 'nowrap' }}>
+                    <UploadCloud size={16} /> Upload
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div>
+              <label className="form-label">About Us Side Image 2 (Right/Bottom)</label>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center', background: '#f8fafc', padding: '0.75rem', borderRadius: '8px' }}>
+                {aboutImage2Item.value && <img src={aboutImage2Item.value} alt="Preview" style={{ width: '80px', height: '60px', objectFit: 'cover', borderRadius: '4px', border: '1px solid var(--border-color)' }} />}
+                <div style={{ display: 'flex', flex: '1 1 250px', gap: '0.5rem' }}>
+                  <input type="text" className="form-control" value={aboutImage2Item.value} onChange={(e) => handleChange('about_image_2', e.target.value, 'IMAGE')} placeholder="Image URL or click Upload..." style={{ flex: 1, minWidth: 0 }} />
+                  <button className="btn btn-secondary" onClick={() => { setUploadingImageFor({key: 'about_image_2'}); fileInputRef.current?.click(); }} style={{ whiteSpace: 'nowrap' }}>
                     <UploadCloud size={16} /> Upload
                   </button>
                 </div>
@@ -332,8 +345,8 @@ const CMS: React.FC = () => {
               <textarea rows={3} className="form-control" value={visionItem.value} onChange={(e) => handleChange('about_vision', e.target.value)} />
             </div>
             <div style={{ display: 'flex', gap: '1rem' }}>
-              <button className="btn btn-primary" onClick={() => { handleUpdate(textItem); handleUpdate(missionItem); handleUpdate(visionItem); handleUpdate(aboutImageItem); }}>
-                <Save size={18} /> Save About Texts & Image
+              <button className="btn btn-primary" onClick={() => { handleUpdate(textItem); handleUpdate(missionItem); handleUpdate(visionItem); handleUpdate(aboutImage1Item); handleUpdate(aboutImage2Item); }}>
+                <Save size={18} /> Save About Texts & Images
               </button>
             </div>
           </div>
