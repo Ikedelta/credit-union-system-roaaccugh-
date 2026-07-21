@@ -58,7 +58,8 @@ export function RevealOnScroll({
         transform: isVisible ? 'translate(0)' : getTransform(),
         transition: `opacity ${duration}s ease, transform ${duration}s cubic-bezier(0.16, 1, 0.3, 1)`,
         transitionDelay: `${delay}s`,
-        width: '100%'
+        width: '100%',
+        height: '100%'
       }}
     >
       {children}

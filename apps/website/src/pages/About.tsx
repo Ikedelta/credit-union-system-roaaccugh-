@@ -22,21 +22,21 @@ export function About() {
       />
       <main className="section container" style={{ paddingLeft: 'clamp(1.75rem, 6vw, 4rem)', paddingRight: 'clamp(1.75rem, 6vw, 4rem)' }}>
       
-      <div className="grid lg:grid-cols-2 gap-12 items-center" style={{ marginBottom: '4rem' }}>
+      <div className="grid lg:grid-cols-2 gap-12 items-stretch" style={{ marginBottom: '4rem' }}>
         <RevealOnScroll direction="right">
-          <div style={{ position: 'relative', width: '100%', paddingRight: '15%', paddingBottom: '15%' }}>
-            {/* Main large image */}
+          <div style={{ position: 'relative', width: '100%', height: '100%', minHeight: '350px' }}>
+            {/* Main large image stretching to fill the block, leaving room for the overlap */}
             <img 
               src={get('about_image_1', 'https://roaaccugh.com/assets/img/roaaccu4.jpg')} 
               alt="Corporate Team" 
-              style={{ width: '100%', height: 'auto', aspectRatio: '4/3', objectFit: 'cover', borderRadius: 'var(--border-radius-xl)', boxShadow: 'var(--shadow-lg)' }} 
+              style={{ position: 'absolute', top: 0, left: 0, width: '90%', height: '85%', objectFit: 'cover', borderRadius: 'var(--border-radius-xl)', boxShadow: 'var(--shadow-lg)' }} 
             />
             
-            {/* Overlapping smaller image */}
+            {/* Overlapping smaller image filling the bottom right */}
             <img 
               src={get('about_image_2', 'https://roaaccugh.com/assets/img/roaaccu4.jpg')} 
               alt="Our Work" 
-              style={{ position: 'absolute', bottom: '0', right: '0', width: '55%', height: 'auto', aspectRatio: '4/3', objectFit: 'cover', borderRadius: 'var(--border-radius-xl)', boxShadow: '0 20px 40px rgba(0,0,0,0.15)', border: '10px solid var(--bg-white)', transition: 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)', cursor: 'pointer' }}
+              style={{ position: 'absolute', bottom: '0', right: '0', width: '55%', height: '55%', objectFit: 'cover', borderRadius: 'var(--border-radius-xl)', boxShadow: '0 20px 40px rgba(0,0,0,0.15)', border: '10px solid var(--bg-white)', transition: 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)', cursor: 'pointer' }}
               onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-15px) scale(1.03)'}
               onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0) scale(1)'}
             />
