@@ -24,23 +24,25 @@ export function About() {
       
       <div className="grid lg:grid-cols-2 gap-12 items-center" style={{ marginBottom: '4rem' }}>
         <RevealOnScroll direction="right">
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', alignItems: 'center' }}>
+          <div style={{ position: 'relative', width: '100%', paddingRight: '15%', paddingBottom: '15%' }}>
+            {/* Main large image */}
             <img 
               src={get('about_image_1', 'https://roaaccugh.com/assets/img/roaaccu4.jpg')} 
-              alt="Corporate Team 1" 
-              className="hover-scale"
-              style={{ width: '100%', height: '100%', objectFit: 'cover', minHeight: '250px', borderRadius: 'var(--border-radius-xl)', boxShadow: 'var(--shadow-lg)', transform: 'translateY(-20px)', transition: 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)' }} 
-              onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-30px) scale(1.05)'}
-              onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(-20px) scale(1)'}
+              alt="Corporate Team" 
+              style={{ width: '100%', height: 'auto', aspectRatio: '4/3', objectFit: 'cover', borderRadius: 'var(--border-radius-xl)', boxShadow: 'var(--shadow-lg)' }} 
             />
+            
+            {/* Overlapping smaller image */}
             <img 
               src={get('about_image_2', 'https://roaaccugh.com/assets/img/roaaccu4.jpg')} 
-              alt="Corporate Team 2" 
-              className="hover-scale"
-              style={{ width: '100%', height: '100%', objectFit: 'cover', minHeight: '250px', borderRadius: 'var(--border-radius-xl)', boxShadow: 'var(--shadow-lg)', transform: 'translateY(20px)', transition: 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)' }} 
-              onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(10px) scale(1.05)'}
-              onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(20px) scale(1)'}
+              alt="Our Work" 
+              style={{ position: 'absolute', bottom: '0', right: '0', width: '55%', height: 'auto', aspectRatio: '4/3', objectFit: 'cover', borderRadius: 'var(--border-radius-xl)', boxShadow: '0 20px 40px rgba(0,0,0,0.15)', border: '10px solid var(--bg-white)', transition: 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)', cursor: 'pointer' }}
+              onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-15px) scale(1.03)'}
+              onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0) scale(1)'}
             />
+            
+            {/* Decorative element behind the images */}
+            <div style={{ position: 'absolute', top: '-15px', left: '-15px', width: '30%', height: '30%', background: 'var(--primary-color)', borderRadius: 'var(--border-radius-xl)', zIndex: -1, opacity: 0.1 }}></div>
           </div>
         </RevealOnScroll>
         <RevealOnScroll direction="left" delay={0.2}>
