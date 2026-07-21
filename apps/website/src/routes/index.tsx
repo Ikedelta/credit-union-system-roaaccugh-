@@ -16,6 +16,11 @@ import { Faq } from '../pages/Faq';
 import { Branches } from '../pages/Branches';
 import { NewsAndBlog } from '../pages/NewsAndBlog';
 import { NewsDetail } from '../pages/NewsDetail';
+import { ByLaw } from '../pages/ByLaw';
+import { PhotoGallery } from '../pages/PhotoGallery';
+import { Videos } from '../pages/Videos';
+import { Organogram } from '../pages/Organogram';
+import { Agm } from '../pages/Agm';
 
 export function AppRouter() {
   return (
@@ -38,6 +43,11 @@ export function AppRouter() {
           <Route path="welfare" element={<Welfare />} />
           <Route path="events" element={<Events />} />
           <Route path="gallery" element={<Gallery />} />
+          <Route path="agm" element={<Agm />} />
+          <Route path="bylaw" element={<ByLaw />} />
+          <Route path="photo-gallery" element={<PhotoGallery />} />
+          <Route path="videos" element={<Videos />} />
+          <Route path="organogram" element={<Organogram />} />
         </Route>
       </Routes>
     </Router>

@@ -72,9 +72,13 @@ export function Navbar({ setActiveModal: _setActiveModal }: NavbarProps) {
               
               <div className={`dropdown ${activeDropdown === 'gallery' ? 'open' : ''}`}>
                 <div className="nav-link dropdown-toggle" onClick={(e) => toggleDropdown('gallery', e)}>
-                  Gallery <ChevronDown size={16} className={`dropdown-icon ${activeDropdown === 'gallery' ? 'rotate' : ''}`} />
+                  Media <ChevronDown size={16} className={`dropdown-icon ${activeDropdown === 'gallery' ? 'rotate' : ''}`} />
                 </div>
                 <div className="dropdown-content">
+                  <Link to="/bylaw" className="nav-link">By Law</Link>
+                  <Link to="/photo-gallery" className="nav-link">Photo Gallery</Link>
+                  <Link to="/videos" className="nav-link">Videos</Link>
+                  <Link to="/organogram" className="nav-link">Organogram</Link>
                   <Link to="/events" className="nav-link">Events</Link>
                   <Link to="/agm" className="nav-link">AGM Report</Link>
                 </div>

@@ -455,6 +455,79 @@ const CMS: React.FC = () => {
     );
   };
 
+  const renderMediaCenterTab = () => {
+    const bylawTextItem = getItem('bylaw_text', 'TEXT');
+    const bylawPdfItem = getItem('bylaw_pdf', 'TEXT');
+    const organogramImageItem = getItem('organogram_image', 'TEXT');
+    const organogramDescItem = getItem('organogram_desc', 'TEXT');
+
+    return (
+      <div className="widget glass-panel" style={{ marginBottom: '1.5rem' }}>
+        <h3 style={{ marginBottom: '1rem' }}>Media Center Content</h3>
+        
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          <div>
+            <label className="form-label">By-Laws Text</label>
+            <textarea rows={5} className="form-control" value={bylawTextItem.value} onChange={(e) => handleChange('bylaw_text', e.target.value)} />
+            <button className="btn btn-primary" style={{ marginTop: '0.5rem' }} onClick={() => handleUpdate(bylawTextItem)} disabled={savingKey === 'bylaw_text'}>
+              {savingKey === 'bylaw_text' ? <Loader2 size={18} className="spinner" /> : <Save size={18} />} Save By-Laws
+            </button>
+          </div>
+          <div>
+            <label className="form-label">By-Laws PDF Link</label>
+            <input type="text" className="form-control" placeholder="https://..." value={bylawPdfItem.value} onChange={(e) => handleChange('bylaw_pdf', e.target.value)} />
+            <button className="btn btn-primary" style={{ marginTop: '0.5rem' }} onClick={() => handleUpdate(bylawPdfItem)} disabled={savingKey === 'bylaw_pdf'}>
+              {savingKey === 'bylaw_pdf' ? <Loader2 size={18} className="spinner" /> : <Save size={18} />} Save PDF Link
+            </button>
+          </div>
+          <div>
+            <label className="form-label">Organogram Image URL</label>
+            <input type="text" className="form-control" placeholder="https://..." value={organogramImageItem.value} onChange={(e) => handleChange('organogram_image', e.target.value)} />
+            <button className="btn btn-primary" style={{ marginTop: '0.5rem' }} onClick={() => handleUpdate(organogramImageItem)} disabled={savingKey === 'organogram_image'}>
+              {savingKey === 'organogram_image' ? <Loader2 size={18} className="spinner" /> : <Save size={18} />} Save Organogram Image
+            </button>
+          </div>
+          <div>
+            <label className="form-label">Organogram Description</label>
+            <textarea rows={3} className="form-control" value={organogramDescItem.value} onChange={(e) => handleChange('organogram_desc', e.target.value)} />
+            <button className="btn btn-primary" style={{ marginTop: '0.5rem' }} onClick={() => handleUpdate(organogramDescItem)} disabled={savingKey === 'organogram_desc'}>
+              {savingKey === 'organogram_desc' ? <Loader2 size={18} className="spinner" /> : <Save size={18} />} Save Description
+            </button>
+          </div>
+        </div>
+
+        <hr style={{ border: 'none', borderTop: '1px solid var(--border-color)', margin: '2rem 0' }} />
+
+        {renderListEditor('photo_gallery', 'Photo Gallery', { id: Date.now().toString(), title: '', image: '', description: '' }, [
+          { name: 'image', label: 'Gallery Image', type: 'image' },
+          { name: 'title', label: 'Image Title', type: 'text' },
+          { name: 'description', label: 'Image Description', type: 'textarea' }
+        ])}
+
+        {renderListEditor('video_gallery', 'Video Gallery', { id: Date.now().toString(), title: '', url: '', description: '' }, [
+          { name: 'url', label: 'Video URL (YouTube/Vimeo)', type: 'text' },
+          { name: 'title', label: 'Video Title', type: 'text' },
+          { name: 'description', label: 'Video Description', type: 'textarea' }
+        ])}
+
+        {renderListEditor('agm_reports', 'AGM Reports', { id: Date.now().toString(), year: '', title: '', pdfUrl: '', summary: '' }, [
+          { name: 'year', label: 'Year (e.g., 2023)', type: 'text' },
+          { name: 'title', label: 'Report Title', type: 'text' },
+          { name: 'pdfUrl', label: 'PDF URL Link', type: 'text' },
+          { name: 'summary', label: 'Summary', type: 'textarea' }
+        ])}
+
+        {renderListEditor('events_list', 'Upcoming Events', { id: Date.now().toString(), title: '', date: '', time: '', location: '', description: '' }, [
+          { name: 'title', label: 'Event Title', type: 'text' },
+          { name: 'date', label: 'Date (e.g., Dec 15, 2024)', type: 'text' },
+          { name: 'time', label: 'Time (e.g., 6:00 PM)', type: 'text' },
+          { name: 'location', label: 'Location', type: 'text' },
+          { name: 'description', label: 'Event Description', type: 'textarea' }
+        ])}
+      </div>
+    );
+  };
+
   if (loading) return <LoadingScreen message="Loading CMS data..." />;
 
   return (
@@ -473,6 +546,7 @@ const CMS: React.FC = () => {
         <button className={`btn ${activeTab === 'branches' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('branches')}>Branches</button>
         <button className={`btn ${activeTab === 'products' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('products')}>Products</button>
         <button className={`btn ${activeTab === 'services' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('services')}>Services</button>
+        <button className={`btn ${activeTab === 'media' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('media')}>Media Center</button>
         <button className={`btn ${activeTab === 'automated_messages' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('automated_messages')}>Automated Messages</button>
       </div>
 
@@ -485,6 +559,7 @@ const CMS: React.FC = () => {
         {activeTab === 'branches' && renderBranchesTab()}
         {activeTab === 'products' && renderProductsTab()}
         {activeTab === 'services' && renderServicesTab()}
+        {activeTab === 'media' && renderMediaCenterTab()}
         {activeTab === 'automated_messages' && renderAutomatedMessagesTab()}
       </div>
     </div>
