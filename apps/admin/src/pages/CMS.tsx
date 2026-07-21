@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Save, Loader2, Plus, Trash2, UploadCloud, Link as LinkIcon, Globe } from 'lucide-react';
 import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaYoutube, FaGithub } from 'react-icons/fa';
 import LoadingScreen from '../components/LoadingScreen';
+import MediaSelectorModal from '../components/MediaSelectorModal';
 import { supabase } from '../utils/supabase';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -32,6 +33,7 @@ const CMS: React.FC = () => {
   const [activeTab, setActiveTab] = useState('general');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadingImageFor, setUploadingImageFor] = useState<{key: string, index?: number, field?: string} | null>(null);
+  const [isMediaModalOpen, setIsMediaModalOpen] = useState(false);
 
   useEffect(() => {
     fetchContent();
@@ -124,6 +126,22 @@ const CMS: React.FC = () => {
     }
   };
 
+  const handleMediaSelect = (url: string) => {
+    if (!uploadingImageFor) return;
+    const { key, index, field } = uploadingImageFor;
+    const item = getItem(key, index !== undefined ? 'JSON' : 'IMAGE', index !== undefined ? '[]' : '');
+    
+    if (index !== undefined && field) {
+      const parsed = JSON.parse(item.value);
+      parsed[index][field] = url;
+      handleJsonChange(key, parsed);
+    } else {
+      handleChange(key, url, 'IMAGE');
+    }
+    setIsMediaModalOpen(false);
+    setUploadingImageFor(null);
+  };
+
   const renderListEditor = (key: string, title: string, template: any, fields: {name: string, label: string, type: string}[]) => {
     const item = getItem(key, 'JSON', '[]');
     let list: any[] = [];
@@ -182,7 +200,7 @@ const CMS: React.FC = () => {
                       {listItem[f.name] && <img src={listItem[f.name].startsWith('http') ? listItem[f.name] : (listItem[f.name].startsWith('/uploads') ? `http://localhost:3000${listItem[f.name]}` : listItem[f.name])} alt="Preview" style={{ width: '80px', height: '60px', objectFit: 'cover', borderRadius: '4px', border: '1px solid var(--border-color)' }} />}
                       <div style={{ display: 'flex', flex: '1 1 250px', gap: '0.5rem' }}>
                         <input type="text" className="form-control" value={listItem[f.name] || ''} onChange={(e) => updateListItem(index, f.name, e.target.value)} placeholder="Image URL or click Upload..." style={{ flex: 1, minWidth: 0 }} />
-                        <button className="btn btn-secondary" onClick={() => { setUploadingImageFor({key, index, field: f.name}); fileInputRef.current?.click(); }} style={{ whiteSpace: 'nowrap' }}>
+                        <button className="btn btn-secondary" onClick={() => { setUploadingImageFor({key, index, field: f.name}); setIsMediaModalOpen(true); }} style={{ whiteSpace: 'nowrap' }}>
                           <UploadCloud size={16} /> Upload
                         </button>
                       </div>
@@ -314,7 +332,7 @@ const CMS: React.FC = () => {
                 {aboutImage1Item.value && <img src={aboutImage1Item.value} alt="Preview" style={{ width: '80px', height: '60px', objectFit: 'cover', borderRadius: '4px', border: '1px solid var(--border-color)' }} />}
                 <div style={{ display: 'flex', flex: '1 1 250px', gap: '0.5rem' }}>
                   <input type="text" className="form-control" value={aboutImage1Item.value} onChange={(e) => handleChange('about_image_1', e.target.value, 'IMAGE')} placeholder="Image URL or click Upload..." style={{ flex: 1, minWidth: 0 }} />
-                  <button className="btn btn-secondary" onClick={() => { setUploadingImageFor({key: 'about_image_1'}); fileInputRef.current?.click(); }} style={{ whiteSpace: 'nowrap' }}>
+                  <button className="btn btn-secondary" onClick={() => { setUploadingImageFor({key: 'about_image_1'}); setIsMediaModalOpen(true); }} style={{ whiteSpace: 'nowrap' }}>
                     <UploadCloud size={16} /> Upload
                   </button>
                 </div>
@@ -326,7 +344,7 @@ const CMS: React.FC = () => {
                 {aboutImage2Item.value && <img src={aboutImage2Item.value} alt="Preview" style={{ width: '80px', height: '60px', objectFit: 'cover', borderRadius: '4px', border: '1px solid var(--border-color)' }} />}
                 <div style={{ display: 'flex', flex: '1 1 250px', gap: '0.5rem' }}>
                   <input type="text" className="form-control" value={aboutImage2Item.value} onChange={(e) => handleChange('about_image_2', e.target.value, 'IMAGE')} placeholder="Image URL or click Upload..." style={{ flex: 1, minWidth: 0 }} />
-                  <button className="btn btn-secondary" onClick={() => { setUploadingImageFor({key: 'about_image_2'}); fileInputRef.current?.click(); }} style={{ whiteSpace: 'nowrap' }}>
+                  <button className="btn btn-secondary" onClick={() => { setUploadingImageFor({key: 'about_image_2'}); setIsMediaModalOpen(true); }} style={{ whiteSpace: 'nowrap' }}>
                     <UploadCloud size={16} /> Upload
                   </button>
                 </div>
@@ -566,6 +584,19 @@ const CMS: React.FC = () => {
       
       {/* Hidden file input for uploads */}
       <input type="file" ref={fileInputRef} style={{ display: 'none' }} accept="image/*" onChange={handleImageUpload} />
+
+      <MediaSelectorModal 
+        isOpen={isMediaModalOpen} 
+        onClose={() => {
+          setIsMediaModalOpen(false);
+          setUploadingImageFor(null);
+        }}
+        onSelect={handleMediaSelect}
+        onUploadClick={() => {
+          setIsMediaModalOpen(false);
+          fileInputRef.current?.click();
+        }}
+      />
 
       <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
         <button className={`btn ${activeTab === 'general' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('general')}>General</button>
