@@ -29,39 +29,40 @@ const Dashboard: React.FC = () => {
           axios.get('/api/admin/memberships'),
           axios.get('/api/admin/loans'),
           axios.get('/api/admin/welfare'),
-          axios.get('/api/admin/messages'),
-          axios.get('/api/admin/sms/test')
+          axios.get('/api/admin/messages')
         ]);
 
         const membershipsRes = results[0].status === 'fulfilled' ? results[0].value.data : [];
         const loansRes = results[1].status === 'fulfilled' ? results[1].value.data : [];
         const welfareRes = results[2].status === 'fulfilled' ? results[2].value.data : [];
         const messagesRes = results[3].status === 'fulfilled' ? results[3].value.data : [];
-        const smsTestRes = results[4].status === 'fulfilled' ? results[4].value.data : null;
-        
-        if (results[4].status === 'rejected') {
-          console.error("SMS API REJECTED:", results[4].reason);
-        }
 
         // Check if all essential APIs failed (server down or unauthorized)
-        if (results.slice(0, 4).every(r => r.status === 'rejected')) {
+        if (results.every(r => r.status === 'rejected')) {
            setError('Failed to connect to the server or you are not authorized.');
         }
 
-        let balance = 'N/A';
-        try {
-          if (smsTestRes?.kairos_response) {
-             const kr = smsTestRes.kairos_response;
-             balance = kr.credit !== undefined ? kr.credit : (kr.data?.credit !== undefined ? kr.data.credit : (kr.data?.balance || 'Live'));
-          }
-        } catch(e) {}
-
-        setStats({
+        setStats(prev => ({
+          ...prev,
           memberships: membershipsRes.length || 0,
           loans: loansRes.length || 0,
           welfare: welfareRes.length || 0,
           messages: messagesRes.length || 0,
-          smsBalance: String(balance),
+        }));
+
+        // Fetch SMS Balance independently so it doesn't block the dashboard loading
+        axios.get('/api/admin/sms/test', { timeout: 8000 }).then(res => {
+          let balance = 'N/A';
+          try {
+            if (res.data?.kairos_response) {
+               const kr = res.data.kairos_response;
+               balance = kr.credit !== undefined ? kr.credit : (kr.data?.credit !== undefined ? kr.data.credit : (kr.data?.balance || 'Live'));
+            }
+          } catch(e) {}
+          setStats(prev => ({ ...prev, smsBalance: String(balance) }));
+        }).catch(err => {
+          console.error("SMS API failed:", err);
+          setStats(prev => ({ ...prev, smsBalance: 'Error' }));
         });
 
         // Combine and sort recent activity
