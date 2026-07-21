@@ -54,11 +54,11 @@ const MediaSelectorModal: React.FC<MediaSelectorModalProps> = ({ isOpen, onClose
   if (!isOpen) return null;
 
   return (
-    <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(15, 23, 42, 0.7)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(8px)', padding: '1rem' }}>
-      <div style={{ background: 'var(--bg-white)', width: '100%', maxWidth: '800px', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.3)', display: 'flex', flexDirection: 'column', maxHeight: '90vh' }}>
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(15, 23, 42, 0.7)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(8px)', padding: '1rem', boxSizing: 'border-box' }}>
+      <div style={{ background: 'var(--bg-white)', width: '100%', maxWidth: '800px', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.3)', display: 'flex', flexDirection: 'column', maxHeight: 'calc(100dvh - 2rem)' }}>
         
         {/* Header */}
-        <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ padding: '1rem 1.25rem', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
           <h2 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-color)' }}>Select Media</h2>
           <button onClick={onClose} style={{ background: 'var(--bg-slate)', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', width: '32px', height: '32px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }} onMouseEnter={(e) => { e.currentTarget.style.background = '#f1f5f9'; e.currentTarget.style.color = 'var(--text-color)'; }} onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--bg-slate)'; e.currentTarget.style.color = 'var(--text-muted)'; }}>
             <X size={18} />
@@ -66,7 +66,7 @@ const MediaSelectorModal: React.FC<MediaSelectorModalProps> = ({ isOpen, onClose
         </div>
 
         {/* Tabs - Pill style for responsiveness */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', padding: '1rem 1.5rem', borderBottom: '1px solid var(--border-color)', background: '#f8fafc' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', padding: '0.75rem 1.25rem', borderBottom: '1px solid var(--border-color)', background: '#f8fafc', flexShrink: 0 }}>
           <button 
             style={{ flex: '1 1 auto', padding: '0.5rem 1rem', background: activeTab === 'library' ? 'var(--primary-color)' : 'transparent', border: 'none', borderRadius: '8px', color: activeTab === 'library' ? '#fff' : 'var(--text-muted)', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', transition: 'all 0.2s' }} 
             onClick={() => setActiveTab('library')}
@@ -94,7 +94,7 @@ const MediaSelectorModal: React.FC<MediaSelectorModalProps> = ({ isOpen, onClose
         </div>
 
         {/* Content Area */}
-        <div style={{ padding: '1.5rem', flex: 1, overflowY: 'auto' }}>
+        <div style={{ padding: '1.25rem', flex: 1, overflowY: 'auto' }}>
           {activeTab === 'library' && (
             <div>
               {loading ? (
@@ -108,7 +108,7 @@ const MediaSelectorModal: React.FC<MediaSelectorModalProps> = ({ isOpen, onClose
                   <p style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>Upload some images first to see them here.</p>
                 </div>
               ) : (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', gap: '1.25rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gap: '1rem' }}>
                   {mediaFiles.map((file, i) => (
                     <div 
                       key={i} 
@@ -153,9 +153,9 @@ const MediaSelectorModal: React.FC<MediaSelectorModalProps> = ({ isOpen, onClose
             <div 
               style={{ 
                 display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', 
-                padding: '4rem 2rem', textAlign: 'center', background: '#f8fafc', 
+                padding: '2.5rem 1rem', textAlign: 'center', background: '#f8fafc', 
                 border: '2px dashed var(--primary-color)', borderRadius: '16px',
-                cursor: 'pointer', transition: 'all 0.2s'
+                cursor: 'pointer', transition: 'all 0.2s', minHeight: '300px'
               }}
               onClick={() => onUploadClick()}
               onMouseEnter={(e) => { e.currentTarget.style.background = '#f1f5f9'; e.currentTarget.style.borderColor = 'var(--secondary-color)'; }}
