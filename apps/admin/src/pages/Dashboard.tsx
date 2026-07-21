@@ -24,30 +24,21 @@ const Dashboard: React.FC = () => {
         setLoading(true);
         setError(null);
         
-        // Use allSettled so one failure doesn't break the whole dashboard
-        const results = await Promise.allSettled([
-          axios.get('/api/admin/memberships'),
-          axios.get('/api/admin/loans'),
-          axios.get('/api/admin/welfare'),
-          axios.get('/api/admin/messages')
-        ]);
-
-        const membershipsRes = results[0].status === 'fulfilled' ? results[0].value.data : [];
-        const loansRes = results[1].status === 'fulfilled' ? results[1].value.data : [];
-        const welfareRes = results[2].status === 'fulfilled' ? results[2].value.data : [];
-        const messagesRes = results[3].status === 'fulfilled' ? results[3].value.data : [];
-
-        // Check if all essential APIs failed (server down or unauthorized)
-        if (results.every(r => r.status === 'rejected')) {
+        let dashboardData: any = null;
+        try {
+          const result = await axios.get('/api/admin/dashboard-stats');
+          dashboardData = result.data;
+        } catch (apiErr) {
            setError('Failed to connect to the server or you are not authorized.');
+           return;
         }
 
         setStats(prev => ({
           ...prev,
-          memberships: membershipsRes.length || 0,
-          loans: loansRes.length || 0,
-          welfare: welfareRes.length || 0,
-          messages: messagesRes.length || 0,
+          memberships: dashboardData?.counts?.memberships || 0,
+          loans: dashboardData?.counts?.loans || 0,
+          welfare: dashboardData?.counts?.welfare || 0,
+          messages: dashboardData?.counts?.messages || 0,
         }));
 
         // Fetch SMS Balance independently so it doesn't block the dashboard loading
@@ -68,8 +59,8 @@ const Dashboard: React.FC = () => {
         // Combine and sort recent activity
         let activityList: any[] = [];
         
-        if (Array.isArray(loansRes)) {
-          loansRes.slice(0, 5).forEach((item: any) => {
+        if (Array.isArray(dashboardData?.recent?.loans)) {
+          dashboardData.recent.loans.forEach((item: any) => {
             activityList.push({
               icon: CreditCard,
               title: `Loan Request: GH₵ ${item.amount}`,
@@ -80,8 +71,8 @@ const Dashboard: React.FC = () => {
           });
         }
 
-        if (Array.isArray(membershipsRes)) {
-          membershipsRes.slice(0, 5).forEach((item: any) => {
+        if (Array.isArray(dashboardData?.recent?.memberships)) {
+          dashboardData.recent.memberships.forEach((item: any) => {
             activityList.push({
               icon: Users,
               title: `New Membership: ${item.firstName} ${item.lastName}`,
@@ -92,8 +83,8 @@ const Dashboard: React.FC = () => {
           });
         }
 
-        if (Array.isArray(messagesRes)) {
-          messagesRes.slice(0, 5).forEach((item: any) => {
+        if (Array.isArray(dashboardData?.recent?.messages)) {
+          dashboardData.recent.messages.forEach((item: any) => {
             activityList.push({
               icon: MessageSquare,
               title: `New Message: ${item.subject || 'Contact Form'}`,

@@ -193,6 +193,36 @@ router.delete("/media/:filename", async (req, res) => {
         res.status(500).json({ error: "Failed to delete media file" });
     }
 });
+// --- DASHBOARD STATS ---
+router.get("/dashboard-stats", async (req, res) => {
+    try {
+        const [membershipsCount, loansCount, welfareCount, messagesCount, recentMemberships, recentLoans, recentMessages] = await Promise.all([
+            prisma.memberApplication.count(),
+            prisma.loanApplication.count(),
+            prisma.welfareApplication.count(),
+            prisma.contactMessage.count(),
+            prisma.memberApplication.findMany({ take: 5, orderBy: { createdAt: "desc" } }),
+            prisma.loanApplication.findMany({ take: 5, orderBy: { createdAt: "desc" } }),
+            prisma.contactMessage.findMany({ take: 5, orderBy: { createdAt: "desc" } })
+        ]);
+        res.json({
+            counts: {
+                memberships: membershipsCount,
+                loans: loansCount,
+                welfare: welfareCount,
+                messages: messagesCount
+            },
+            recent: {
+                memberships: recentMemberships,
+                loans: recentLoans,
+                messages: recentMessages
+            }
+        });
+    }
+    catch (err) {
+        res.status(500).json({ error: "Failed to fetch dashboard stats" });
+    }
+});
 // --- MEMBERSHIPS ---
 router.get("/memberships", async (req, res) => {
     try {
@@ -224,6 +254,18 @@ router.patch("/memberships/:id/status", async (req, res) => {
     }
     catch (err) {
         res.status(500).json({ error: "Failed to update status" });
+    }
+});
+router.delete("/memberships/:id", async (req, res) => {
+    try {
+        const adminReq = req;
+        const id = parseInt(req.params.id);
+        await prisma.memberApplication.delete({ where: { id } });
+        await createAuditLog(adminReq.adminId, "DELETE_MEMBERSHIP", `Deleted Membership ID: ${id}`);
+        res.json({ success: true });
+    }
+    catch (err) {
+        res.status(500).json({ error: "Failed to delete membership application" });
     }
 });
 // --- LOANS ---
@@ -260,6 +302,18 @@ router.patch("/loans/:id/status", async (req, res) => {
         res.status(500).json({ error: "Failed to update status" });
     }
 });
+router.delete("/loans/:id", async (req, res) => {
+    try {
+        const adminReq = req;
+        const id = parseInt(req.params.id);
+        await prisma.loanApplication.delete({ where: { id } });
+        await createAuditLog(adminReq.adminId, "DELETE_LOAN", `Deleted Loan ID: ${id}`);
+        res.json({ success: true });
+    }
+    catch (err) {
+        res.status(500).json({ error: "Failed to delete loan application" });
+    }
+});
 // --- WELFARE ---
 router.get("/welfare", async (req, res) => {
     try {
@@ -282,6 +336,18 @@ router.patch("/welfare/:id/status", async (req, res) => {
         res.status(500).json({ error: "Failed to update status" });
     }
 });
+router.delete("/welfare/:id", async (req, res) => {
+    try {
+        const adminReq = req;
+        const id = parseInt(req.params.id);
+        await prisma.welfareApplication.delete({ where: { id } });
+        await createAuditLog(adminReq.adminId, "DELETE_WELFARE", `Deleted Welfare ID: ${id}`);
+        res.json({ success: true });
+    }
+    catch (err) {
+        res.status(500).json({ error: "Failed to delete welfare application" });
+    }
+});
 // --- MESSAGES ---
 router.get("/messages", async (req, res) => {
     try {
@@ -290,6 +356,18 @@ router.get("/messages", async (req, res) => {
     }
     catch (err) {
         res.status(500).json({ error: "Failed to fetch messages" });
+    }
+});
+router.delete("/messages/:id", async (req, res) => {
+    try {
+        const adminReq = req;
+        const id = parseInt(req.params.id);
+        await prisma.contactMessage.delete({ where: { id } });
+        await createAuditLog(adminReq.adminId, "DELETE_MESSAGE", `Deleted Message ID: ${id}`);
+        res.json({ success: true });
+    }
+    catch (err) {
+        res.status(500).json({ error: "Failed to delete message" });
     }
 });
 // --- CMS ---
@@ -468,11 +546,17 @@ router.post("/users", auth_1.authenticateSuperAdmin, async (req, res) => {
         // Send Welcome Email (if configured)
         if (process.env.SMTP_USER) {
             try {
+                let emailTemplate = await (0, sms_1.getSmsTemplate)("email_template_admin_welcome", "Hello {name},\n\nYour admin account has been created successfully.\n\nRole: {role}\nEmail: {email}\nPassword: {password}\n\nPlease login and change your password immediately.", prisma);
+                const emailMessage = emailTemplate
+                    .replace(/{name}/g, name)
+                    .replace(/{role}/g, role || "ADMIN")
+                    .replace(/{email}/g, email)
+                    .replace(/{password}/g, password);
                 await transporter.sendMail({
                     from: `"ROAACCU Admin" <${process.env.SMTP_USER}>`,
                     to: email,
                     subject: "Welcome to ROAACCU Admin Dashboard",
-                    text: `Hello ${name},\n\nYour admin account has been created successfully.\n\nRole: ${role || "ADMIN"}\nEmail: ${email}\nPassword: ${password}\n\nPlease login and change your password immediately.`,
+                    text: emailMessage,
                 });
             }
             catch (emailErr) {

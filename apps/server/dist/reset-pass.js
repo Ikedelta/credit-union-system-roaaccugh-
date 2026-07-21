@@ -9,10 +9,10 @@ const prisma = new client_1.PrismaClient();
 async function main() {
     const hashedPassword = await bcrypt_1.default.hash('admin123', 10);
     await prisma.admin.update({
-        where: { email: 'admin@roaaccugh.com' },
+        where: { email: 'admin@creditunion.com' },
         data: { password: hashedPassword }
     });
-    console.log("Password reset successfully for admin@roaaccugh.com");
+    console.log("Password reset successfully for admin@creditunion.com");
 }
 main().catch(console.error).finally(() => prisma.$disconnect());
 //# sourceMappingURL=reset-pass.js.map

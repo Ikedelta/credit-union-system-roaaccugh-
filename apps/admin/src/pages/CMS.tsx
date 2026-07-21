@@ -31,7 +31,7 @@ const CMS: React.FC = () => {
   const [savingKey, setSavingKey] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('general');
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [uploadingImageFor, setUploadingImageFor] = useState<{key: string, index: number, field: string} | null>(null);
+  const [uploadingImageFor, setUploadingImageFor] = useState<{key: string, index?: number, field?: string} | null>(null);
 
   useEffect(() => {
     fetchContent();
@@ -88,7 +88,7 @@ const CMS: React.FC = () => {
     formData.append('image', file);
 
     const { key, index, field } = uploadingImageFor;
-    const item = getItem(key, 'JSON', '[]');
+    const item = getItem(key, index !== undefined ? 'JSON' : 'IMAGE', index !== undefined ? '[]' : '');
     
     try {
       const fileExt = file.name.split('.').pop();
@@ -108,9 +108,13 @@ const CMS: React.FC = () => {
 
       const imageUrl = publicUrlData.publicUrl;
       
-      const parsed = JSON.parse(item.value);
-      parsed[index][field] = imageUrl;
-      handleJsonChange(key, parsed);
+      if (index !== undefined && field) {
+        const parsed = JSON.parse(item.value);
+        parsed[index][field] = imageUrl;
+        handleJsonChange(key, parsed);
+      } else {
+        handleChange(key, imageUrl, 'IMAGE');
+      }
     } catch (err) {
       console.error(err);
       alert('Failed to upload image. Ensure Supabase is configured and the image is not too large.');
@@ -296,12 +300,25 @@ const CMS: React.FC = () => {
     const textItem = getItem('about_text');
     const missionItem = getItem('about_mission');
     const visionItem = getItem('about_vision');
+    const aboutImageItem = getItem('about_image', 'IMAGE', 'https://roaaccugh.com/assets/img/roaaccu4.jpg');
     
     return (
       <>
         <div className="widget glass-panel" style={{ marginBottom: '1.5rem' }}>
           <h3 style={{ marginBottom: '1rem' }}>About Us Text</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div>
+              <label className="form-label">About Us Side Image</label>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center', background: '#f8fafc', padding: '0.75rem', borderRadius: '8px' }}>
+                {aboutImageItem.value && <img src={aboutImageItem.value} alt="Preview" style={{ width: '80px', height: '60px', objectFit: 'cover', borderRadius: '4px', border: '1px solid var(--border-color)' }} />}
+                <div style={{ display: 'flex', flex: '1 1 250px', gap: '0.5rem' }}>
+                  <input type="text" className="form-control" value={aboutImageItem.value} onChange={(e) => handleChange('about_image', e.target.value, 'IMAGE')} placeholder="Image URL or click Upload..." style={{ flex: 1, minWidth: 0 }} />
+                  <button className="btn btn-secondary" onClick={() => { setUploadingImageFor({key: 'about_image'}); fileInputRef.current?.click(); }} style={{ whiteSpace: 'nowrap' }}>
+                    <UploadCloud size={16} /> Upload
+                  </button>
+                </div>
+              </div>
+            </div>
             <div>
               <label className="form-label">Main History / About Text</label>
               <textarea rows={6} className="form-control" value={textItem.value} onChange={(e) => handleChange('about_text', e.target.value)} />
@@ -315,8 +332,8 @@ const CMS: React.FC = () => {
               <textarea rows={3} className="form-control" value={visionItem.value} onChange={(e) => handleChange('about_vision', e.target.value)} />
             </div>
             <div style={{ display: 'flex', gap: '1rem' }}>
-              <button className="btn btn-primary" onClick={() => { handleUpdate(textItem); handleUpdate(missionItem); handleUpdate(visionItem); }}>
-                <Save size={18} /> Save About Texts
+              <button className="btn btn-primary" onClick={() => { handleUpdate(textItem); handleUpdate(missionItem); handleUpdate(visionItem); handleUpdate(aboutImageItem); }}>
+                <Save size={18} /> Save About Texts & Image
               </button>
             </div>
           </div>

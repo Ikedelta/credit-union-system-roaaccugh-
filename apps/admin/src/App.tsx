@@ -18,7 +18,7 @@ import LoadingScreen from './components/LoadingScreen';
 import axios from 'axios';
 
 // Prevent indefinite loading by setting a global timeout for the admin panel
-axios.defaults.timeout = 10000; // 10 seconds timeout
+axios.defaults.timeout = 30000; // 30 seconds timeout
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { admin, loading } = useAuth();

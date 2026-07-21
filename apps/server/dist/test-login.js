@@ -13,7 +13,7 @@ async function main() {
         const res = await (0, cross_fetch_1.default)("http://localhost:3000/api/admin/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email: "admin@roaaccugh.com", password: "admin123" })
+            body: JSON.stringify({ email: "admin@creditunion.com", password: "admin123" })
         });
         console.log("Login status:", res.status);
         console.log("Login response:", await res.json());

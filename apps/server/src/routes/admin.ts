@@ -207,6 +207,45 @@ router.delete("/media/:filename", async (req, res) => {
   }
 });
 
+// --- DASHBOARD STATS ---
+router.get("/dashboard-stats", async (req, res) => {
+  try {
+    const [
+      membershipsCount,
+      loansCount,
+      welfareCount,
+      messagesCount,
+      recentMemberships,
+      recentLoans,
+      recentMessages
+    ] = await Promise.all([
+      prisma.memberApplication.count(),
+      prisma.loanApplication.count(),
+      prisma.welfareApplication.count(),
+      prisma.contactMessage.count(),
+      prisma.memberApplication.findMany({ take: 5, orderBy: { createdAt: "desc" } }),
+      prisma.loanApplication.findMany({ take: 5, orderBy: { createdAt: "desc" } }),
+      prisma.contactMessage.findMany({ take: 5, orderBy: { createdAt: "desc" } })
+    ]);
+
+    res.json({
+      counts: {
+        memberships: membershipsCount,
+        loans: loansCount,
+        welfare: welfareCount,
+        messages: messagesCount
+      },
+      recent: {
+        memberships: recentMemberships,
+        loans: recentLoans,
+        messages: recentMessages
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch dashboard stats" });
+  }
+});
+
 // --- MEMBERSHIPS ---
 router.get("/memberships", async (req, res) => {
   try {

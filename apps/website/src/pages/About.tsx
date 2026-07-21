@@ -26,7 +26,7 @@ export function About() {
         <RevealOnScroll direction="right">
           <div>
             <img 
-              src="https://roaaccugh.com/assets/img/roaaccu4.jpg" 
+              src={get('about_image', 'https://roaaccugh.com/assets/img/roaaccu4.jpg')} 
               alt="Corporate Team" 
               style={{ width: '100%', borderRadius: 'var(--border-radius-xl)', boxShadow: 'var(--shadow-lg)', display: 'block' }} 
             />
