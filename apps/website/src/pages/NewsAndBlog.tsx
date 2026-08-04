@@ -106,6 +106,7 @@ export function NewsAndBlog() {
                       </button>
                     </div>
                   </div>
+                </div>
               </article>
             </RevealOnScroll>
           ))}
