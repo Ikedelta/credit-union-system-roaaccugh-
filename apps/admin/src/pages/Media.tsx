@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import { Trash2, Copy, Loader2, UploadCloud, Image as ImageIcon } from 'lucide-react';
+import { Trash2, Copy, Loader2, UploadCloud, Image as ImageIcon, FileText, Eye } from 'lucide-react';
 import LoadingScreen from '../components/LoadingScreen';
 import { supabase } from '../utils/supabase';
 import { v4 as uuidv4 } from 'uuid';
@@ -111,16 +111,28 @@ const Media: React.FC = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {files.map(file => (
+          {files.map(file => {
+            const isDocument = file.name.toLowerCase().match(/\.(pdf|doc|docx|txt|xls|xlsx|csv)$/);
+            return (
             <div key={file.name} className="glass-panel" style={{ padding: '0', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
               <div style={{ height: '180px', width: '100%', background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <img src={file.url} alt={file.name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                {isDocument ? (
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', color: 'var(--primary-color)' }}>
+                    <FileText size={64} style={{ marginBottom: '1rem', opacity: 0.8 }} />
+                    <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)' }}>DOCUMENT</span>
+                  </div>
+                ) : (
+                  <img src={file.url} alt={file.name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                )}
               </div>
               <div style={{ padding: '1rem', borderTop: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '0.5rem', flex: 1 }}>
                 <p style={{ fontSize: '0.85rem', fontWeight: 600, wordBreak: 'break-all', margin: 0 }}>{file.name}</p>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 'auto', paddingTop: '1rem' }}>
-                  <button className="btn btn-secondary" style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem' }} onClick={() => copyToClipboard(file.url)}>
-                    <Copy size={14} /> Copy URL
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 'auto', paddingTop: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+                  <a href={file.url} target="_blank" rel="noopener noreferrer" className="btn btn-secondary" style={{ padding: '0.4rem 0.6rem', fontSize: '0.8rem', flex: 1, display: 'flex', justifyContent: 'center' }}>
+                    <Eye size={14} /> View
+                  </a>
+                  <button className="btn btn-secondary" style={{ padding: '0.4rem 0.6rem', fontSize: '0.8rem', flex: 1, display: 'flex', justifyContent: 'center' }} onClick={() => copyToClipboard(file.url)}>
+                    <Copy size={14} /> Copy
                   </button>
                   <button className="btn btn-ghost" style={{ color: 'red', padding: '0.4rem' }} onClick={() => handleDelete(file.name)}>
                     <Trash2 size={16} />
@@ -128,7 +140,8 @@ const Media: React.FC = () => {
                 </div>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
