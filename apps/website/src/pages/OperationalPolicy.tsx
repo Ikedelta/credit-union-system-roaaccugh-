@@ -3,17 +3,17 @@ import { RevealOnScroll } from '../components/RevealOnScroll';
 import { useCMS } from '../context/CMSContext';
 import { Download, FileText } from 'lucide-react';
 
-export function ByLaw() {
+export function OperationalPolicy() {
   const { get } = useCMS();
 
-  const bylawText = get('bylaw_text', 'Our By-Laws govern the operations of ROAACCU and provide the framework for our cooperative principles. Please download the complete document to read the details.');
-  const bylawPdf = get('bylaw_pdf', '');
+  const opPolicyText = get('operational_policy_text', 'Our Operational Policy provides the framework for the day-to-day operations of ROAACCU. Please download the complete document to read the details.');
+  const opPolicyDoc = get('operational_policy_doc', '');
 
   return (
     <>
       <PageHeader 
-        title="By-Laws" 
-        description="Understanding the rules and cooperative principles that govern ROAACCU."
+        title="Operational Policy" 
+        description="Understanding the policies that govern the day-to-day operations of ROAACCU."
         badge="Governance"
         bgImage="/slider2.jpg"
       />
@@ -39,25 +39,25 @@ export function ByLaw() {
               <div style={{ width: '72px', height: '72px', borderRadius: '20px', background: 'var(--primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary-color)', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}>
                 <FileText size={36} />
               </div>
-              <h2 style={{ fontSize: '2.5rem', margin: 0, letterSpacing: '-0.5px' }}>ROAACCU By-Laws</h2>
+              <h2 style={{ fontSize: '2.5rem', margin: 0, letterSpacing: '-0.5px' }}>ROAACCU Operational Policy</h2>
               
               <div 
                 style={{ fontSize: '1.15rem', lineHeight: 1.8, color: 'var(--text-secondary)', maxWidth: '800px', margin: '0 auto', whiteSpace: 'pre-wrap' }}
-                dangerouslySetInnerHTML={{ __html: bylawText }}
+                dangerouslySetInnerHTML={{ __html: opPolicyText }}
               />
 
-              {bylawPdf && (
+              {opPolicyDoc && (
                 <div style={{ marginTop: '1rem' }}>
-                  <a href={bylawPdf} target="_blank" rel="noopener noreferrer" className="btn btn-primary" style={{ display: 'inline-flex', gap: '0.75rem', padding: '1rem 2.5rem', fontSize: '1.1rem', borderRadius: '50px', boxShadow: '0 10px 25px rgba(0, 114, 54, 0.25)', transition: 'all 0.3s', fontWeight: 600 }}>
+                  <a href={opPolicyDoc} target="_blank" rel="noopener noreferrer" className="btn btn-primary" style={{ display: 'inline-flex', gap: '0.75rem', padding: '1rem 2.5rem', fontSize: '1.1rem', borderRadius: '50px', boxShadow: '0 10px 25px rgba(0, 114, 54, 0.25)', transition: 'all 0.3s', fontWeight: 600 }}>
                     <Download size={22} />
-                    Download Official PDF
+                    Download Official Document
                   </a>
                 </div>
               )}
             </div>
 
             {/* Immersive Document Viewer */}
-            {bylawPdf && (
+            {opPolicyDoc && (
               <div style={{ 
                 borderRadius: '24px', 
                 overflow: 'hidden', 
@@ -84,10 +84,10 @@ export function ByLaw() {
                 </div>
                 <iframe 
                   loading="lazy"
-                  src={bylawPdf.toLowerCase().match(/\.(doc|docx)$/) ? `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(bylawPdf)}` : `${bylawPdf}${bylawPdf.includes('#') ? '&' : '#'}toolbar=0&navpanes=0`} 
+                  src={opPolicyDoc.toLowerCase().match(/\.(doc|docx)$/) ? `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(opPolicyDoc)}` : `${opPolicyDoc}${opPolicyDoc.includes('#') ? '&' : '#'}toolbar=0&navpanes=0`} 
                   width="100%" 
                   style={{ height: '85vh', minHeight: '800px', border: 'none', display: 'block', background: '#e2e8f0' }} 
-                  title="By-Laws Document" 
+                  title="Operational Policy Document" 
                 />
               </div>
             )}

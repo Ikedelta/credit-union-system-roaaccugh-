@@ -45,7 +45,7 @@ export function Home() {
           speed={1200}
           autoplay={{ delay: 6000, disableOnInteraction: false }}
           pagination={{ clickable: true }}
-          loop={true}
+          rewind={true}
           className="hero-swiper"
         >
           {slides.map((slide: any, index: number) => (
@@ -53,7 +53,9 @@ export function Home() {
               {/* Background */}
               <div style={{
                 position: 'absolute', inset: 0,
-                backgroundImage: `url(${slide.image && slide.image.startsWith('http') ? slide.image : (slide.image?.startsWith('/uploads') ? 'http://localhost:3000' + slide.image : slide.image)})`,
+                backgroundImage: slide.image 
+                  ? `url(${slide.image.startsWith('http') ? slide.image : (slide.image.startsWith('/uploads') ? 'http://localhost:3000' + slide.image : slide.image)})` 
+                  : 'none',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
               }} />

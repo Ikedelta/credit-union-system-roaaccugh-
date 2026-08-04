@@ -119,7 +119,7 @@ const CMS: React.FC = () => {
       }
     } catch (err) {
       console.error(err);
-      alert('Failed to upload image. Ensure Supabase is configured and the image is not too large.');
+      alert('Failed to upload file. Ensure Supabase is configured and the file is not too large.');
     } finally {
       setUploadingImageFor(null);
       if (fileInputRef.current) fileInputRef.current.value = '';
@@ -506,6 +506,8 @@ const CMS: React.FC = () => {
   const renderMediaCenterTab = () => {
     const bylawTextItem = getItem('bylaw_text', 'TEXT');
     const bylawPdfItem = getItem('bylaw_pdf', 'TEXT');
+    const opPolicyTextItem = getItem('operational_policy_text', 'TEXT');
+    const opPolicyDocItem = getItem('operational_policy_doc', 'TEXT');
     const organogramImageItem = getItem('organogram_image', 'TEXT');
     const organogramDescItem = getItem('organogram_desc', 'TEXT');
 
@@ -522,12 +524,38 @@ const CMS: React.FC = () => {
             </button>
           </div>
           <div>
-            <label className="form-label">By-Laws PDF Link</label>
-            <input type="text" className="form-control" placeholder="https://..." value={bylawPdfItem.value} onChange={(e) => handleChange('bylaw_pdf', e.target.value)} />
+            <label className="form-label">By-Laws Document Link</label>
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <input type="text" className="form-control" placeholder="URL or click Upload..." value={bylawPdfItem.value} onChange={(e) => handleChange('bylaw_pdf', e.target.value)} style={{ flex: 1 }} />
+              <button className="btn btn-secondary" onClick={() => { setUploadingImageFor({key: 'bylaw_pdf'}); setIsMediaModalOpen(true); }} style={{ whiteSpace: 'nowrap' }}>
+                <UploadCloud size={16} /> Upload
+              </button>
+            </div>
             <button className="btn btn-primary" style={{ marginTop: '0.5rem' }} onClick={() => handleUpdate(bylawPdfItem)} disabled={savingKey === 'bylaw_pdf'}>
-              {savingKey === 'bylaw_pdf' ? <Loader2 size={18} className="spinner" /> : <Save size={18} />} Save PDF Link
+              {savingKey === 'bylaw_pdf' ? <Loader2 size={18} className="spinner" /> : <Save size={18} />} Save Document Link
             </button>
           </div>
+          <hr style={{ border: 'none', borderTop: '1px solid var(--border-color)', margin: '1.5rem 0' }} />
+          <div>
+            <label className="form-label">Operational Policy Text</label>
+            <textarea rows={5} className="form-control" value={opPolicyTextItem.value} onChange={(e) => handleChange('operational_policy_text', e.target.value)} />
+            <button className="btn btn-primary" style={{ marginTop: '0.5rem' }} onClick={() => handleUpdate(opPolicyTextItem)} disabled={savingKey === 'operational_policy_text'}>
+              {savingKey === 'operational_policy_text' ? <Loader2 size={18} className="spinner" /> : <Save size={18} />} Save Operational Policy Text
+            </button>
+          </div>
+          <div>
+            <label className="form-label">Operational Policy Document Link</label>
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <input type="text" className="form-control" placeholder="URL or click Upload..." value={opPolicyDocItem.value} onChange={(e) => handleChange('operational_policy_doc', e.target.value)} style={{ flex: 1 }} />
+              <button className="btn btn-secondary" onClick={() => { setUploadingImageFor({key: 'operational_policy_doc'}); setIsMediaModalOpen(true); }} style={{ whiteSpace: 'nowrap' }}>
+                <UploadCloud size={16} /> Upload
+              </button>
+            </div>
+            <button className="btn btn-primary" style={{ marginTop: '0.5rem' }} onClick={() => handleUpdate(opPolicyDocItem)} disabled={savingKey === 'operational_policy_doc'}>
+              {savingKey === 'operational_policy_doc' ? <Loader2 size={18} className="spinner" /> : <Save size={18} />} Save Policy Document Link
+            </button>
+          </div>
+          <hr style={{ border: 'none', borderTop: '1px solid var(--border-color)', margin: '1.5rem 0' }} />
           <div>
             <label className="form-label">Organogram Image URL</label>
             <input type="text" className="form-control" placeholder="https://..." value={organogramImageItem.value} onChange={(e) => handleChange('organogram_image', e.target.value)} />
@@ -583,7 +611,7 @@ const CMS: React.FC = () => {
       <h2 className="page-title">Website Content (CMS)</h2>
       
       {/* Hidden file input for uploads */}
-      <input type="file" ref={fileInputRef} style={{ display: 'none' }} accept="image/*" onChange={handleImageUpload} />
+      <input type="file" ref={fileInputRef} style={{ display: 'none' }} accept="image/*,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={handleImageUpload} />
 
       <MediaSelectorModal 
         isOpen={isMediaModalOpen} 
