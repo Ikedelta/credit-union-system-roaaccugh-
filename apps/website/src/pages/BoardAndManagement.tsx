@@ -19,7 +19,7 @@ export function BoardAndManagement() {
   return (
     <>
       <PageHeader 
-        title="Board & Management" 
+        title="Leadership" 
         description="Meet the dedicated leaders guiding ROAACCU towards a brighter financial future for all members."
         bgImage="/slider3.jpg"
       />
