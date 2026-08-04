@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "npm run build --workspaces && mkdir -p public && cp -r apps/website/dist/* public/ && mkdir -p public/admin && cp -r apps/admin/dist/* public/admin/",
+  "buildCommand": "node build.js",
   "outputDirectory": "public",
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/index.ts" },
