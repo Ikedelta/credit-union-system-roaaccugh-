@@ -113,6 +113,7 @@ const Media: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {files.map(file => {
             const isDocument = file.name.toLowerCase().match(/\.(pdf|doc|docx|txt|xls|xlsx|csv)$/);
+            const viewUrl = isDocument ? `https://docs.google.com/viewer?url=${encodeURIComponent(file.url)}` : file.url;
             return (
             <div key={file.name} className="glass-panel" style={{ padding: '0', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
               <div style={{ height: '180px', width: '100%', background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -128,7 +129,7 @@ const Media: React.FC = () => {
               <div style={{ padding: '1rem', borderTop: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '0.5rem', flex: 1 }}>
                 <p style={{ fontSize: '0.85rem', fontWeight: 600, wordBreak: 'break-all', margin: 0 }}>{file.name}</p>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 'auto', paddingTop: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
-                  <a href={file.url} target="_blank" rel="noopener noreferrer" className="btn btn-secondary" style={{ padding: '0.4rem 0.6rem', fontSize: '0.8rem', flex: 1, display: 'flex', justifyContent: 'center' }}>
+                  <a href={viewUrl} target="_blank" rel="noopener noreferrer" className="btn btn-secondary" style={{ padding: '0.4rem 0.6rem', fontSize: '0.8rem', flex: 1, display: 'flex', justifyContent: 'center' }}>
                     <Eye size={14} /> View
                   </a>
                   <button className="btn btn-secondary" style={{ padding: '0.4rem 0.6rem', fontSize: '0.8rem', flex: 1, display: 'flex', justifyContent: 'center' }} onClick={() => copyToClipboard(file.url)}>
