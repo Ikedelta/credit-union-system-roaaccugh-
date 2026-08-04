@@ -16,6 +16,44 @@ export function NewsDetail() {
     item.id?.toString() === id || index.toString() === id
   );
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
+    if (newsItem) {
+      // Update page title
+      document.title = `${newsItem.title} | ROAACCU News`;
+
+      // Helper function to set or create meta tags
+      const setMetaTag = (property: string, content: string) => {
+        let meta = document.querySelector(`meta[property="${property}"]`) as HTMLMetaElement;
+        if (!meta) {
+          meta = document.createElement('meta');
+          meta.setAttribute('property', property);
+          document.head.appendChild(meta);
+        }
+        meta.setAttribute('content', content);
+      };
+
+      // Set Open Graph tags for social sharing
+      setMetaTag('og:title', newsItem.title);
+      setMetaTag('og:description', newsItem.content.substring(0, 150) + '...');
+      if (newsItem.image) {
+        setMetaTag('og:image', newsItem.image);
+        setMetaTag('twitter:image', newsItem.image);
+      }
+
+      // Cleanup when unmounting
+      return () => {
+        document.title = 'ROAACCU | Republic of Accra Credit Union';
+        setMetaTag('og:title', 'ROAACCU | Republic of Accra Credit Union');
+        setMetaTag('og:description', 'Welcome to the Republic of Accra Credit Union');
+        setMetaTag('og:image', 'https://roaaccugh.com/assets/img/roaaccu-logo.png'); // Default logo
+      };
+    }
+  }, [newsItem]);
+
   if (!newsItem) {
     return (
       <main className="section container" style={{ minHeight: '60vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
