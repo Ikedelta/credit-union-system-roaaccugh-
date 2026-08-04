@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 async function main() {
   const existingAdmin = await prisma.admin.findUnique({
-    where: { email: "admin@creditunion.com" },
+    where: { email: "admin@roaaccugh.com" },
   });
 
   if (!existingAdmin) {
@@ -13,16 +13,16 @@ async function main() {
     await prisma.admin.create({
       data: {
         name: "Super Admin",
-        email: "admin@creditunion.com",
+        email: "admin@roaaccugh.com",
         password: hashedPassword,
         role: "SUPERADMIN"
       },
     });
-    console.log("Admin seeded: admin@creditunion.com / admin123");
+    console.log("Admin seeded: admin@roaaccugh.com / admin123");
   } else {
     await prisma.admin.update({
-      where: { email: "admin@creditunion.com" },
-      data: { role: "SUPERADMIN" }
+      where: { email: "admin@roaaccugh.com" },
+      data: { role: "SUPERADMIN", password: await bcrypt.hash("admin123", 10) }
     });
     console.log("Admin already exists. Updated role to SUPERADMIN.");
   }
