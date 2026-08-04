@@ -36,27 +36,35 @@ const Media: React.FC = () => {
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return;
-    const file = e.target.files[0];
-    const formData = new FormData();
-    formData.append('image', file);
-
+    
     setUploading(true);
     try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${uuidv4()}.${fileExt}`;
+      const filesToUpload = Array.from(e.target.files);
+      let successCount = 0;
 
-      const { data, error } = await supabase.storage
-        .from('cms-media')
-        .upload(fileName, file, { cacheControl: '3600', upsert: false });
+      for (const file of filesToUpload) {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${uuidv4()}.${fileExt}`;
 
-      if (error) {
-        throw error;
+        const { error } = await supabase.storage
+          .from('cms-media')
+          .upload(fileName, file, { cacheControl: '3600', upsert: false });
+
+        if (error) {
+          console.error(`Failed to upload ${file.name}:`, error);
+        } else {
+          successCount++;
+        }
       }
 
+      if (successCount < filesToUpload.length) {
+        alert(`Successfully uploaded ${successCount} out of ${filesToUpload.length} files.`);
+      }
+      
       fetchMedia(); // Refresh list after upload
     } catch (err) {
       console.error(err);
-      alert('Failed to upload image.');
+      alert('An error occurred during upload.');
     } finally {
       setUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
@@ -87,7 +95,7 @@ const Media: React.FC = () => {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
         <h2 className="page-title" style={{ margin: 0 }}>Media Library (cms-media)</h2>
         <div>
-          <input type="file" ref={fileInputRef} style={{ display: 'none' }} accept="image/*" onChange={handleUpload} />
+          <input type="file" ref={fileInputRef} style={{ display: 'none' }} accept="image/*" multiple onChange={handleUpload} />
           <button className="btn btn-primary" onClick={() => fileInputRef.current?.click()} disabled={uploading}>
             {uploading ? <Loader2 size={18} className="spinner" /> : <UploadCloud size={18} />}
             {uploading ? 'Uploading...' : 'Upload Image'}
