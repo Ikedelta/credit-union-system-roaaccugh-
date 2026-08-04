@@ -196,15 +196,14 @@ router.delete("/media/:filename", async (req, res) => {
 // --- DASHBOARD STATS ---
 router.get("/dashboard-stats", async (req, res) => {
     try {
-        const [membershipsCount, loansCount, welfareCount, messagesCount, recentMemberships, recentLoans, recentMessages] = await Promise.all([
-            prisma.memberApplication.count(),
-            prisma.loanApplication.count(),
-            prisma.welfareApplication.count(),
-            prisma.contactMessage.count(),
-            prisma.memberApplication.findMany({ take: 5, orderBy: { createdAt: "desc" } }),
-            prisma.loanApplication.findMany({ take: 5, orderBy: { createdAt: "desc" } }),
-            prisma.contactMessage.findMany({ take: 5, orderBy: { createdAt: "desc" } })
-        ]);
+        // Run queries sequentially to prevent Vercel serverless connection pool exhaustion
+        const membershipsCount = await prisma.memberApplication.count();
+        const loansCount = await prisma.loanApplication.count();
+        const welfareCount = await prisma.welfareApplication.count();
+        const messagesCount = await prisma.contactMessage.count();
+        const recentMemberships = await prisma.memberApplication.findMany({ take: 5, orderBy: { createdAt: "desc" } });
+        const recentLoans = await prisma.loanApplication.findMany({ take: 5, orderBy: { createdAt: "desc" } });
+        const recentMessages = await prisma.contactMessage.findMany({ take: 5, orderBy: { createdAt: "desc" } });
         res.json({
             counts: {
                 memberships: membershipsCount,
@@ -220,6 +219,7 @@ router.get("/dashboard-stats", async (req, res) => {
         });
     }
     catch (err) {
+        console.error("Dashboard stats error:", err);
         res.status(500).json({ error: "Failed to fetch dashboard stats" });
     }
 });
