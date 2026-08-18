@@ -16,7 +16,7 @@ export function Contact() {
       const formData = new FormData(form);
       const data = Object.fromEntries(formData);
       
-      const response = await fetch('/api/contact', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),

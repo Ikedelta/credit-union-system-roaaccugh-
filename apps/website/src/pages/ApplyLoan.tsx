@@ -34,7 +34,7 @@ export function ApplyLoan() {
     try {
       const form = e.currentTarget;
       const formData = new FormData(form);
-      const response = await fetch('/api/loan', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/loan`, {
         method: 'POST',
         body: formData,
       });

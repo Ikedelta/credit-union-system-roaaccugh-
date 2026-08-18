@@ -20,6 +20,7 @@ const Media = lazy(() => import('./pages/Media'));
 
 // Prevent indefinite loading by setting a global timeout for the admin panel
 axios.defaults.timeout = 30000; // 30 seconds timeout
+axios.defaults.baseURL = import.meta.env.VITE_API_URL || '';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { admin, loading } = useAuth();

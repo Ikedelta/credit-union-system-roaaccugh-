@@ -21,7 +21,7 @@ export function JoinNow() {
       const form = e.currentTarget;
       const formData = new FormData(form);
       
-      const response = await fetch('/api/join', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/join`, {
         method: 'POST',
         body: formData,
       });
