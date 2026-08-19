@@ -1,0 +1,65 @@
+name: Deploy to StormerHost (cPanel)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-website:
+    name: Build & Deploy Website
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install & Build Website
+        working-directory: ./apps/website
+        run: |
+          npm install
+          npm run build
+
+      - name: Deploy Website to cPanel
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./apps/website/dist/
+          # IMPORTANT: This uploads to the main domain folder. 
+          # Change if your website is not in public_html/
+          server-dir: /public_html/
+
+  deploy-admin:
+    name: Build & Deploy Admin Panel
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install & Build Admin
+        working-directory: ./apps/admin
+        run: |
+          npm install
+          npm run build
+
+      - name: Deploy Admin to cPanel
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./apps/admin/dist/
+          # IMPORTANT: Change this to the exact folder name of your admin subdomain in cPanel!
+          # (e.g., /admin.domain.com/ or /public_html/admin/)
+          server-dir: /admin.roaaccugh.com/
