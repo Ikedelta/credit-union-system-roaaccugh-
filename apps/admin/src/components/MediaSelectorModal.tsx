@@ -44,8 +44,15 @@ const MediaSelectorModal: React.FC<MediaSelectorModalProps> = ({ isOpen, onClose
         const files = data.filter(file => file.name !== '.emptyFolderPlaceholder');
         
         const fileUrls = files.map(file => {
-          const { data: urlData } = supabase.storage.from('cms-media').getPublicUrl(file.name);
-          return { name: file.name, url: urlData.publicUrl };
+          const { data: urlData } = supabase.storage.from('cms-media').getPublicUrl(file.name, {
+            transform: {
+              width: 250,
+              height: 250,
+              resize: 'cover',
+              quality: 80
+            }
+          });
+          return { name: file.name, url: urlData.publicUrl, originalUrl: supabase.storage.from('cms-media').getPublicUrl(file.name).data.publicUrl };
         });
         
         setMediaFiles(fileUrls);
@@ -125,7 +132,7 @@ const MediaSelectorModal: React.FC<MediaSelectorModalProps> = ({ isOpen, onClose
         }
       `}</style>
 
-      <div className="media-modal-container" style={{ background: 'var(--bg-white)', overflow: 'hidden', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.3)', display: 'flex', flexDirection: 'column' }}>
+      <div className="media-modal-container" style={{ background: '#ffffff', overflow: 'hidden', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.3)', display: 'flex', flexDirection: 'column' }}>
         
         {/* Header */}
         <div className="media-modal-header" style={{ borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
@@ -195,7 +202,7 @@ const MediaSelectorModal: React.FC<MediaSelectorModalProps> = ({ isOpen, onClose
                             setSelectedUrls([...selectedUrls, file.url]);
                           }
                         } else {
-                          if (onSelect) onSelect(file.url);
+                          if (onSelect) onSelect(file.originalUrl || file.url);
                         }
                       }}
                       style={{ 
@@ -240,7 +247,16 @@ const MediaSelectorModal: React.FC<MediaSelectorModalProps> = ({ isOpen, onClose
               )}
               {isMultiSelect && selectedUrls.length > 0 && (
                 <div style={{ position: 'sticky', bottom: 0, background: '#fff', padding: '1rem', borderTop: '1px solid var(--border-color)', display: 'flex', justifyContent: 'flex-end', marginTop: '1rem', borderRadius: '0 0 16px 16px' }}>
-                  <button className="btn btn-primary" onClick={() => { if (onMultiSelect) onMultiSelect(selectedUrls); }}>
+                  <button className="btn btn-primary" onClick={() => { 
+                    if (onMultiSelect) {
+                      // Map thumbnail URLs back to original URLs if they exist
+                      const originalUrls = selectedUrls.map(url => {
+                        const fileObj = mediaFiles.find(f => f.url === url);
+                        return fileObj?.originalUrl || url;
+                      });
+                      onMultiSelect(originalUrls); 
+                    }
+                  }}>
                     Add {selectedUrls.length} Selected Images
                   </button>
                 </div>
