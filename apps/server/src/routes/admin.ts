@@ -263,10 +263,38 @@ router.patch("/memberships/:id/status", async (req, res) => {
         const hashedPassword = await bcrypt.hash(randomPassword, 10);
         await prisma.member.create({ data: { memberId, password: hashedPassword, initialPassword: randomPassword, firstName: application.firstName, lastName: application.lastName, email: application.email, telNo: application.telNo, balance: 0.0 } });
         await createAuditLog(adminReq.adminId, `${status}_MEMBERSHIP`, `Membership ID: ${application.id}`);
+
+        // Send Welcome SMS Notification
+        if (application.telNo && process.env.KAIROS_API_KEY) {
+          const formatted = normalizeGhanaNumber(application.telNo);
+          try {
+            let template = await getSmsTemplate("sms_template_membership_approved", "Hello {name}, your ROAACCU membership is APPROVED. Your Member ID is: {memberId}. Please keep this safe for future reference.", prisma);
+            const message = template
+              .replace(/{name}/g, application.firstName)
+              .replace(/{memberId}/g, memberId);
+            await sendSms(formatted, message);
+          } catch (smsErr) {
+            console.error("Failed to send membership approved SMS:", smsErr);
+          }
+        }
+
         return res.json({ ...application, generatedMemberId: memberId, generatedPassword: randomPassword });
       }
     }
     await createAuditLog(adminReq.adminId, `${status}_MEMBERSHIP`, `Membership ID: ${application.id}`);
+
+    // Send Generic Status Update SMS Notification
+    if (application.telNo && process.env.KAIROS_API_KEY) {
+      const formatted = normalizeGhanaNumber(application.telNo);
+      try {
+        let template = await getSmsTemplate("sms_template_membership_status", "Hello {name}, your ROAACCU membership application status has been updated to: {status}.", prisma);
+        const message = template.replace(/{name}/g, application.firstName).replace(/{status}/g, status);
+        await sendSms(formatted, message);
+      } catch (smsErr) {
+        console.error("Failed to send membership status SMS:", smsErr);
+      }
+    }
+
     res.json(application);
   } catch (err) {
     res.status(500).json({ error: "Failed to update status" });
@@ -348,6 +376,19 @@ router.patch("/welfare/:id/status", async (req, res) => {
     const { status } = req.body;
     const application = await prisma.welfareApplication.update({ where: { id: parseInt(req.params.id) }, data: { status } });
     await createAuditLog(adminReq.adminId, `${status}_WELFARE`, `Welfare ID: ${application.id}`);
+
+    // Send Status Update SMS Notification
+    if (application.contact && process.env.KAIROS_API_KEY) {
+      const formatted = normalizeGhanaNumber(application.contact);
+      try {
+        let template = await getSmsTemplate("sms_template_welfare_status", "Hello {name}, your ROAACCU welfare application status has been updated to: {status}.", prisma);
+        const message = template.replace(/{name}/g, application.name).replace(/{status}/g, status);
+        await sendSms(formatted, message);
+      } catch (smsErr) {
+        console.error("Failed to send welfare status SMS:", smsErr);
+      }
+    }
+
     res.json(application);
   } catch (err) {
     res.status(500).json({ error: "Failed to update status" });

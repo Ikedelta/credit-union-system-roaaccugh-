@@ -5,20 +5,26 @@ import { supabase } from '../utils/supabase';
 interface MediaSelectorModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelect: (url: string) => void;
+  onSelect?: (url: string) => void;
+  onMultiSelect?: (urls: string[]) => void;
   onUploadClick: () => void;
+  isMultiSelect?: boolean;
 }
 
-const MediaSelectorModal: React.FC<MediaSelectorModalProps> = ({ isOpen, onClose, onSelect, onUploadClick }) => {
+const MediaSelectorModal: React.FC<MediaSelectorModalProps> = ({ isOpen, onClose, onSelect, onMultiSelect, onUploadClick, isMultiSelect }) => {
   const [activeTab, setActiveTab] = useState<'library' | 'upload' | 'link'>('library');
   const [mediaFiles, setMediaFiles] = useState<{name: string, url: string}[]>([]);
   const [loading, setLoading] = useState(false);
   const [linkInput, setLinkInput] = useState('');
   const [hoveredFile, setHoveredFile] = useState<string | null>(null);
+  const [selectedUrls, setSelectedUrls] = useState<string[]>([]);
 
   useEffect(() => {
-    if (isOpen && activeTab === 'library') {
-      fetchMedia();
+    if (isOpen) {
+      if (activeTab === 'library') {
+        fetchMedia();
+      }
+      setSelectedUrls([]);
     }
   }, [isOpen, activeTab]);
 
@@ -26,7 +32,7 @@ const MediaSelectorModal: React.FC<MediaSelectorModalProps> = ({ isOpen, onClose
     setLoading(true);
     try {
       const { data, error } = await supabase.storage.from('cms-media').list('', {
-        limit: 100,
+        limit: 40,
         offset: 0,
         sortBy: { column: 'created_at', order: 'desc' },
       });
@@ -61,6 +67,7 @@ const MediaSelectorModal: React.FC<MediaSelectorModalProps> = ({ isOpen, onClose
           max-width: 800px;
           border-radius: 16px;
           max-height: calc(100dvh - 2rem);
+          margin: 0 auto;
         }
         .media-modal-header {
           padding: 1rem 1.25rem;
@@ -68,6 +75,8 @@ const MediaSelectorModal: React.FC<MediaSelectorModalProps> = ({ isOpen, onClose
         .media-modal-tabs {
           padding: 0.75rem 1.25rem;
           gap: 0.5rem;
+          display: flex;
+          flex-wrap: wrap;
         }
         .media-modal-tab-btn {
           padding: 0.5rem 1rem;
@@ -127,7 +136,7 @@ const MediaSelectorModal: React.FC<MediaSelectorModalProps> = ({ isOpen, onClose
         </div>
 
         {/* Tabs - Pill style for responsiveness */}
-        <div className="media-modal-tabs" style={{ display: 'flex', flexWrap: 'nowrap', overflowX: 'auto', borderBottom: '1px solid var(--border-color)', background: '#f8fafc', flexShrink: 0, WebkitOverflowScrolling: 'touch' }}>
+        <div className="media-modal-tabs" style={{ borderBottom: '1px solid var(--border-color)', background: '#f8fafc', flexShrink: 0 }}>
           <button 
             className="media-modal-tab-btn"
             style={{ flex: '1 1 auto', minWidth: 'max-content', background: activeTab === 'library' ? 'var(--primary-color)' : 'transparent', border: 'none', borderRadius: '8px', color: activeTab === 'library' ? '#fff' : 'var(--text-muted)', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', transition: 'all 0.2s' }} 
@@ -173,18 +182,30 @@ const MediaSelectorModal: React.FC<MediaSelectorModalProps> = ({ isOpen, onClose
                 </div>
               ) : (
                 <div className="media-modal-grid" style={{ display: 'grid' }}>
-                  {mediaFiles.map((file, i) => (
+                  {mediaFiles.map((file, i) => {
+                    const isSelected = selectedUrls.includes(file.url);
+                    return (
                     <div 
                       key={i} 
-                      onClick={() => onSelect(file.url)}
+                      onClick={() => {
+                        if (isMultiSelect) {
+                          if (isSelected) {
+                            setSelectedUrls(selectedUrls.filter(u => u !== file.url));
+                          } else {
+                            setSelectedUrls([...selectedUrls, file.url]);
+                          }
+                        } else {
+                          if (onSelect) onSelect(file.url);
+                        }
+                      }}
                       style={{ 
                         cursor: 'pointer', 
                         aspectRatio: '1', 
                         borderRadius: '12px', 
                         overflow: 'hidden', 
                         position: 'relative',
-                        boxShadow: hoveredFile === file.url ? '0 10px 25px -5px rgba(0,0,0,0.15), 0 0 0 3px var(--primary-color)' : '0 1px 3px rgba(0,0,0,0.1)',
-                        transform: hoveredFile === file.url ? 'translateY(-2px)' : 'none',
+                        boxShadow: (hoveredFile === file.url || isSelected) ? '0 10px 25px -5px rgba(0,0,0,0.15), 0 0 0 3px var(--primary-color)' : '0 1px 3px rgba(0,0,0,0.1)',
+                        transform: (hoveredFile === file.url || isSelected) ? 'translateY(-2px)' : 'none',
                         transition: 'all 0.2s ease-out'
                       }}
                       onMouseEnter={() => setHoveredFile(file.url)}
@@ -203,18 +224,25 @@ const MediaSelectorModal: React.FC<MediaSelectorModalProps> = ({ isOpen, onClose
                       <div style={{
                         position: 'absolute',
                         top: 0, left: 0, width: '100%', height: '100%',
-                        background: hoveredFile === file.url ? 'rgba(0,0,0,0.2)' : 'transparent',
+                        background: (hoveredFile === file.url || isSelected) ? 'rgba(0,0,0,0.2)' : 'transparent',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                         transition: 'background 0.2s'
                       }}>
-                        {hoveredFile === file.url && (
+                        {(hoveredFile === file.url || isSelected) && (
                           <div style={{ background: 'var(--primary-color)', color: 'white', padding: '0.5rem', borderRadius: '50%', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
                             <CheckCircle2 size={24} />
                           </div>
                         )}
                       </div>
                     </div>
-                  ))}
+                  )})}
+                </div>
+              )}
+              {isMultiSelect && selectedUrls.length > 0 && (
+                <div style={{ position: 'sticky', bottom: 0, background: '#fff', padding: '1rem', borderTop: '1px solid var(--border-color)', display: 'flex', justifyContent: 'flex-end', marginTop: '1rem', borderRadius: '0 0 16px 16px' }}>
+                  <button className="btn btn-primary" onClick={() => { if (onMultiSelect) onMultiSelect(selectedUrls); }}>
+                    Add {selectedUrls.length} Selected Images
+                  </button>
                 </div>
               )}
             </div>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import { Save, Loader2, Plus, Trash2, UploadCloud, Link as LinkIcon, Globe } from 'lucide-react';
+import { Save, Loader2, Plus, Trash2, UploadCloud, Link as LinkIcon, Globe, Image as ImageIcon } from 'lucide-react';
 import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaYoutube, FaGithub } from 'react-icons/fa';
 import LoadingScreen from '../components/LoadingScreen';
 import MediaSelectorModal from '../components/MediaSelectorModal';
@@ -32,8 +32,11 @@ const CMS: React.FC = () => {
   const [savingKey, setSavingKey] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('general');
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [uploadingImageFor, setUploadingImageFor] = useState<{key: string, index?: number, field?: string} | null>(null);
+  const [uploadingImageFor, setUploadingImageFor] = useState<{key: string, index?: number, field?: string, bulk?: boolean} | null>(null);
   const [isMediaModalOpen, setIsMediaModalOpen] = useState(false);
+  
+  const bulkUploadInputRef = useRef<HTMLInputElement>(null);
+  const [isBulkUploading, setIsBulkUploading] = useState(false);
 
   useEffect(() => {
     fetchContent();
@@ -142,6 +145,63 @@ const CMS: React.FC = () => {
     setUploadingImageFor(null);
   };
 
+  const handleMultiSelect = (urls: string[]) => {
+    if (!uploadingImageFor || !uploadingImageFor.bulk) return;
+    const { key } = uploadingImageFor;
+
+    const newItems = urls.map(url => ({
+      id: Date.now().toString() + Math.random().toString(),
+      title: '',
+      image: url,
+      description: ''
+    }));
+
+    const item = getItem(key, 'JSON', '[]');
+    let currentList = [];
+    try { currentList = JSON.parse(item.value); } catch(err) {}
+    
+    handleJsonChange(key, [...currentList, ...newItems]);
+    setIsMediaModalOpen(false);
+    setUploadingImageFor(null);
+  };
+
+  const handleBulkUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) return;
+    setIsBulkUploading(true);
+    const files = Array.from(e.target.files);
+    
+    try {
+      const newItems = [];
+      for (const file of files) {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${uuidv4()}.${fileExt}`;
+        const { data, error } = await supabase.storage.from('cms-media').upload(fileName, file, { cacheControl: '3600', upsert: false });
+        if (error) throw error;
+        const { data: publicUrlData } = supabase.storage.from('cms-media').getPublicUrl(fileName);
+        
+        newItems.push({
+          id: Date.now().toString() + Math.random().toString(),
+          title: '',
+          image: publicUrlData.publicUrl,
+          description: ''
+        });
+      }
+      
+      const item = getItem('new_photo_gallery', 'JSON', '[]');
+      let currentList = [];
+      try { currentList = JSON.parse(item.value); } catch(err) {}
+      
+      handleJsonChange('new_photo_gallery', [...currentList, ...newItems]);
+      alert(`Successfully uploaded ${newItems.length} images! Please review them and click 'Save Photo Gallery'.`);
+    } catch (err) {
+      console.error(err);
+      alert('Failed during bulk upload. Ensure Supabase is configured properly.');
+    } finally {
+      setIsBulkUploading(false);
+      if (bulkUploadInputRef.current) bulkUploadInputRef.current.value = '';
+    }
+  };
+
   const renderListEditor = (key: string, title: string, template: any, fields: {name: string, label: string, type: string}[]) => {
     const item = getItem(key, 'JSON', '[]');
     let list: any[] = [];
@@ -164,6 +224,17 @@ const CMS: React.FC = () => {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
           <h3 style={{ margin: 0 }}>{title}</h3>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
+            {key === 'new_photo_gallery' && (
+              <>
+                <button className="btn btn-secondary" onClick={() => bulkUploadInputRef.current?.click()} disabled={isBulkUploading}>
+                  {isBulkUploading ? <Loader2 size={16} className="spinner" /> : <UploadCloud size={16} />} 
+                  {isBulkUploading ? 'Uploading...' : 'Bulk Upload'}
+                </button>
+                <button className="btn btn-secondary" onClick={() => { setUploadingImageFor({key, bulk: true}); setIsMediaModalOpen(true); }}>
+                  <ImageIcon size={16} /> Add from Library
+                </button>
+              </>
+            )}
             <button className="btn btn-secondary" onClick={addListItem}>
               <Plus size={16} /> Add Item
             </button>
@@ -198,7 +269,7 @@ const CMS: React.FC = () => {
                   ) : f.type === 'image' ? (
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center', background: '#f8fafc', padding: '0.75rem', borderRadius: '8px' }}>
                       {listItem[f.name] && <img src={listItem[f.name].startsWith('http') ? listItem[f.name] : (listItem[f.name].startsWith('/uploads') ? `http://localhost:3000${listItem[f.name]}` : listItem[f.name])} alt="Preview" style={{ width: '80px', height: '60px', objectFit: 'cover', borderRadius: '4px', border: '1px solid var(--border-color)' }} />}
-                      <div style={{ display: 'flex', flex: '1 1 250px', gap: '0.5rem' }}>
+                      <div style={{ display: 'flex', flex: '1 1 250px', gap: '0.5rem', flexWrap: 'wrap' }}>
                         <input type="text" className="form-control" value={listItem[f.name] || ''} onChange={(e) => updateListItem(index, f.name, e.target.value)} placeholder="Image URL or click Upload..." style={{ flex: 1, minWidth: 0 }} />
                         <button className="btn btn-secondary" onClick={() => { setUploadingImageFor({key, index, field: f.name}); setIsMediaModalOpen(true); }} style={{ whiteSpace: 'nowrap' }}>
                           <UploadCloud size={16} /> Upload
@@ -452,8 +523,24 @@ const CMS: React.FC = () => {
   const renderAutomatedMessagesTab = () => {
     const loanStatusItem = getItem('sms_template_loan_status', 'TEXT', 'Hello {name}, your ROAACCU loan application status has been updated to: {status}.');
     const loanSubmissionItem = getItem('sms_template_loan_submission', 'TEXT', 'Hello {name}, your ROAACCU loan application has been received and is currently under review. We will notify you when the status changes.');
+    const membershipSubmissionItem = getItem('sms_template_membership_submission', 'TEXT', 'Hello {name}, your ROAACCU membership application has been received and is currently under review.');
+    const membershipApprovedItem = getItem('sms_template_membership_approved', 'TEXT', 'Hello {name}, your ROAACCU membership is APPROVED. Your Member ID is: {memberId}. Please keep this safe for future reference.');
+    const membershipStatusItem = getItem('sms_template_membership_status', 'TEXT', 'Hello {name}, your ROAACCU membership application status has been updated to: {status}.');
+    const welfareSubmissionItem = getItem('sms_template_welfare_submission', 'TEXT', 'Hello {name}, your ROAACCU welfare application has been received and is currently under review.');
+    const welfareStatusItem = getItem('sms_template_welfare_status', 'TEXT', 'Hello {name}, your ROAACCU welfare application status has been updated to: {status}.');
     const adminWelcomeSmsItem = getItem('sms_template_admin_welcome', 'TEXT', 'Hello {name}, your ROAACCU Admin account has been created. Check your email for login details.');
     const adminWelcomeEmailItem = getItem('email_template_admin_welcome', 'TEXT', 'Hello {name},\n\nYour admin account has been created successfully.\n\nRole: {role}\nEmail: {email}\nPassword: {password}\n\nPlease login and change your password immediately.');
+
+    const renderMessageField = (item: any, title: string, variablesStr: string, key: string, rows: number = 3) => (
+      <div>
+        <label className="form-label">{title}</label>
+        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Variables: {variablesStr}</p>
+        <textarea rows={rows} className="form-control" value={item.value} onChange={(e) => handleChange(key, e.target.value)} />
+        <button className="btn btn-primary" style={{ marginTop: '0.5rem' }} onClick={() => handleUpdate(item)} disabled={savingKey === key}>
+          {savingKey === key ? <Loader2 size={18} className="spinner" /> : <Save size={18} />} Save
+        </button>
+      </div>
+    );
 
     return (
       <div className="widget glass-panel" style={{ marginBottom: '1.5rem' }}>
@@ -463,41 +550,26 @@ const CMS: React.FC = () => {
         </p>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          <div>
-            <label className="form-label">Loan Status Update</label>
-            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Variables: {"{name}"}, {"{status}"}</p>
-            <textarea rows={3} className="form-control" value={loanStatusItem.value} onChange={(e) => handleChange('sms_template_loan_status', e.target.value)} />
-            <button className="btn btn-primary" style={{ marginTop: '0.5rem' }} onClick={() => handleUpdate(loanStatusItem)} disabled={savingKey === 'sms_template_loan_status'}>
-              {savingKey === 'sms_template_loan_status' ? <Loader2 size={18} className="spinner" /> : <Save size={18} />} Save
-            </button>
-          </div>
+          {renderMessageField(loanSubmissionItem, "Loan Application Received", "{name}", 'sms_template_loan_submission')}
           <hr style={{ border: 'none', borderTop: '1px solid var(--border-color)' }} />
-          <div>
-            <label className="form-label">Loan Application Received</label>
-            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Variables: {"{name}"}</p>
-            <textarea rows={3} className="form-control" value={loanSubmissionItem.value} onChange={(e) => handleChange('sms_template_loan_submission', e.target.value)} />
-            <button className="btn btn-primary" style={{ marginTop: '0.5rem' }} onClick={() => handleUpdate(loanSubmissionItem)} disabled={savingKey === 'sms_template_loan_submission'}>
-              {savingKey === 'sms_template_loan_submission' ? <Loader2 size={18} className="spinner" /> : <Save size={18} />} Save
-            </button>
-          </div>
+          {renderMessageField(loanStatusItem, "Loan Status Update", "{name}, {status}", 'sms_template_loan_status')}
           <hr style={{ border: 'none', borderTop: '1px solid var(--border-color)' }} />
-          <div>
-            <label className="form-label">Admin Welcome Message (SMS)</label>
-            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Variables: {"{name}"}</p>
-            <textarea rows={3} className="form-control" value={adminWelcomeSmsItem.value} onChange={(e) => handleChange('sms_template_admin_welcome', e.target.value)} />
-            <button className="btn btn-primary" style={{ marginTop: '0.5rem' }} onClick={() => handleUpdate(adminWelcomeSmsItem)} disabled={savingKey === 'sms_template_admin_welcome'}>
-              {savingKey === 'sms_template_admin_welcome' ? <Loader2 size={18} className="spinner" /> : <Save size={18} />} Save
-            </button>
-          </div>
+          
+          {renderMessageField(membershipSubmissionItem, "Membership Application Received", "{name}", 'sms_template_membership_submission')}
           <hr style={{ border: 'none', borderTop: '1px solid var(--border-color)' }} />
-          <div>
-            <label className="form-label">Admin Welcome Message (Email)</label>
-            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Variables: {"{name}"}, {"{role}"}, {"{email}"}, {"{password}"}</p>
-            <textarea rows={5} className="form-control" value={adminWelcomeEmailItem.value} onChange={(e) => handleChange('email_template_admin_welcome', e.target.value)} />
-            <button className="btn btn-primary" style={{ marginTop: '0.5rem' }} onClick={() => handleUpdate(adminWelcomeEmailItem)} disabled={savingKey === 'email_template_admin_welcome'}>
-              {savingKey === 'email_template_admin_welcome' ? <Loader2 size={18} className="spinner" /> : <Save size={18} />} Save
-            </button>
-          </div>
+          {renderMessageField(membershipApprovedItem, "Membership Approved (Contains Member ID)", "{name}, {memberId}", 'sms_template_membership_approved')}
+          <hr style={{ border: 'none', borderTop: '1px solid var(--border-color)' }} />
+          {renderMessageField(membershipStatusItem, "Membership Status Update", "{name}, {status}", 'sms_template_membership_status')}
+          <hr style={{ border: 'none', borderTop: '1px solid var(--border-color)' }} />
+          
+          {renderMessageField(welfareSubmissionItem, "Welfare Application Received", "{name}", 'sms_template_welfare_submission')}
+          <hr style={{ border: 'none', borderTop: '1px solid var(--border-color)' }} />
+          {renderMessageField(welfareStatusItem, "Welfare Status Update", "{name}, {status}", 'sms_template_welfare_status')}
+          <hr style={{ border: 'none', borderTop: '1px solid var(--border-color)' }} />
+          
+          {renderMessageField(adminWelcomeSmsItem, "Admin Welcome Message (SMS)", "{name}", 'sms_template_admin_welcome')}
+          <hr style={{ border: 'none', borderTop: '1px solid var(--border-color)' }} />
+          {renderMessageField(adminWelcomeEmailItem, "Admin Welcome Message (Email)", "{name}, {role}, {email}, {password}", 'email_template_admin_welcome', 5)}
         </div>
       </div>
     );
@@ -525,7 +597,7 @@ const CMS: React.FC = () => {
           </div>
           <div>
             <label className="form-label">By-Laws Document Link</label>
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
               <input type="text" className="form-control" placeholder="URL or click Upload..." value={bylawPdfItem.value} onChange={(e) => handleChange('bylaw_pdf', e.target.value)} style={{ flex: 1 }} />
               <button className="btn btn-secondary" onClick={() => { setUploadingImageFor({key: 'bylaw_pdf'}); setIsMediaModalOpen(true); }} style={{ whiteSpace: 'nowrap' }}>
                 <UploadCloud size={16} /> Upload
@@ -545,7 +617,7 @@ const CMS: React.FC = () => {
           </div>
           <div>
             <label className="form-label">Operational Policy Document Link</label>
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
               <input type="text" className="form-control" placeholder="URL or click Upload..." value={opPolicyDocItem.value} onChange={(e) => handleChange('operational_policy_doc', e.target.value)} style={{ flex: 1 }} />
               <button className="btn btn-secondary" onClick={() => { setUploadingImageFor({key: 'operational_policy_doc'}); setIsMediaModalOpen(true); }} style={{ whiteSpace: 'nowrap' }}>
                 <UploadCloud size={16} /> Upload
@@ -574,7 +646,13 @@ const CMS: React.FC = () => {
 
         <hr style={{ border: 'none', borderTop: '1px solid var(--border-color)', margin: '2rem 0' }} />
 
-        {renderListEditor('photo_gallery', 'Photo Gallery', { id: Date.now().toString(), title: '', image: '', description: '' }, [
+        {renderListEditor('photo_gallery', 'Awards & Recognitions (Former Photo Gallery)', { id: Date.now().toString(), title: '', image: '', description: '' }, [
+          { name: 'image', label: 'Award Image', type: 'image' },
+          { name: 'title', label: 'Award Title', type: 'text' },
+          { name: 'description', label: 'Award Description', type: 'textarea' }
+        ])}
+
+        {renderListEditor('new_photo_gallery', 'Photo Gallery', { id: Date.now().toString(), title: '', image: '', description: '' }, [
           { name: 'image', label: 'Gallery Image', type: 'image' },
           { name: 'title', label: 'Image Title', type: 'text' },
           { name: 'description', label: 'Image Description', type: 'textarea' }
@@ -600,6 +678,8 @@ const CMS: React.FC = () => {
           { name: 'location', label: 'Location', type: 'text' },
           { name: 'description', label: 'Event Description', type: 'textarea' }
         ])}
+
+
       </div>
     );
   };
@@ -612,14 +692,19 @@ const CMS: React.FC = () => {
       
       {/* Hidden file input for uploads */}
       <input type="file" ref={fileInputRef} style={{ display: 'none' }} accept="image/*,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={handleImageUpload} />
+      
+      {/* Hidden file input for bulk image uploads */}
+      <input type="file" ref={bulkUploadInputRef} style={{ display: 'none' }} accept="image/*" multiple onChange={handleBulkUpload} />
 
       <MediaSelectorModal 
         isOpen={isMediaModalOpen} 
+        isMultiSelect={uploadingImageFor?.bulk === true}
         onClose={() => {
           setIsMediaModalOpen(false);
           setUploadingImageFor(null);
         }}
         onSelect={handleMediaSelect}
+        onMultiSelect={handleMultiSelect}
         onUploadClick={() => {
           setIsMediaModalOpen(false);
           fileInputRef.current?.click();

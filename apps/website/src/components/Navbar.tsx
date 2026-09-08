@@ -77,6 +77,7 @@ export function Navbar({ setActiveModal: _setActiveModal }: NavbarProps) {
                 <div className="dropdown-content">
                   <Link to="/bylaw" className="nav-link">By Law</Link>
                   <Link to="/operational-policy" className="nav-link">Operational Policy</Link>
+                  <Link to="/awards" className="nav-link">Awards</Link>
                   <Link to="/photo-gallery" className="nav-link">Photo Gallery</Link>
                   <Link to="/videos" className="nav-link">Videos</Link>
                   <Link to="/organogram" className="nav-link">Organogram</Link>

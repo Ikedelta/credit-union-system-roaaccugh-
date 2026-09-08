@@ -25,6 +25,7 @@ const PhotoGallery = lazy(() => import('../pages/PhotoGallery').then(m => ({ def
 const Videos = lazy(() => import('../pages/Videos').then(m => ({ default: m.Videos })));
 const Organogram = lazy(() => import('../pages/Organogram').then(m => ({ default: m.Organogram })));
 const Agm = lazy(() => import('../pages/Agm').then(m => ({ default: m.Agm })));
+const Awards = lazy(() => import('../pages/Awards').then(m => ({ default: m.Awards })));
 
 const LoadingFallback = () => (
   <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', flexDirection: 'column', gap: '1rem', background: '#f8fafc' }}>
@@ -59,6 +60,7 @@ export function AppRouter() {
             <Route path="bylaw" element={<ByLaw />} />
             <Route path="operational-policy" element={<OperationalPolicy />} />
             <Route path="photo-gallery" element={<PhotoGallery />} />
+            <Route path="awards" element={<Awards />} />
             <Route path="videos" element={<Videos />} />
             <Route path="organogram" element={<Organogram />} />
           </Route>

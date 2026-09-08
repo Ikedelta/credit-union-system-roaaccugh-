@@ -210,7 +210,28 @@ export function JoinNow() {
                     <h3 style={{ color: 'var(--primary-color)', marginBottom: '1.5rem', fontSize: '1.4rem' }}>Identification</h3>
                     <div className="form-group">
                       <label className="form-label">Ghana Card Number</label>
-                      <input type="text" name="ghanaCardNo" className="form-control" required={step === 3} />
+                      <input 
+                        type="text" 
+                        name="ghanaCardNo" 
+                        className="form-control" 
+                        required={step === 3} 
+                        placeholder="GHA-01000038-1"
+                        maxLength={15}
+                        onChange={(e) => {
+                          let cleanVal = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').replace(/^GHA/, '');
+                          if (cleanVal.length > 0) {
+                            let formatted = 'GHA-';
+                            if (cleanVal.length > 9) {
+                              formatted += cleanVal.substring(0, 9) + '-' + cleanVal.substring(9, 10);
+                            } else {
+                              formatted += cleanVal;
+                            }
+                            e.target.value = formatted;
+                          } else {
+                            e.target.value = '';
+                          }
+                        }}
+                      />
                     </div>
 
                     <p style={{ textAlign: 'center', marginTop: '1.25rem', fontSize: '0.85rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>

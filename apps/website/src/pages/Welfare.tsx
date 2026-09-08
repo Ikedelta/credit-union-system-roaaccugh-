@@ -77,7 +77,28 @@ export function Welfare() {
           
           <div className="form-group">
             <label className="form-label">Your Ghana Card Number</label>
-            <input type="text" name="ghanaCardNumber" className="form-control" required />
+            <input 
+              type="text" 
+              name="ghanaCardNumber" 
+              className="form-control" 
+              required 
+              placeholder="GHA-01000038-1"
+              maxLength={15}
+              onChange={(e) => {
+                let cleanVal = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').replace(/^GHA/, '');
+                if (cleanVal.length > 0) {
+                  let formatted = 'GHA-';
+                  if (cleanVal.length > 9) {
+                    formatted += cleanVal.substring(0, 9) + '-' + cleanVal.substring(9, 10);
+                  } else {
+                    formatted += cleanVal;
+                  }
+                  e.target.value = formatted;
+                } else {
+                  e.target.value = '';
+                }
+              }}
+            />
           </div>
 
 
@@ -90,7 +111,28 @@ export function Welfare() {
             </div>
             <div className="form-group">
               <label className="form-label">Beneficiary's Ghana Card Number</label>
-              <input type="text" name="beneficiaryGhanaCard" className="form-control" required />
+              <input 
+                type="text" 
+                name="beneficiaryGhanaCard" 
+                className="form-control" 
+                required 
+                placeholder="GHA-01000038-1"
+                maxLength={15}
+                onChange={(e) => {
+                  let cleanVal = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').replace(/^GHA/, '');
+                  if (cleanVal.length > 0) {
+                    let formatted = 'GHA-';
+                    if (cleanVal.length > 9) {
+                      formatted += cleanVal.substring(0, 9) + '-' + cleanVal.substring(9, 10);
+                    } else {
+                      formatted += cleanVal;
+                    }
+                    e.target.value = formatted;
+                  } else {
+                    e.target.value = '';
+                  }
+                }}
+              />
             </div>
 
           </div>

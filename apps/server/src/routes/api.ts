@@ -154,10 +154,21 @@ router.post(
           bankBranch: data.bankBranch,
           accountNumber: data.accountNumber,
           ghanaCardNumber: data.ghanaCardNo,
-          ghanaCardFrontUrl: null,
           ghanaCardBackUrl: null,
         },
       });
+
+      // Send SMS Notification
+      if (data.telNo && process.env.KAIROS_API_KEY) {
+        const formatted = normalizeGhanaNumber(data.telNo);
+        try {
+          let template = await getSmsTemplate("sms_template_membership_submission", "Hello {name}, your ROAACCU membership application has been received and is currently under review.", prisma);
+          const message = template.replace(/{name}/g, data.firstName);
+          await sendSms(formatted, message);
+        } catch (smsErr) {
+          console.error("Failed to send membership submission SMS:", smsErr);
+        }
+      }
 
       res.json({ success: true });
     } catch (err) {
@@ -239,6 +250,18 @@ router.post(
           beneficiaryCardBackUrl: null,
         },
       });
+
+      // Send SMS Notification
+      if (data.contact && process.env.KAIROS_API_KEY) {
+        const formatted = normalizeGhanaNumber(data.contact);
+        try {
+          let template = await getSmsTemplate("sms_template_welfare_submission", "Hello {name}, your ROAACCU welfare application has been received and is currently under review.", prisma);
+          const message = template.replace(/{name}/g, data.name);
+          await sendSms(formatted, message);
+        } catch (smsErr) {
+          console.error("Failed to send welfare submission SMS:", smsErr);
+        }
+      }
 
       res.json({ success: true });
     } catch (err) {

@@ -213,7 +213,28 @@ export function ApplyLoan() {
                     <div className="form-grid form-grid-2">
                     <div className="form-group">
                       <label className="form-label">Ghana Card Number</label>
-                      <input type="text" name="ghanaCardNumber" className="form-control" required={step === 3} />
+                      <input 
+                        type="text" 
+                        name="ghanaCardNumber" 
+                        className="form-control" 
+                        required={step === 3} 
+                        placeholder="GHA-01000038-1"
+                        maxLength={15}
+                        onChange={(e) => {
+                          let cleanVal = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').replace(/^GHA/, '');
+                          if (cleanVal.length > 0) {
+                            let formatted = 'GHA-';
+                            if (cleanVal.length > 9) {
+                              formatted += cleanVal.substring(0, 9) + '-' + cleanVal.substring(9, 10);
+                            } else {
+                              formatted += cleanVal;
+                            }
+                            e.target.value = formatted;
+                          } else {
+                            e.target.value = '';
+                          }
+                        }}
+                      />
                     </div>
                     </div>
 
