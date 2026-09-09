@@ -584,102 +584,142 @@ const CMS: React.FC = () => {
     const organogramDescItem = getItem('organogram_desc', 'TEXT');
 
     return (
-      <div className="widget glass-panel" style={{ marginBottom: '1.5rem' }}>
-        <h3 style={{ marginBottom: '1rem' }}>Media Center Content</h3>
-        
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          <div>
-            <label className="form-label">By-Laws Text</label>
-            <textarea rows={5} className="form-control" value={bylawTextItem.value} onChange={(e) => handleChange('bylaw_text', e.target.value)} />
-            <button className="btn btn-primary" style={{ marginTop: '0.5rem' }} onClick={() => handleUpdate(bylawTextItem)} disabled={savingKey === 'bylaw_text'}>
-              {savingKey === 'bylaw_text' ? <Loader2 size={18} className="spinner" /> : <Save size={18} />} Save By-Laws
-            </button>
-          </div>
-          <div>
-            <label className="form-label">By-Laws Document Link</label>
-            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-              <input type="text" className="form-control" placeholder="URL or click Upload..." value={bylawPdfItem.value} onChange={(e) => handleChange('bylaw_pdf', e.target.value)} style={{ flex: 1 }} />
-              <button className="btn btn-secondary" onClick={() => { setUploadingImageFor({key: 'bylaw_pdf'}); setIsMediaModalOpen(true); }} style={{ whiteSpace: 'nowrap' }}>
-                <UploadCloud size={16} /> Upload
-              </button>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+        <div style={{ marginBottom: '0.5rem' }}>
+          <p style={{ color: 'var(--text-muted)' }}>
+            Manage the documents, galleries, and reports available in the Media Center section of the website.
+          </p>
+        </div>
+
+        <div className="widget glass-panel">
+          <h3 style={{ marginBottom: '1.5rem' }}>Documents & Policies</h3>
+          <div className="grid md:grid-cols-2 gap-6">
+            <div style={{ padding: '1.5rem', background: 'var(--bg-white)', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
+              <h4 style={{ marginBottom: '1rem', color: 'var(--primary-color)' }}>By-Laws</h4>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div>
+                  <label className="form-label">By-Laws Text</label>
+                  <textarea rows={4} className="form-control" value={bylawTextItem.value} onChange={(e) => handleChange('bylaw_text', e.target.value)} />
+                  <button className="btn btn-primary" style={{ marginTop: '0.5rem' }} onClick={() => handleUpdate(bylawTextItem)} disabled={savingKey === 'bylaw_text'}>
+                    {savingKey === 'bylaw_text' ? <Loader2 size={18} className="spinner" /> : <Save size={18} />} Save Text
+                  </button>
+                </div>
+                <hr style={{ border: 'none', borderTop: '1px dashed var(--border-color)' }} />
+                <div>
+                  <label className="form-label">By-Laws PDF Document</label>
+                  <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                    <input type="text" className="form-control" placeholder="URL or click Upload..." value={bylawPdfItem.value} onChange={(e) => handleChange('bylaw_pdf', e.target.value)} style={{ flex: 1 }} />
+                    <button className="btn btn-secondary" onClick={() => { setUploadingImageFor({key: 'bylaw_pdf'}); setIsMediaModalOpen(true); }} style={{ whiteSpace: 'nowrap' }}>
+                      <UploadCloud size={16} /> Upload
+                    </button>
+                  </div>
+                  <button className="btn btn-primary" style={{ marginTop: '0.5rem' }} onClick={() => handleUpdate(bylawPdfItem)} disabled={savingKey === 'bylaw_pdf'}>
+                    {savingKey === 'bylaw_pdf' ? <Loader2 size={18} className="spinner" /> : <Save size={18} />} Save Link
+                  </button>
+                </div>
+              </div>
             </div>
-            <button className="btn btn-primary" style={{ marginTop: '0.5rem' }} onClick={() => handleUpdate(bylawPdfItem)} disabled={savingKey === 'bylaw_pdf'}>
-              {savingKey === 'bylaw_pdf' ? <Loader2 size={18} className="spinner" /> : <Save size={18} />} Save Document Link
-            </button>
-          </div>
-          <hr style={{ border: 'none', borderTop: '1px solid var(--border-color)', margin: '1.5rem 0' }} />
-          <div>
-            <label className="form-label">Operational Policy Text</label>
-            <textarea rows={5} className="form-control" value={opPolicyTextItem.value} onChange={(e) => handleChange('operational_policy_text', e.target.value)} />
-            <button className="btn btn-primary" style={{ marginTop: '0.5rem' }} onClick={() => handleUpdate(opPolicyTextItem)} disabled={savingKey === 'operational_policy_text'}>
-              {savingKey === 'operational_policy_text' ? <Loader2 size={18} className="spinner" /> : <Save size={18} />} Save Operational Policy Text
-            </button>
-          </div>
-          <div>
-            <label className="form-label">Operational Policy Document Link</label>
-            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-              <input type="text" className="form-control" placeholder="URL or click Upload..." value={opPolicyDocItem.value} onChange={(e) => handleChange('operational_policy_doc', e.target.value)} style={{ flex: 1 }} />
-              <button className="btn btn-secondary" onClick={() => { setUploadingImageFor({key: 'operational_policy_doc'}); setIsMediaModalOpen(true); }} style={{ whiteSpace: 'nowrap' }}>
-                <UploadCloud size={16} /> Upload
-              </button>
+
+            <div style={{ padding: '1.5rem', background: 'var(--bg-white)', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
+              <h4 style={{ marginBottom: '1rem', color: 'var(--primary-color)' }}>Operational Policy</h4>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div>
+                  <label className="form-label">Operational Policy Text</label>
+                  <textarea rows={4} className="form-control" value={opPolicyTextItem.value} onChange={(e) => handleChange('operational_policy_text', e.target.value)} />
+                  <button className="btn btn-primary" style={{ marginTop: '0.5rem' }} onClick={() => handleUpdate(opPolicyTextItem)} disabled={savingKey === 'operational_policy_text'}>
+                    {savingKey === 'operational_policy_text' ? <Loader2 size={18} className="spinner" /> : <Save size={18} />} Save Text
+                  </button>
+                </div>
+                <hr style={{ border: 'none', borderTop: '1px dashed var(--border-color)' }} />
+                <div>
+                  <label className="form-label">Policy Document</label>
+                  <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                    <input type="text" className="form-control" placeholder="URL or click Upload..." value={opPolicyDocItem.value} onChange={(e) => handleChange('operational_policy_doc', e.target.value)} style={{ flex: 1 }} />
+                    <button className="btn btn-secondary" onClick={() => { setUploadingImageFor({key: 'operational_policy_doc'}); setIsMediaModalOpen(true); }} style={{ whiteSpace: 'nowrap' }}>
+                      <UploadCloud size={16} /> Upload
+                    </button>
+                  </div>
+                  <button className="btn btn-primary" style={{ marginTop: '0.5rem' }} onClick={() => handleUpdate(opPolicyDocItem)} disabled={savingKey === 'operational_policy_doc'}>
+                    {savingKey === 'operational_policy_doc' ? <Loader2 size={18} className="spinner" /> : <Save size={18} />} Save Link
+                  </button>
+                </div>
+              </div>
             </div>
-            <button className="btn btn-primary" style={{ marginTop: '0.5rem' }} onClick={() => handleUpdate(opPolicyDocItem)} disabled={savingKey === 'operational_policy_doc'}>
-              {savingKey === 'operational_policy_doc' ? <Loader2 size={18} className="spinner" /> : <Save size={18} />} Save Policy Document Link
-            </button>
-          </div>
-          <hr style={{ border: 'none', borderTop: '1px solid var(--border-color)', margin: '1.5rem 0' }} />
-          <div>
-            <label className="form-label">Organogram Image URL</label>
-            <input type="text" className="form-control" placeholder="https://..." value={organogramImageItem.value} onChange={(e) => handleChange('organogram_image', e.target.value)} />
-            <button className="btn btn-primary" style={{ marginTop: '0.5rem' }} onClick={() => handleUpdate(organogramImageItem)} disabled={savingKey === 'organogram_image'}>
-              {savingKey === 'organogram_image' ? <Loader2 size={18} className="spinner" /> : <Save size={18} />} Save Organogram Image
-            </button>
-          </div>
-          <div>
-            <label className="form-label">Organogram Description</label>
-            <textarea rows={3} className="form-control" value={organogramDescItem.value} onChange={(e) => handleChange('organogram_desc', e.target.value)} />
-            <button className="btn btn-primary" style={{ marginTop: '0.5rem' }} onClick={() => handleUpdate(organogramDescItem)} disabled={savingKey === 'organogram_desc'}>
-              {savingKey === 'organogram_desc' ? <Loader2 size={18} className="spinner" /> : <Save size={18} />} Save Description
-            </button>
           </div>
         </div>
 
-        <hr style={{ border: 'none', borderTop: '1px solid var(--border-color)', margin: '2rem 0' }} />
+        <div className="widget glass-panel">
+          <h3 style={{ marginBottom: '1.5rem' }}>Organization Structure</h3>
+          <div style={{ padding: '1.5rem', background: 'var(--bg-white)', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <label className="form-label">Organogram Image</label>
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  <input type="text" className="form-control" placeholder="URL or click Upload..." value={organogramImageItem.value} onChange={(e) => handleChange('organogram_image', e.target.value)} style={{ flex: 1 }} />
+                  <button className="btn btn-secondary" onClick={() => { setUploadingImageFor({key: 'organogram_image'}); setIsMediaModalOpen(true); }} style={{ whiteSpace: 'nowrap' }}>
+                    <UploadCloud size={16} /> Upload
+                  </button>
+                </div>
+                {organogramImageItem.value && (
+                  <div style={{ marginTop: '1rem', background: '#f8fafc', padding: '0.5rem', borderRadius: '8px', border: '1px solid var(--border-color)', display: 'inline-block' }}>
+                    <img src={organogramImageItem.value} alt="Organogram preview" style={{ height: '120px', objectFit: 'contain', borderRadius: '4px' }} />
+                  </div>
+                )}
+                <div style={{ marginTop: '1rem' }}>
+                  <button className="btn btn-primary" onClick={() => handleUpdate(organogramImageItem)} disabled={savingKey === 'organogram_image'}>
+                    {savingKey === 'organogram_image' ? <Loader2 size={18} className="spinner" /> : <Save size={18} />} Save Image
+                  </button>
+                </div>
+              </div>
+              <div>
+                <label className="form-label">Organogram Description</label>
+                <textarea rows={6} className="form-control" value={organogramDescItem.value} onChange={(e) => handleChange('organogram_desc', e.target.value)} />
+                <button className="btn btn-primary" style={{ marginTop: '0.5rem' }} onClick={() => handleUpdate(organogramDescItem)} disabled={savingKey === 'organogram_desc'}>
+                  {savingKey === 'organogram_desc' ? <Loader2 size={18} className="spinner" /> : <Save size={18} />} Save Description
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
 
-        {renderListEditor('photo_gallery', 'Awards & Recognitions (Former Photo Gallery)', { id: Date.now().toString(), title: '', image: '', description: '' }, [
-          { name: 'image', label: 'Award Image', type: 'image' },
-          { name: 'title', label: 'Award Title', type: 'text' },
-          { name: 'description', label: 'Award Description', type: 'textarea' }
-        ])}
+        <div style={{ marginTop: '0.5rem' }}>
+          <h3 style={{ marginBottom: '1.5rem', color: 'var(--text-color)', borderBottom: '2px solid var(--border-color)', paddingBottom: '0.5rem', fontSize: '1.25rem' }}>Galleries & Media</h3>
+          {renderListEditor('photo_gallery', 'Awards & Recognitions (Former Photo Gallery)', { id: Date.now().toString(), title: '', image: '', description: '' }, [
+            { name: 'image', label: 'Award Image', type: 'image' },
+            { name: 'title', label: 'Award Title', type: 'text' },
+            { name: 'description', label: 'Award Description', type: 'textarea' }
+          ])}
 
-        {renderListEditor('new_photo_gallery', 'Photo Gallery', { id: Date.now().toString(), title: '', image: '', description: '' }, [
-          { name: 'image', label: 'Gallery Image', type: 'image' },
-          { name: 'title', label: 'Image Title', type: 'text' },
-          { name: 'description', label: 'Image Description', type: 'textarea' }
-        ])}
+          {renderListEditor('new_photo_gallery', 'Photo Gallery', { id: Date.now().toString(), title: '', image: '', description: '' }, [
+            { name: 'image', label: 'Gallery Image', type: 'image' },
+            { name: 'title', label: 'Image Title', type: 'text' },
+            { name: 'description', label: 'Image Description', type: 'textarea' }
+          ])}
 
-        {renderListEditor('video_gallery', 'Video Gallery', { id: Date.now().toString(), title: '', url: '', description: '' }, [
-          { name: 'url', label: 'Video URL (YouTube/Vimeo)', type: 'text' },
-          { name: 'title', label: 'Video Title', type: 'text' },
-          { name: 'description', label: 'Video Description', type: 'textarea' }
-        ])}
+          {renderListEditor('video_gallery', 'Video Gallery', { id: Date.now().toString(), title: '', url: '', description: '' }, [
+            { name: 'url', label: 'Video URL (YouTube/Vimeo)', type: 'text' },
+            { name: 'title', label: 'Video Title', type: 'text' },
+            { name: 'description', label: 'Video Description', type: 'textarea' }
+          ])}
+        </div>
 
-        {renderListEditor('agm_reports', 'AGM Reports', { id: Date.now().toString(), year: '', title: '', pdfUrl: '', summary: '' }, [
-          { name: 'year', label: 'Year (e.g., 2023)', type: 'text' },
-          { name: 'title', label: 'Report Title', type: 'text' },
-          { name: 'pdfUrl', label: 'PDF URL Link', type: 'text' },
-          { name: 'summary', label: 'Summary', type: 'textarea' }
-        ])}
+        <div style={{ marginTop: '0.5rem' }}>
+          <h3 style={{ marginBottom: '1.5rem', color: 'var(--text-color)', borderBottom: '2px solid var(--border-color)', paddingBottom: '0.5rem', fontSize: '1.25rem' }}>Reports & Events</h3>
+          {renderListEditor('agm_reports', 'AGM Reports', { id: Date.now().toString(), year: '', title: '', pdfUrl: '', summary: '' }, [
+            { name: 'year', label: 'Year (e.g., 2023)', type: 'text' },
+            { name: 'title', label: 'Report Title', type: 'text' },
+            { name: 'pdfUrl', label: 'PDF URL Link', type: 'text' },
+            { name: 'summary', label: 'Summary', type: 'textarea' }
+          ])}
 
-        {renderListEditor('events_list', 'Upcoming Events', { id: Date.now().toString(), title: '', date: '', time: '', location: '', description: '' }, [
-          { name: 'title', label: 'Event Title', type: 'text' },
-          { name: 'date', label: 'Date (e.g., Dec 15, 2024)', type: 'text' },
-          { name: 'time', label: 'Time (e.g., 6:00 PM)', type: 'text' },
-          { name: 'location', label: 'Location', type: 'text' },
-          { name: 'description', label: 'Event Description', type: 'textarea' }
-        ])}
-
-
+          {renderListEditor('events_list', 'Upcoming Events', { id: Date.now().toString(), title: '', date: '', time: '', location: '', description: '' }, [
+            { name: 'title', label: 'Event Title', type: 'text' },
+            { name: 'date', label: 'Date (e.g., Dec 15, 2024)', type: 'text' },
+            { name: 'time', label: 'Time (e.g., 6:00 PM)', type: 'text' },
+            { name: 'location', label: 'Location', type: 'text' },
+            { name: 'description', label: 'Event Description', type: 'textarea' }
+          ])}
+        </div>
       </div>
     );
   };
