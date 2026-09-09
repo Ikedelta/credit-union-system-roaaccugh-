@@ -51,9 +51,16 @@ export function Awards() {
              </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {awards.map((award, index) => (
+              {awards.map((award, index) => {
+                const isString = typeof award === 'string';
+                const id = isString ? index : (award.id || index);
+                const image = isString ? award : award.image;
+                const title = isString ? 'Credit Union Award' : (award.title || 'Excellence Award');
+                const description = isString ? '' : award.description;
+
+                return (
                 <div 
-                  key={award.id || index} 
+                  key={id} 
                   className="card" 
                   style={{ 
                     padding: 0, 
@@ -74,10 +81,10 @@ export function Awards() {
                   }}
                 >
                   <div style={{ position: 'relative' }}>
-                    {award.image ? (
+                    {image ? (
                       <img 
-                        src={award.image} 
-                        alt={award.title || 'Award'} 
+                        src={image} 
+                        alt={title} 
                         style={{ width: '100%', height: '300px', objectFit: 'cover' }}
                       />
                     ) : (
@@ -114,21 +121,21 @@ export function Awards() {
                       fontWeight: 700,
                       lineHeight: 1.3
                     }}>
-                      {award.title || 'Excellence Award'}
+                      {title}
                     </h3>
-                    {award.description && (
+                    {description && (
                       <p style={{ 
                         color: 'var(--text-secondary)', 
                         fontSize: '1rem', 
                         lineHeight: 1.7,
                         margin: 0 
                       }}>
-                        {award.description}
+                        {description}
                       </p>
                     )}
                   </div>
                 </div>
-              ))}
+              )})}
             </div>
           )}
         </RevealOnScroll>
