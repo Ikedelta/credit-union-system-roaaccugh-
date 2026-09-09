@@ -13,7 +13,7 @@ interface MediaSelectorModalProps {
 
 const MediaSelectorModal: React.FC<MediaSelectorModalProps> = ({ isOpen, onClose, onSelect, onMultiSelect, onUploadClick, isMultiSelect }) => {
   const [activeTab, setActiveTab] = useState<'library' | 'upload' | 'link'>('library');
-  const [mediaFiles, setMediaFiles] = useState<{name: string, url: string}[]>([]);
+  const [mediaFiles, setMediaFiles] = useState<{name: string, url: string, originalUrl?: string}[]>([]);
   const [loading, setLoading] = useState(false);
   const [linkInput, setLinkInput] = useState('');
   const [hoveredFile, setHoveredFile] = useState<string | null>(null);
@@ -321,7 +321,7 @@ const MediaSelectorModal: React.FC<MediaSelectorModalProps> = ({ isOpen, onClose
                 className="btn btn-primary" 
                 disabled={!linkInput}
                 onClick={() => {
-                  if (linkInput) onSelect(linkInput);
+                  if (linkInput && onSelect) onSelect(linkInput);
                 }}
                 style={{ alignSelf: 'flex-end', padding: '0.75rem 2rem', fontSize: '1rem', width: '100%' }}
               >
