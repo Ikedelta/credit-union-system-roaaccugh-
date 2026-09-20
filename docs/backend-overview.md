@@ -1,10 +1,8 @@
-# Credit Union System
-
-## Backend Architecture
+# Backend Architecture Overview
 
 The backend API is located in the `apps/server` directory. It is built using a modern Node.js and TypeScript stack.
 
-### Tech Stack
+## Tech Stack
 
 - **Runtime & Language:** Node.js, TypeScript
 - **Web Framework:** Express.js
