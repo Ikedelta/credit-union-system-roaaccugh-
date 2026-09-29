@@ -2,9 +2,8 @@ import { PageHeader } from '../components/PageHeader';
 import { RevealOnScroll } from '../components/RevealOnScroll';
 import { useCMS } from '../context/CMSContext';
 
-export function Videos() {
-  const { getJSON } = useCMS();
-  
+\n  const { get } = useCMS();
+      
   // Format: [{ id: '1', title: 'Video Title', url: 'https://youtube.com/embed/xyz', description: 'desc' }]
   const videos = getJSON<any[]>('video_gallery', []);
 
@@ -26,7 +25,7 @@ export function Videos() {
         title="Video Gallery" 
         description="Watch our latest updates, tutorials, and community highlights."
         badge="Media"
-        bgImage="/slider3.webp"
+        bgImage={get('bg_videos', '/slider3.webp')}
       />
       
       <main className="section container">

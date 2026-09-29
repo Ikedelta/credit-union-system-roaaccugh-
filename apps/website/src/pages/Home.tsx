@@ -12,10 +12,8 @@ const IconMap: Record<string, any> = {
   ShieldCheck, TrendingUp, Users, CheckCircle2, Phone, Zap, Banknote, Building2
 };
 
-export function Home() {
-  const { get, getJSON } = useCMS();
-
-  const slides = getJSON('home_slides', [
+\n  const { get, getJSON } = useCMS();
+    const slides = getJSON('home_slides', [
     {
       id: 1,
       image: "/slider1.webp",

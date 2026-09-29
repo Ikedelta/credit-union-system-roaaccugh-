@@ -9,10 +9,8 @@ const IconMap: Record<string, any> = {
 
 const iconColors = ['', 'gold'];
 
-export function Services() {
-  const { getJSON } = useCMS();
-
-  const services = getJSON('services_list', [
+\n  const { get, getJSON } = useCMS();
+      const services = getJSON('services_list', [
     { title: 'USSD *889*55#', desc: 'Check your account balance and deposit into your account anywhere, anytime.', icon: 'Phone' },
     { title: 'Mobile Money', desc: 'Seamlessly deposit, withdraw & send funds across all major networks.', icon: 'Zap' },
     { title: 'Ezwich', desc: 'Enjoy reliable and convenient ezwich services at all our branches.', icon: 'Banknote' },
@@ -27,7 +25,7 @@ export function Services() {
         title="Our Services" 
         description="Enjoy countless financial services designed specifically for your convenience and business growth."
         badge="What We Offer"
-        bgImage="/slider3.webp"
+        bgImage={get('bg_services', '/slider3.webp')}
       />
       <main className="section container">
         <RevealOnScroll>

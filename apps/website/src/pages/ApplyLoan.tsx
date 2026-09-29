@@ -1,10 +1,11 @@
 import { useState, useRef } from 'react';
+import { useCMS } from '../context/CMSContext';
 import { ShieldCheck, CalendarCheck, TrendingDown, CheckCircle, ArrowRight, ArrowLeft } from 'lucide-react';
 import { PageHeader } from '../components/PageHeader';
 import { RevealOnScroll } from '../components/RevealOnScroll';
 
-export function ApplyLoan() {
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+\n  const { get } = useCMS();
+    const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [step, setStep] = useState(1);
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -56,7 +57,7 @@ export function ApplyLoan() {
         title="Apply for a Loan"
         description="Experience flexible repayment terms and low-interest rates designed to help you succeed."
         badge="Member Loans"
-        bgImage="/slider3.webp"
+        bgImage={get('bg_services', '/slider3.webp')}
       />
       <main className="section container">
         <RevealOnScroll>

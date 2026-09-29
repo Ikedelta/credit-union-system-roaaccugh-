@@ -3,10 +3,8 @@ import { RevealOnScroll } from '../components/RevealOnScroll';
 import { useCMS } from '../context/CMSContext';
 import { Download, FileText } from 'lucide-react';
 
-export function OperationalPolicy() {
-  const { get } = useCMS();
-
-  const opPolicyText = get('operational_policy_text', 'Our Operational Policy provides the framework for the day-to-day operations of ROAACCU. Please download the complete document to read the details.');
+\n  const { get } = useCMS();
+    const opPolicyText = get('operational_policy_text', 'Our Operational Policy provides the framework for the day-to-day operations of ROAACCU. Please download the complete document to read the details.');
   const opPolicyDoc = get('operational_policy_doc', '');
 
   return (
@@ -15,7 +13,7 @@ export function OperationalPolicy() {
         title="Operational Policy" 
         description="Understanding the policies that govern the day-to-day operations of ROAACCU."
         badge="Governance"
-        bgImage="/slider2.webp"
+        bgImage={get('bg_about', '/slider2.webp')}
       />
       
       <main className="section container">

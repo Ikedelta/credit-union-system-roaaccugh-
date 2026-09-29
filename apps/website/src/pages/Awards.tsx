@@ -3,9 +3,8 @@ import { RevealOnScroll } from '../components/RevealOnScroll';
 import { useCMS } from '../context/CMSContext';
 import { Award, Star } from 'lucide-react';
 
-export function Awards() {
-  const { getJSON } = useCMS();
-  
+\n  const { get } = useCMS();
+      
   // Format: [{ id: '1', title: 'Best Credit Union 2023', image: 'url', description: 'desc' }]
   const awards = getJSON<any[]>('photo_gallery', []);
 
@@ -15,7 +14,7 @@ export function Awards() {
         title="Our Awards & Recognitions" 
         description="Celebrating our commitment to excellence, community service, and financial empowerment."
         badge="Media"
-        bgImage="/slider3.webp"
+        bgImage={get('bg_awards', '/slider3.webp')}
       />
       
       <main className="section container" style={{ paddingBottom: '6rem' }}>

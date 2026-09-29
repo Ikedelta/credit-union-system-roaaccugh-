@@ -4,9 +4,8 @@ import { useCMS } from '../context/CMSContext';
 import { useState, useEffect } from 'react';
 import { FileText, Download, Calendar, ChevronRight } from 'lucide-react';
 
-export function Agm() {
-  const { getJSON } = useCMS();
-  const [activePreview, setActivePreview] = useState<string | null>(null);
+\n  const { get } = useCMS();
+      const [activePreview, setActivePreview] = useState<string | null>(null);
   
   // Format: [{ id: '1', year: '2023', title: '2023 Annual General Meeting Report', pdfUrl: 'https://...', summary: '...' }]
   const agmReports = getJSON<any[]>('agm_reports', []);
@@ -26,7 +25,7 @@ export function Agm() {
         title="AGM Reports" 
         description="Access our Annual General Meeting reports and stay informed about our progress."
         badge="Media"
-        bgImage="/slider1.webp"
+        bgImage={get('bg_agm', '/slider1.webp')}
       />
       
       <main className="section container">

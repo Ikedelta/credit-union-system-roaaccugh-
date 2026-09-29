@@ -3,10 +3,8 @@ import { RevealOnScroll } from '../components/RevealOnScroll';
 import { useCMS } from '../context/CMSContext';
 import { Link } from 'react-router-dom';
 
-export function NewsAndBlog() {
-  const { getJSON } = useCMS();
-
-  const newsItems = getJSON('news_list', [
+\n  const { get, getJSON } = useCMS();
+      const newsItems = getJSON('news_list', [
     {
       title: "Annual General Meeting 2026",
       date: "August 15, 2026",
@@ -32,7 +30,7 @@ export function NewsAndBlog() {
       <PageHeader 
         title="News & Blog" 
         description="Stay updated with the latest announcements, community stories, and financial tips from ROAACCU."
-        bgImage="/slider1.webp"
+        bgImage={get('bg_news', '/slider1.webp')}
       />
       <main className="section container">
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8" style={{ marginTop: '3rem' }}>

@@ -10,9 +10,8 @@ import Captions from 'yet-another-react-lightbox/plugins/captions';
 import 'yet-another-react-lightbox/styles.css';
 import 'yet-another-react-lightbox/plugins/captions.css';
 
-export function PhotoGallery() {
-  const { getJSON } = useCMS();
-  const [lightboxIndex, setLightboxIndex] = useState(-1);
+\n  const { get } = useCMS();
+      const [lightboxIndex, setLightboxIndex] = useState(-1);
   
   // Format: [{ id: '1', title: 'AGM 2023', image: 'url', description: 'desc' }]
   const photos = getJSON<any[]>('new_photo_gallery', []);
@@ -30,7 +29,7 @@ export function PhotoGallery() {
         title="Photo Gallery" 
         description="Explore moments and memories from our community events and gatherings in stunning detail."
         badge="Media"
-        bgImage="/slider1.webp"
+        bgImage={get('bg_gallery', '/slider1.webp')}
       />
       
       <main className="section container" style={{ paddingBottom: '6rem' }}>

@@ -3,11 +3,9 @@ import { useState } from 'react';
 import { PageHeader } from '../components/PageHeader';
 import { useCMS } from '../context/CMSContext';
 
-export function Contact() {
+\n  const { get } = useCMS();
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const { get } = useCMS();
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setStatus('loading');
     
@@ -39,7 +37,7 @@ export function Contact() {
       <PageHeader 
         title="Contact Us" 
         description="We are always here to help. Reach out to us for any inquiries or support." 
-        bgImage="/slider2.webp"
+        bgImage={get('bg_contact', '/slider2.webp')}
       />
       <main className="section container">
         <div className="grid md:grid-cols-2 gap-8" style={{ marginBottom: '3rem' }}>

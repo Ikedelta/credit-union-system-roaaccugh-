@@ -5,10 +5,9 @@ import { PageHeader } from '../components/PageHeader';
 import { RevealOnScroll } from '../components/RevealOnScroll';
 import { useCMS } from '../context/CMSContext';
 
-export function Faq() {
-  const [activeFaq, setActiveFaq] = useState<number | null>(0);
-  const { getJSON } = useCMS();
-  
+\n  const { get, getJSON } = useCMS();
+    const [activeFaq, setActiveFaq] = useState<number | null>(0);
+    
   const faqs = getJSON('faq_list', [
     { q: "Is ROAACCU recognized by Bank of Ghana (BOG)?", a: "Yes. ROAACCU is affiliated to Ghana Co-operatives Credit Unions Association (CUA) and registered by Department of Co-operatives (DOC)." },
     { q: "Can I save with ROAACCU without acquiring the minimum shares?", a: "Yes. However, you have up to six months to acquire the minimum shares." },
@@ -23,7 +22,7 @@ export function Faq() {
         title="Frequently Asked Questions" 
         description="Find clear and quick answers to the most common questions about our services, membership, and policies."
         badge="Help Center"
-        bgImage="/slider3.webp"
+        bgImage={get('bg_faqs', '/slider3.webp')}
       />
       
       <main className="section container">

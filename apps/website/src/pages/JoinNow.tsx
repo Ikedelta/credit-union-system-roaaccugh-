@@ -1,10 +1,11 @@
 import { useState, useRef } from 'react';
+import { useCMS } from '../context/CMSContext';
 import { ShieldCheck, Clock, CheckCircle, ArrowRight, ArrowLeft } from 'lucide-react';
 import { PageHeader } from '../components/PageHeader';
 import { RevealOnScroll } from '../components/RevealOnScroll';
 
-export function JoinNow() {
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+\n  const { get } = useCMS();
+    const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [step, setStep] = useState(1);
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -58,7 +59,7 @@ export function JoinNow() {
       <PageHeader 
         title="Join ROAACCU" 
         description="Become a member today and unlock a world of financial opportunities and growth." 
-        bgImage="/slider2.webp"
+        bgImage={get('bg_contact', '/slider2.webp')}
       />
       <main className="section container">
         <RevealOnScroll>

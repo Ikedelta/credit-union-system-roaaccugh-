@@ -2,10 +2,8 @@ import { PageHeader } from '../components/PageHeader';
 import { RevealOnScroll } from '../components/RevealOnScroll';
 import { useCMS } from '../context/CMSContext';
 
-export function BoardAndManagement() {
-  const { getJSON } = useCMS();
-
-  const boardMembers = getJSON('board_of_directors', [
+\n  const { get, getJSON } = useCMS();
+      const boardMembers = getJSON('board_of_directors', [
     { name: "Mr. Joseph Appiah", role: "Chairman", image: "https://roaaccugh.com/assets/img/team/joe.jpg" },
     { name: "Mr. Ebenezer Oppong", role: "Vice Chairman", image: "https://roaaccugh.com/assets/img/team/eben.jpg" },
     { name: "Mrs. Ethel Quandoh", role: "Secretary", image: "https://roaaccugh.com/assets/img/team/ethel.jpg" },
@@ -21,7 +19,7 @@ export function BoardAndManagement() {
       <PageHeader 
         title="Leadership" 
         description="Meet the dedicated leaders guiding ROAACCU towards a brighter financial future for all members."
-        bgImage="/slider3.webp"
+        bgImage={get('bg_organogram', '/slider3.webp')}
       />
       <main className="section container">
         <div style={{ marginTop: '2rem' }}>

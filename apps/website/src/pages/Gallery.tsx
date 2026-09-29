@@ -1,8 +1,9 @@
 import { useLocation } from 'react-router-dom';
+import { useCMS } from '../context/CMSContext';
 import { PageHeader } from '../components/PageHeader';
 
-export function Gallery() {
-  const location = useLocation();
+\n  const { get } = useCMS();
+    const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const code = searchParams.get('code') || 'General';
 
@@ -20,7 +21,7 @@ export function Gallery() {
       <PageHeader 
         title={`${code} Gallery`} 
         description={`A collection of moments from our ${code} archives.`}
-        bgImage="/slider2.webp"
+        bgImage={get('bg_gallery', '/slider2.webp')}
       />
       <main className="section container text-center" style={{ minHeight: '60vh' }}>
       

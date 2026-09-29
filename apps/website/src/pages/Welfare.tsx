@@ -1,8 +1,9 @@
 import { useState } from 'react';
+import { useCMS } from '../context/CMSContext';
 import { PageHeader } from '../components/PageHeader';
 
-export function Welfare() {
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+\n  const { get } = useCMS();
+    const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -35,7 +36,7 @@ export function Welfare() {
         title="Welfare Benefits" 
         description="Comprehensive support designed to provide peace of mind and financial security for you and your family."
         badge="Welfare"
-        bgImage="/slider1.webp"
+        bgImage={get('bg_about', '/slider1.webp')}
       />
       <main className="section container">
         <div className="premium-card form-wizard-card" style={{ maxWidth: '800px', margin: '0 auto' }}>

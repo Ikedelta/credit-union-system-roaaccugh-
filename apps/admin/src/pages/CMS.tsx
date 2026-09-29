@@ -832,6 +832,56 @@ const CMS: React.FC = () => {
     );
   };
 
+  const renderPageBackgroundsTab = () => {
+    const backgrounds = [
+      { key: 'bg_about', label: 'About Us Page Background', defaultVal: '/slider3.webp' },
+      { key: 'bg_organogram', label: 'Board & Executives Background', defaultVal: '/slider1.webp' },
+      { key: 'bg_services', label: 'Services Page Background', defaultVal: '/slider1.webp' },
+      { key: 'bg_products', label: 'Products Page Background', defaultVal: '/slider3.webp' },
+      { key: 'bg_branches', label: 'Branches Page Background', defaultVal: '/slider2.webp' },
+      { key: 'bg_news', label: 'News & Alerts Background', defaultVal: '/slider1.webp' },
+      { key: 'bg_faqs', label: 'FAQs Page Background', defaultVal: '/slider3.webp' },
+      { key: 'bg_media', label: 'Media Center Background', defaultVal: '/slider1.webp' },
+      { key: 'bg_gallery', label: 'Gallery Background', defaultVal: '/slider2.webp' },
+      { key: 'bg_awards', label: 'Awards Background', defaultVal: '/slider3.webp' },
+      { key: 'bg_videos', label: 'Videos Background', defaultVal: '/slider1.webp' },
+      { key: 'bg_agm', label: 'AGM & Notices Background', defaultVal: '/slider2.webp' },
+      { key: 'bg_contact', label: 'Contact Us Background', defaultVal: '/slider2.webp' }
+    ];
+
+    return (
+      <div className="widget glass-panel">
+        <h3 style={{ marginBottom: '1.5rem' }}>Page Background Images</h3>
+        <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>
+          Manage the hero background images that appear at the top of each page. Leave blank to use the default image.
+        </p>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          {backgrounds.map(bg => {
+            const item = getItem(bg.key, 'IMAGE', bg.defaultVal);
+            return (
+              <div key={bg.key} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', paddingBottom: '1.5rem', borderBottom: '1px solid var(--border-color)' }}>
+                <label className="form-label" style={{ fontSize: '0.9rem', fontWeight: 600 }}>{bg.label}</label>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center' }}>
+                  <img src={item.value || bg.defaultVal} alt="Preview" style={{ width: '120px', height: '60px', objectFit: 'cover', borderRadius: '6px', border: '1px solid var(--border-color)' }} />
+                  <div style={{ display: 'flex', flex: '1 1 250px', gap: '0.5rem' }}>
+                    <input type="text" className="form-control" value={item.value} onChange={(e) => handleChange(bg.key, e.target.value, 'IMAGE')} placeholder="Image URL..." />
+                    <button className="btn btn-secondary" onClick={() => { setUploadingImageFor({key: bg.key}); setIsMediaModalOpen(true); }}>
+                      <UploadCloud size={16} /> Upload
+                    </button>
+                    <button className="btn btn-primary" onClick={() => handleUpdate(item)} disabled={savingKey === bg.key}>
+                      {savingKey === bg.key ? <Loader2 size={16} className="spinner" /> : <Save size={16} />} Save
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
   if (loading) return <LoadingScreen message="Loading CMS data..." />;
 
   const getTabStyle = (tabId: string) => ({
@@ -888,6 +938,7 @@ const CMS: React.FC = () => {
           <h3 style={{ fontSize: '0.85rem', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '1rem', paddingLeft: '0.5rem', letterSpacing: '0.05em' }}>Sections</h3>
           <button className={`btn ${activeTab === 'general' ? 'btn-primary' : 'btn-ghost'}`} style={getTabStyle('general')} onClick={() => setActiveTab('general')}>General Settings</button>
           <button className={`btn ${activeTab === 'home' ? 'btn-primary' : 'btn-ghost'}`} style={getTabStyle('home')} onClick={() => setActiveTab('home')}>Homepage</button>
+          <button className={`btn ${activeTab === 'backgrounds' ? 'btn-primary' : 'btn-ghost'}`} style={getTabStyle('backgrounds')} onClick={() => setActiveTab('backgrounds')}>Page Backgrounds</button>
           <button className={`btn ${activeTab === 'about' ? 'btn-primary' : 'btn-ghost'}`} style={getTabStyle('about')} onClick={() => setActiveTab('about')}>About Us</button>
           <button className={`btn ${activeTab === 'news' ? 'btn-primary' : 'btn-ghost'}`} style={getTabStyle('news')} onClick={() => setActiveTab('news')}>News & Alerts</button>
           <button className={`btn ${activeTab === 'faqs' ? 'btn-primary' : 'btn-ghost'}`} style={getTabStyle('faqs')} onClick={() => setActiveTab('faqs')}>FAQs</button>
@@ -903,6 +954,7 @@ const CMS: React.FC = () => {
         <div style={{ flex: 1, minWidth: '300px', display: 'flex', flexDirection: 'column', gap: '0' }}>
           {activeTab === 'general' && renderGeneralFields()}
           {activeTab === 'home' && renderHomeTab()}
+          {activeTab === 'backgrounds' && renderPageBackgroundsTab()}
           {activeTab === 'about' && renderAboutTab()}
           {activeTab === 'news' && renderNewsTab()}
           {activeTab === 'faqs' && renderFaqsTab()}

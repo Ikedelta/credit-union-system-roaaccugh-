@@ -12,11 +12,9 @@ const typeConfig: Record<string, { label: string; badgeClass: string; bg: string
   Investment: { label: 'Investment',         badgeClass: 'type-badge type-badge-investment', bg: 'rgba(28, 16, 94, 0.05)' },
 };
 
-export function Products() {
-  const [activeTab, setActiveTab] = useState<'All' | 'Shares' | 'Savings' | 'Loan'>('All');
-  const { getJSON } = useCMS();
-
-  const products = getJSON('products_list', [
+\n  const { get, getJSON } = useCMS();
+    const [activeTab, setActiveTab] = useState<'All' | 'Shares' | 'Savings' | 'Loan'>('All');
+    const products = getJSON('products_list', [
     { 
       id: 1,
       title: 'Prime Savings',       
@@ -65,7 +63,7 @@ export function Products() {
         title="Our Products" 
         description="Explore our comprehensive suite of tailored financial products designed to support your daily needs, grow your savings, and secure your future."
         badge="Products"
-        bgImage="/slider1.webp"
+        bgImage={get('bg_products', '/slider1.webp')}
       />
       
       <main className="section container">

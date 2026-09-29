@@ -3,9 +3,8 @@ import { RevealOnScroll } from '../components/RevealOnScroll';
 import { useCMS } from '../context/CMSContext';
 import { Calendar, MapPin, Clock } from 'lucide-react';
 
-export function Events() {
-  const { getJSON } = useCMS();
-  
+\n  const { get } = useCMS();
+      
   // Format: [{ id: '1', title: 'Annual Dinner', date: 'Dec 15, 2024', time: '6:00 PM', location: 'Main Hall', description: '...' }]
   const events = getJSON<any[]>('events_list', []);
 
@@ -15,7 +14,7 @@ export function Events() {
         title="Upcoming Events" 
         description="Stay tuned for the latest events and updates from ROAACCU."
         badge="Media"
-        bgImage="/slider2.webp"
+        bgImage={get('bg_news', '/slider2.webp')}
       />
       
       <main className="section container">

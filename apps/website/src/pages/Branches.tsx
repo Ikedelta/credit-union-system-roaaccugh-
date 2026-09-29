@@ -3,10 +3,8 @@ import { RevealOnScroll } from '../components/RevealOnScroll';
 import { MapPin, Phone, Mail } from 'lucide-react';
 import { useCMS } from '../context/CMSContext';
 
-export function Branches() {
-  const { getJSON } = useCMS();
-
-  const branches = getJSON('branches_list', [
+\n  const { get, getJSON } = useCMS();
+      const branches = getJSON('branches_list', [
     {
       name: "HEAD OFFICE",
       location: "Agona Ahanta",
@@ -52,7 +50,7 @@ export function Branches() {
       <PageHeader 
         title="Our Branches" 
         description="Find a ROAACCU branch near you. We have a network of branches ready to serve you with excellence."
-        bgImage="/slider3.webp"
+        bgImage={get('bg_branches', '/slider3.webp')}
       />
       <main className="section container">
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
