@@ -50,7 +50,7 @@ export function Awards() {
                <h3 style={{ color: 'var(--text-muted)' }}>Awards will be updated soon!</h3>
              </div>
           ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-6">
               {awards.map((award, index) => {
                 if (!award) return null;
                 const isString = typeof award === 'string';
@@ -66,70 +66,76 @@ export function Awards() {
                   style={{ 
                     padding: 0, 
                     overflow: 'hidden', 
-                    borderRadius: '24px',
-                    transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                    boxShadow: '0 15px 35px rgba(0,0,0,0.05)',
-                    border: '1px solid rgba(0,0,0,0.02)',
-                    position: 'relative'
+                    borderRadius: '16px',
+                    transition: 'all 0.3s ease',
+                    boxShadow: '0 4px 15px rgba(0,0,0,0.03)',
+                    border: '1px solid rgba(0,0,0,0.05)',
+                    background: 'var(--bg-white)',
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    height: '140px'
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'translateY(-10px)';
-                    e.currentTarget.style.boxShadow = '0 25px 50px rgba(0,0,0,0.1)';
+                    e.currentTarget.style.transform = 'translateY(-4px)';
+                    e.currentTarget.style.boxShadow = '0 12px 25px rgba(0,0,0,0.08)';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = '0 15px 35px rgba(0,0,0,0.05)';
+                    e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.03)';
                   }}
                 >
-                  <div style={{ position: 'relative' }}>
+                  <div style={{ position: 'relative', width: '140px', height: '100%', flexShrink: 0 }}>
                     {image ? (
                       <img 
                         src={image} 
                         alt={title} 
-                        style={{ width: '100%', height: '300px', objectFit: 'cover' }}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                       />
                     ) : (
-                      <div style={{ width: '100%', height: '300px', background: 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Award size={48} style={{ color: '#cbd5e1' }} />
+                      <div style={{ width: '100%', height: '100%', background: 'var(--bg-light)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Award size={32} style={{ color: 'var(--text-muted)' }} />
                       </div>
                     )}
                     <div style={{ 
                       position: 'absolute', 
-                      bottom: 0, 
-                      left: 0, 
-                      right: 0, 
-                      height: '100px', 
-                      background: 'linear-gradient(to top, rgba(0,0,0,0.8), transparent)' 
-                    }}></div>
-                    <div style={{ 
-                      position: 'absolute', 
-                      top: '1.5rem', 
-                      right: '1.5rem',
-                      background: 'rgba(255,255,255,0.9)',
-                      backdropFilter: 'blur(10px)',
-                      padding: '0.5rem',
+                      top: '0.5rem', 
+                      left: '0.5rem',
+                      background: 'rgba(255,255,255,0.95)',
+                      backdropFilter: 'blur(4px)',
+                      padding: '0.35rem',
                       borderRadius: '50%',
-                      boxShadow: '0 5px 15px rgba(0,0,0,0.1)'
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
                     }}>
-                      <Star size={20} fill="#FFD700" color="#FFD700" />
+                      <Star size={14} fill="#FDB931" color="#FDB931" />
                     </div>
                   </div>
-                  <div style={{ padding: '2rem' }}>
+                  
+                  <div style={{ padding: '1.25rem', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', overflow: 'hidden' }}>
                     <h3 style={{ 
-                      fontSize: '1.35rem', 
-                      marginBottom: '1rem', 
-                      color: 'var(--primary-color)',
+                      fontSize: '1.05rem', 
+                      marginBottom: description ? '0.35rem' : '0', 
+                      color: 'var(--text-color)',
                       fontWeight: 700,
-                      lineHeight: 1.3
+                      lineHeight: 1.3,
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
+                      textTransform: 'capitalize'
                     }}>
-                      {title}
+                      {title.toLowerCase()}
                     </h3>
                     {description && (
                       <p style={{ 
                         color: 'var(--text-secondary)', 
-                        fontSize: '1rem', 
-                        lineHeight: 1.7,
-                        margin: 0 
+                        fontSize: '0.85rem', 
+                        lineHeight: 1.5,
+                        margin: 0,
+                        display: '-webkit-box',
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: 'vertical',
+                        overflow: 'hidden'
                       }}>
                         {description}
                       </p>

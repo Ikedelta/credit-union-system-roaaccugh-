@@ -94,7 +94,7 @@ export function Navbar({ setActiveModal: _setActiveModal }: NavbarProps) {
                 </div>
                 <div className="dropdown-content">
                   <Link to="/apply-loan" className="nav-link">Apply Loan</Link>
-                  <Link to="/welfare" className="nav-link">Welfare</Link>
+                  <a href="http://mwelfare.roaaccugh.com/" className="nav-link" target="_blank" rel="noopener noreferrer">Welfare</a>
                 </div>
               </div>
 

@@ -130,6 +130,7 @@ button {
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
+  padding: 1.5rem;
   transition: var(--transition);
 }
 

@@ -36,9 +36,31 @@ export function Videos() {
                <h3 style={{ color: 'var(--text-muted)' }}>More videos coming soon!</h3>
              </div>
           ) : (
-            <div className="grid md:grid-cols-2 gap-8">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {videos.map((video, index) => (
-                <div key={video.id || index} className="card" style={{ padding: 0, overflow: 'hidden' }}>
+                <div 
+                  key={video.id || index} 
+                  className="card" 
+                  style={{ 
+                    padding: 0, 
+                    overflow: 'hidden', 
+                    borderRadius: '16px',
+                    transition: 'all 0.3s ease',
+                    border: '1px solid var(--border-color)',
+                    boxShadow: '0 4px 15px rgba(0,0,0,0.03)',
+                    background: 'var(--bg-white)',
+                    display: 'flex',
+                    flexDirection: 'column'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-4px)';
+                    e.currentTarget.style.boxShadow = '0 12px 25px rgba(0,0,0,0.06)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.03)';
+                  }}
+                >
                   {video.url ? (
                     <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', background: '#000' }}>
                       <iframe 
@@ -50,14 +72,14 @@ export function Videos() {
                       />
                     </div>
                   ) : (
-                    <div style={{ width: '100%', height: '300px', background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <span style={{ color: 'var(--text-muted)' }}>Invalid Video URL</span>
+                    <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, background: 'var(--bg-light)' }}>
+                      <span style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', color: 'var(--text-muted)', fontSize: '0.9rem' }}>Invalid Video URL</span>
                     </div>
                   )}
-                  <div style={{ padding: '1.5rem' }}>
-                    <h3 style={{ fontSize: '1.2rem', marginBottom: '0.5rem' }}>{video.title || 'Untitled Video'}</h3>
+                  <div style={{ padding: '1.25rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                    <h3 style={{ fontSize: '1.1rem', marginBottom: '0.5rem', fontWeight: 600, color: 'var(--text-color)', lineHeight: 1.4 }}>{video.title || 'Untitled Video'}</h3>
                     {video.description && (
-                      <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', margin: 0 }}>{video.description}</p>
+                      <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', margin: 0, lineHeight: 1.6 }}>{video.description}</p>
                     )}
                   </div>
                 </div>

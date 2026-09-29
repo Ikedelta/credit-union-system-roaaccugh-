@@ -3,6 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { Modals } from '../components/Modals';
+import { GlobalPopup } from '../components/GlobalPopup';
 
 export function MainLayout() {
   const [activeModal, setActiveModal] = useState<string | null>(null);
@@ -17,6 +18,7 @@ export function MainLayout() {
       </div>
       <Footer setActiveModal={setActiveModal} />
       <Modals activeModal={activeModal} setActiveModal={setActiveModal} />
+      <GlobalPopup />
     </>
   );
 }

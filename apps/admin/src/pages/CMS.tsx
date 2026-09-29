@@ -86,16 +86,55 @@ const CMS: React.FC = () => {
     handleChange(key, JSON.stringify(parsedValue), 'JSON');
   };
 
+  const convertToWebP = (file: File): Promise<File> => {
+    return new Promise((resolve, reject) => {
+      // If it's not an image or it's a gif/svg, just return it
+      if (!file.type.startsWith('image/') || file.type === 'image/svg+xml' || file.type === 'image/gif') {
+        resolve(file);
+        return;
+      }
+      
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new window.Image();
+        img.src = event.target?.result as string;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = img.width;
+          canvas.height = img.height;
+          const ctx = canvas.getContext('2d');
+          if (!ctx) {
+            resolve(file);
+            return;
+          }
+          ctx.drawImage(img, 0, 0);
+          canvas.toBlob((blob) => {
+            if (!blob) {
+              resolve(file);
+              return;
+            }
+            const webpFile = new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".webp", {
+              type: 'image/webp',
+            });
+            resolve(webpFile);
+          }, 'image/webp', 0.85); // 85% quality for excellent compression
+        };
+        img.onerror = (err) => reject(err);
+      };
+      reader.onerror = (err) => reject(err);
+    });
+  };
+
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0 || !uploadingImageFor) return;
-    const file = e.target.files[0];
-    const formData = new FormData();
-    formData.append('image', file);
-
+    const originalFile = e.target.files[0];
+    
     const { key, index, field } = uploadingImageFor;
     const item = getItem(key, index !== undefined ? 'JSON' : 'IMAGE', index !== undefined ? '[]' : '');
     
     try {
+      const file = await convertToWebP(originalFile);
       const fileExt = file.name.split('.').pop();
       const fileName = `${uuidv4()}.${fileExt}`;
 
@@ -172,7 +211,8 @@ const CMS: React.FC = () => {
     
     try {
       const newItems = [];
-      for (const file of files) {
+      for (const originalFile of files) {
+        const file = await convertToWebP(originalFile);
         const fileExt = file.name.split('.').pop();
         const fileName = `${uuidv4()}.${fileExt}`;
         const { data, error } = await supabase.storage.from('cms-media').upload(fileName, file, { cacheControl: '3600', upsert: false });
@@ -192,7 +232,7 @@ const CMS: React.FC = () => {
       try { currentList = JSON.parse(item.value); } catch(err) {}
       
       handleJsonChange('new_photo_gallery', [...currentList, ...newItems]);
-      alert(`Successfully uploaded ${newItems.length} images! Please review them and click 'Save Photo Gallery'.`);
+      alert(`Successfully uploaded and optimized ${newItems.length} images to WebP! Please review them and click 'Save Photo Gallery'.`);
     } catch (err) {
       console.error(err);
       alert('Failed during bulk upload. Ensure Supabase is configured properly.');
@@ -684,7 +724,7 @@ const CMS: React.FC = () => {
 
         <div style={{ marginTop: '0.5rem' }}>
           <h3 style={{ marginBottom: '1.5rem', color: 'var(--text-color)', borderBottom: '2px solid var(--border-color)', paddingBottom: '0.5rem', fontSize: '1.25rem' }}>Galleries & Media</h3>
-          {renderListEditor('photo_gallery', 'Awards & Recognitions (Former Photo Gallery)', { id: Date.now().toString(), title: '', image: '', description: '' }, [
+          {renderListEditor('photo_gallery', 'Awards', { id: Date.now().toString(), title: '', image: '', description: '' }, [
             { name: 'image', label: 'Award Image', type: 'image' },
             { name: 'title', label: 'Award Title', type: 'text' },
             { name: 'description', label: 'Award Description', type: 'textarea' }
@@ -724,11 +764,89 @@ const CMS: React.FC = () => {
     );
   };
 
+  const renderPopupTab = () => {
+    const enabledItem = getItem('popup_enabled', 'TEXT', 'false');
+    const titleItem = getItem('popup_title', 'TEXT', 'Important Announcement');
+    const descItem = getItem('popup_description', 'TEXT', '');
+    const imageItem = getItem('popup_image', 'IMAGE', '');
+    const btnTextItem = getItem('popup_btn_text', 'TEXT', '');
+    const btnLinkItem = getItem('popup_btn_link', 'TEXT', '');
+
+    return (
+      <div className="widget glass-panel">
+        <h3 style={{ marginBottom: '1.5rem' }}>Website Global Popup</h3>
+        <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>
+          Configure the popup banner that appears when users first visit the website. This is useful for important announcements. The popup will automatically show once per session for users.
+        </p>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', background: 'var(--bg-white)', padding: '2rem', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', paddingBottom: '1.5rem', borderBottom: '1px solid var(--border-color)' }}>
+            <label className="form-label" style={{ margin: 0, fontSize: '1.1rem', color: 'var(--primary-color)' }}>Enable Global Popup</label>
+            <select className="form-control" style={{ width: 'auto' }} value={enabledItem.value} onChange={(e) => handleChange('popup_enabled', e.target.value)}>
+              <option value="true">Yes (Enabled)</option>
+              <option value="false">No (Disabled)</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="form-label">Popup Image (Optional)</label>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center', background: '#f8fafc', padding: '0.75rem', borderRadius: '8px' }}>
+              {imageItem.value && <img src={imageItem.value} alt="Preview" style={{ width: '80px', height: '60px', objectFit: 'cover', borderRadius: '4px', border: '1px solid var(--border-color)' }} />}
+              <div style={{ display: 'flex', flex: '1 1 250px', gap: '0.5rem' }}>
+                <input type="text" className="form-control" value={imageItem.value} onChange={(e) => handleChange('popup_image', e.target.value, 'IMAGE')} placeholder="Image URL or click Upload..." style={{ flex: 1, minWidth: 0 }} />
+                <button className="btn btn-secondary" onClick={() => { setUploadingImageFor({key: 'popup_image'}); setIsMediaModalOpen(true); }} style={{ whiteSpace: 'nowrap' }}>
+                  <UploadCloud size={16} /> Upload
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label className="form-label">Popup Title</label>
+            <input type="text" className="form-control" value={titleItem.value} onChange={(e) => handleChange('popup_title', e.target.value)} placeholder="e.g., Important Announcement" />
+          </div>
+
+          <div>
+            <label className="form-label">Main Text / Description</label>
+            <textarea rows={4} className="form-control" value={descItem.value} onChange={(e) => handleChange('popup_description', e.target.value)} placeholder="Enter the main write up here..." />
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <label className="form-label">Action Button Text (Optional)</label>
+              <input type="text" className="form-control" value={btnTextItem.value} onChange={(e) => handleChange('popup_btn_text', e.target.value)} placeholder="e.g., Read More (Leave blank to hide)" />
+            </div>
+            <div>
+              <label className="form-label">Action Button Link (Optional)</label>
+              <input type="text" className="form-control" value={btnLinkItem.value} onChange={(e) => handleChange('popup_btn_link', e.target.value)} placeholder="e.g., /news or https://google.com" />
+            </div>
+          </div>
+
+          <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'flex-end' }}>
+            <button className="btn btn-primary" onClick={() => { handleUpdate(enabledItem); handleUpdate(titleItem); handleUpdate(descItem); handleUpdate(imageItem); handleUpdate(btnTextItem); handleUpdate(btnLinkItem); }}>
+              <Save size={18} /> Save All Popup Settings
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   if (loading) return <LoadingScreen message="Loading CMS data..." />;
+
+  const getTabStyle = (tabId: string) => ({
+    width: '100%',
+    justifyContent: 'flex-start',
+    textAlign: 'left' as const,
+    padding: '0.75rem 1rem',
+    borderRadius: '8px',
+    marginBottom: '0.25rem',
+    fontWeight: activeTab === tabId ? 600 : 500,
+  });
 
   return (
     <div>
-      <h2 className="page-title">Website Content (CMS)</h2>
+      <h2 className="page-title">Website Content Manager</h2>
       
       {/* Hidden file input for uploads */}
       <input type="file" ref={fileInputRef} style={{ display: 'none' }} accept="image/*,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={handleImageUpload} />
@@ -751,30 +869,51 @@ const CMS: React.FC = () => {
         }}
       />
 
-      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
-        <button className={`btn ${activeTab === 'general' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('general')}>General</button>
-        <button className={`btn ${activeTab === 'home' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('home')}>Home</button>
-        <button className={`btn ${activeTab === 'about' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('about')}>About Us</button>
-        <button className={`btn ${activeTab === 'news' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('news')}>News & Alerts</button>
-        <button className={`btn ${activeTab === 'faqs' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('faqs')}>FAQs</button>
-        <button className={`btn ${activeTab === 'branches' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('branches')}>Branches</button>
-        <button className={`btn ${activeTab === 'products' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('products')}>Products</button>
-        <button className={`btn ${activeTab === 'services' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('services')}>Services</button>
-        <button className={`btn ${activeTab === 'media' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('media')}>Media Center</button>
-        <button className={`btn ${activeTab === 'automated_messages' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setActiveTab('automated_messages')}>Automated Messages</button>
-      </div>
+      <div style={{ display: 'flex', gap: '2rem', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+        
+        {/* Sidebar Navigation */}
+        <div style={{ 
+          width: '260px', 
+          flexShrink: 0, 
+          background: 'var(--bg-white)', 
+          padding: '1rem', 
+          borderRadius: '16px', 
+          border: '1px solid var(--border-color)',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.03)',
+          display: 'flex', 
+          flexDirection: 'column',
+          position: 'sticky',
+          top: '20px'
+        }}>
+          <h3 style={{ fontSize: '0.85rem', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '1rem', paddingLeft: '0.5rem', letterSpacing: '0.05em' }}>Sections</h3>
+          <button className={`btn ${activeTab === 'general' ? 'btn-primary' : 'btn-ghost'}`} style={getTabStyle('general')} onClick={() => setActiveTab('general')}>General Settings</button>
+          <button className={`btn ${activeTab === 'home' ? 'btn-primary' : 'btn-ghost'}`} style={getTabStyle('home')} onClick={() => setActiveTab('home')}>Homepage</button>
+          <button className={`btn ${activeTab === 'about' ? 'btn-primary' : 'btn-ghost'}`} style={getTabStyle('about')} onClick={() => setActiveTab('about')}>About Us</button>
+          <button className={`btn ${activeTab === 'news' ? 'btn-primary' : 'btn-ghost'}`} style={getTabStyle('news')} onClick={() => setActiveTab('news')}>News & Alerts</button>
+          <button className={`btn ${activeTab === 'faqs' ? 'btn-primary' : 'btn-ghost'}`} style={getTabStyle('faqs')} onClick={() => setActiveTab('faqs')}>FAQs</button>
+          <button className={`btn ${activeTab === 'branches' ? 'btn-primary' : 'btn-ghost'}`} style={getTabStyle('branches')} onClick={() => setActiveTab('branches')}>Branches</button>
+          <button className={`btn ${activeTab === 'products' ? 'btn-primary' : 'btn-ghost'}`} style={getTabStyle('products')} onClick={() => setActiveTab('products')}>Products</button>
+          <button className={`btn ${activeTab === 'services' ? 'btn-primary' : 'btn-ghost'}`} style={getTabStyle('services')} onClick={() => setActiveTab('services')}>Services</button>
+          <button className={`btn ${activeTab === 'media' ? 'btn-primary' : 'btn-ghost'}`} style={getTabStyle('media')} onClick={() => setActiveTab('media')}>Media Center</button>
+          <button className={`btn ${activeTab === 'automated_messages' ? 'btn-primary' : 'btn-ghost'}`} style={getTabStyle('automated_messages')} onClick={() => setActiveTab('automated_messages')}>Automated Messages</button>
+          <button className={`btn ${activeTab === 'popup' ? 'btn-primary' : 'btn-ghost'}`} style={getTabStyle('popup')} onClick={() => setActiveTab('popup')}>Website Popup</button>
+        </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
-        {activeTab === 'general' && renderGeneralFields()}
-        {activeTab === 'home' && renderHomeTab()}
-        {activeTab === 'about' && renderAboutTab()}
-        {activeTab === 'news' && renderNewsTab()}
-        {activeTab === 'faqs' && renderFaqsTab()}
-        {activeTab === 'branches' && renderBranchesTab()}
-        {activeTab === 'products' && renderProductsTab()}
-        {activeTab === 'services' && renderServicesTab()}
-        {activeTab === 'media' && renderMediaCenterTab()}
-        {activeTab === 'automated_messages' && renderAutomatedMessagesTab()}
+        {/* Content Area */}
+        <div style={{ flex: 1, minWidth: '300px', display: 'flex', flexDirection: 'column', gap: '0' }}>
+          {activeTab === 'general' && renderGeneralFields()}
+          {activeTab === 'home' && renderHomeTab()}
+          {activeTab === 'about' && renderAboutTab()}
+          {activeTab === 'news' && renderNewsTab()}
+          {activeTab === 'faqs' && renderFaqsTab()}
+          {activeTab === 'branches' && renderBranchesTab()}
+          {activeTab === 'products' && renderProductsTab()}
+          {activeTab === 'services' && renderServicesTab()}
+          {activeTab === 'media' && renderMediaCenterTab()}
+          {activeTab === 'automated_messages' && renderAutomatedMessagesTab()}
+          {activeTab === 'popup' && renderPopupTab()}
+        </div>
+        
       </div>
     </div>
   );

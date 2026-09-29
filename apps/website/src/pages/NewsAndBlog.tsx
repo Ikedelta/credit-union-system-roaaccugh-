@@ -38,9 +38,9 @@ export function NewsAndBlog() {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8" style={{ marginTop: '3rem' }}>
           {newsItems.map((news: any, i: number) => (
             <RevealOnScroll key={i} delay={i * 0.1}>
-              <article className="news-card" style={{ background: 'var(--bg-white)', borderRadius: '12px', overflow: 'hidden', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', height: '100%' }}>
+              <article className="news-card" style={{ background: 'var(--bg-white)', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', height: '100%', transition: 'transform 0.3s ease' }} onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-4px)'} onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}>
                 {news.image && (
-                  <div style={{ height: '200px', overflow: 'hidden' }}>
+                  <div style={{ height: '160px', overflow: 'hidden' }}>
                     <img 
                       src={news.image.startsWith('http') ? news.image : (news.image.startsWith('/uploads') ? `http://localhost:3000${news.image}` : news.image)} 
                       alt={news.title} 
@@ -48,19 +48,19 @@ export function NewsAndBlog() {
                     />
                   </div>
                 )}
-                <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', flex: 1 }}>
+                <div style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', flex: 1 }}>
                   <div style={{ fontSize: '0.85rem', color: 'var(--primary-color)', fontWeight: 600, marginBottom: '0.5rem' }}>
                     {news.date}
                   </div>
-                  <h3 style={{ fontSize: '1.25rem', marginBottom: '1rem', lineHeight: 1.4, color: 'var(--secondary-color)' }}>
+                  <h3 style={{ fontSize: '1.1rem', marginBottom: '0.75rem', lineHeight: 1.4, color: 'var(--text-color)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                     {news.title}
                   </h3>
-                  <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: 1.6, flex: 1, marginBottom: '1.5rem' }}>
-                    {news.content.length > 150 ? `${news.content.substring(0, 150)}...` : news.content}
+                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.5, flex: 1, marginBottom: '1.5rem', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                    {news.content.length > 120 ? `${news.content.substring(0, 120)}...` : news.content}
                   </p>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto', borderTop: '1px solid var(--border-color)', paddingTop: '1rem' }}>
                     <Link to={`/news/${news.id || i}`} className="btn btn-ghost" style={{ padding: 0, color: 'var(--secondary-color)', textDecoration: 'none', fontSize: '0.9rem' }}>
-                      Read Full Story &rarr;
+                      Read Story &rarr;
                     </Link>
                     
                     <div style={{ display: 'flex', gap: '0.4rem' }}>
