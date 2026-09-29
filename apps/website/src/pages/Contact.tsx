@@ -3,7 +3,8 @@ import { useState } from 'react';
 import { PageHeader } from '../components/PageHeader';
 import { useCMS } from '../context/CMSContext';
 
-\n  const { get } = useCMS();
+export function Contact() {
+  const { get } = useCMS();
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

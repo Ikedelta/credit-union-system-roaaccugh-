@@ -3,7 +3,8 @@ import { PageHeader } from '../components/PageHeader';
 import { RevealOnScroll } from '../components/RevealOnScroll';
 import { useCMS } from '../context/CMSContext';
 
-\n  const { get, getJSON } = useCMS();
+export function About() {
+  const { get, getJSON } = useCMS();
       const coreValues = getJSON('about_core_values', [
     { title: 'FAIRNESS', desc: 'Impartial and just treatment in all dealings.' },
     { title: 'ACCESSIBILITY', desc: 'Accessible in wider areas in the country.' },

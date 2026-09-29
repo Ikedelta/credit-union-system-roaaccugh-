@@ -5,7 +5,8 @@ import { PageHeader } from '../components/PageHeader';
 import { RevealOnScroll } from '../components/RevealOnScroll';
 import { useCMS } from '../context/CMSContext';
 
-\n  const { get, getJSON } = useCMS();
+export function Faq() {
+  const { get, getJSON } = useCMS();
     const [activeFaq, setActiveFaq] = useState<number | null>(0);
     
   const faqs = getJSON('faq_list', [

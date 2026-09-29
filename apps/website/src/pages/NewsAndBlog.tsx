@@ -3,7 +3,8 @@ import { RevealOnScroll } from '../components/RevealOnScroll';
 import { useCMS } from '../context/CMSContext';
 import { Link } from 'react-router-dom';
 
-\n  const { get, getJSON } = useCMS();
+export function NewsAndBlog() {
+  const { get, getJSON } = useCMS();
       const newsItems = getJSON('news_list', [
     {
       title: "Annual General Meeting 2026",

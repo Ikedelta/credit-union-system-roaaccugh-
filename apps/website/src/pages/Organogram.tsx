@@ -2,7 +2,8 @@ import { PageHeader } from '../components/PageHeader';
 import { RevealOnScroll } from '../components/RevealOnScroll';
 import { useCMS } from '../context/CMSContext';
 
-\n  const { get } = useCMS();
+export function Organogram() {
+  const { get } = useCMS();
     const organogramImage = get('organogram_image', '');
   const organogramDesc = get('organogram_desc', 'Explore the structural hierarchy of ROAACCU, illustrating the relationships between our various departments, management team, and board of directors.');
 

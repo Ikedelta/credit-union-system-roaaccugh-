@@ -3,7 +3,8 @@ import { RevealOnScroll } from '../components/RevealOnScroll';
 import { useCMS } from '../context/CMSContext';
 import { Award, Star } from 'lucide-react';
 
-\n  const { get } = useCMS();
+export function Awards() {
+  const { get, getJSON } = useCMS();
       
   // Format: [{ id: '1', title: 'Best Credit Union 2023', image: 'url', description: 'desc' }]
   const awards = getJSON<any[]>('photo_gallery', []);

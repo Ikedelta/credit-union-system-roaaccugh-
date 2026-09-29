@@ -2,7 +2,8 @@ import { useLocation } from 'react-router-dom';
 import { useCMS } from '../context/CMSContext';
 import { PageHeader } from '../components/PageHeader';
 
-\n  const { get } = useCMS();
+export function Gallery() {
+  const { get } = useCMS();
     const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const code = searchParams.get('code') || 'General';

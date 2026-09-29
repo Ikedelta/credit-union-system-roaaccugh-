@@ -4,7 +4,8 @@ import { ShieldCheck, CalendarCheck, TrendingDown, CheckCircle, ArrowRight, Arro
 import { PageHeader } from '../components/PageHeader';
 import { RevealOnScroll } from '../components/RevealOnScroll';
 
-\n  const { get } = useCMS();
+export function ApplyLoan() {
+  const { get } = useCMS();
     const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [step, setStep] = useState(1);
   const formRef = useRef<HTMLFormElement>(null);

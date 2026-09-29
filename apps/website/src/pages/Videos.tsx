@@ -2,7 +2,8 @@ import { PageHeader } from '../components/PageHeader';
 import { RevealOnScroll } from '../components/RevealOnScroll';
 import { useCMS } from '../context/CMSContext';
 
-\n  const { get } = useCMS();
+export function Videos() {
+  const { get, getJSON } = useCMS();
       
   // Format: [{ id: '1', title: 'Video Title', url: 'https://youtube.com/embed/xyz', description: 'desc' }]
   const videos = getJSON<any[]>('video_gallery', []);

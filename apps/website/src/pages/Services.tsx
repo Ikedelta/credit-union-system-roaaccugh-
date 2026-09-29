@@ -9,7 +9,8 @@ const IconMap: Record<string, any> = {
 
 const iconColors = ['', 'gold'];
 
-\n  const { get, getJSON } = useCMS();
+export function Services() {
+  const { get, getJSON } = useCMS();
       const services = getJSON('services_list', [
     { title: 'USSD *889*55#', desc: 'Check your account balance and deposit into your account anywhere, anytime.', icon: 'Phone' },
     { title: 'Mobile Money', desc: 'Seamlessly deposit, withdraw & send funds across all major networks.', icon: 'Zap' },

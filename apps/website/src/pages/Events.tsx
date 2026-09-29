@@ -3,7 +3,8 @@ import { RevealOnScroll } from '../components/RevealOnScroll';
 import { useCMS } from '../context/CMSContext';
 import { Calendar, MapPin, Clock } from 'lucide-react';
 
-\n  const { get } = useCMS();
+export function Events() {
+  const { get, getJSON } = useCMS();
       
   // Format: [{ id: '1', title: 'Annual Dinner', date: 'Dec 15, 2024', time: '6:00 PM', location: 'Main Hall', description: '...' }]
   const events = getJSON<any[]>('events_list', []);

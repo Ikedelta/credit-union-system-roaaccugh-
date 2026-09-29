@@ -3,7 +3,8 @@ import { RevealOnScroll } from '../components/RevealOnScroll';
 import { useCMS } from '../context/CMSContext';
 import { Download, FileText } from 'lucide-react';
 
-\n  const { get } = useCMS();
+export function ByLaw() {
+  const { get } = useCMS();
     const bylawText = get('bylaw_text', 'Our By-Laws govern the operations of ROAACCU and provide the framework for our cooperative principles. Please download the complete document to read the details.');
   const bylawPdf = get('bylaw_pdf', '');
 

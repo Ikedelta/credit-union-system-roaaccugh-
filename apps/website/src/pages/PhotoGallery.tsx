@@ -10,7 +10,8 @@ import Captions from 'yet-another-react-lightbox/plugins/captions';
 import 'yet-another-react-lightbox/styles.css';
 import 'yet-another-react-lightbox/plugins/captions.css';
 
-\n  const { get } = useCMS();
+export function PhotoGallery() {
+  const { get, getJSON } = useCMS();
       const [lightboxIndex, setLightboxIndex] = useState(-1);
   
   // Format: [{ id: '1', title: 'AGM 2023', image: 'url', description: 'desc' }]

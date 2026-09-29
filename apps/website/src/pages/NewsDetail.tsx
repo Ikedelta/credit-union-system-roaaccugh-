@@ -4,7 +4,8 @@ import { useCMS } from '../context/CMSContext';
 import { PageHeader } from '../components/PageHeader';
 import { ArrowLeft, ExternalLink, Calendar } from 'lucide-react';
 
-\n  const { getJSON } = useCMS();
+export function NewsDetail() {
+  const { getJSON } = useCMS();
     const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
     // Get all news items

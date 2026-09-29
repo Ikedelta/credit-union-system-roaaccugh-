@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useCMS } from '../context/CMSContext';
 import { PageHeader } from '../components/PageHeader';
 
-\n  const { get } = useCMS();
+export function Welfare() {
+  const { get } = useCMS();
     const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

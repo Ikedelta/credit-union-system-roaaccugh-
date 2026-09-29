@@ -2,7 +2,8 @@ import { PageHeader } from '../components/PageHeader';
 import { RevealOnScroll } from '../components/RevealOnScroll';
 import { useCMS } from '../context/CMSContext';
 
-\n  const { get, getJSON } = useCMS();
+export function BoardAndManagement() {
+  const { get, getJSON } = useCMS();
       const boardMembers = getJSON('board_of_directors', [
     { name: "Mr. Joseph Appiah", role: "Chairman", image: "https://roaaccugh.com/assets/img/team/joe.jpg" },
     { name: "Mr. Ebenezer Oppong", role: "Vice Chairman", image: "https://roaaccugh.com/assets/img/team/eben.jpg" },

@@ -4,7 +4,8 @@ import { useCMS } from '../context/CMSContext';
 import { useState, useEffect } from 'react';
 import { FileText, Download, Calendar, ChevronRight } from 'lucide-react';
 
-\n  const { get } = useCMS();
+export function Agm() {
+  const { get, getJSON } = useCMS();
       const [activePreview, setActivePreview] = useState<string | null>(null);
   
   // Format: [{ id: '1', year: '2023', title: '2023 Annual General Meeting Report', pdfUrl: 'https://...', summary: '...' }]

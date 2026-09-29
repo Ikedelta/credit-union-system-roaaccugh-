@@ -3,7 +3,8 @@ import { RevealOnScroll } from '../components/RevealOnScroll';
 import { MapPin, Phone, Mail } from 'lucide-react';
 import { useCMS } from '../context/CMSContext';
 
-\n  const { get, getJSON } = useCMS();
+export function Branches() {
+  const { get, getJSON } = useCMS();
       const branches = getJSON('branches_list', [
     {
       name: "HEAD OFFICE",

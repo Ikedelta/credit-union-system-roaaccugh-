@@ -12,7 +12,8 @@ const typeConfig: Record<string, { label: string; badgeClass: string; bg: string
   Investment: { label: 'Investment',         badgeClass: 'type-badge type-badge-investment', bg: 'rgba(28, 16, 94, 0.05)' },
 };
 
-\n  const { get, getJSON } = useCMS();
+export function Products() {
+  const { get, getJSON } = useCMS();
     const [activeTab, setActiveTab] = useState<'All' | 'Shares' | 'Savings' | 'Loan'>('All');
     const products = getJSON('products_list', [
     { 
