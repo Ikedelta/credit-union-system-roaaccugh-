@@ -26,7 +26,7 @@ export function Agm() {
         title="AGM Reports" 
         description="Access our Annual General Meeting reports and stay informed about our progress."
         badge="Media"
-        bgImage="/slider1.jpg"
+        bgImage="/slider1.webp"
       />
       
       <main className="section container">

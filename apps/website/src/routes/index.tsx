@@ -2,7 +2,7 @@ import { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ScrollToTop } from '../components/ScrollToTop';
 import { MainLayout } from '../layouts/MainLayout';
-import { Loader2 } from 'lucide-react';
+import LoadingScreen from '../components/LoadingScreen';
 
 const Home = lazy(() => import('../pages/Home').then(m => ({ default: m.Home })));
 const JoinNow = lazy(() => import('../pages/JoinNow').then(m => ({ default: m.JoinNow })));
@@ -28,10 +28,7 @@ const Agm = lazy(() => import('../pages/Agm').then(m => ({ default: m.Agm })));
 const Awards = lazy(() => import('../pages/Awards').then(m => ({ default: m.Awards })));
 
 const LoadingFallback = () => (
-  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', flexDirection: 'column', gap: '1rem', background: '#f8fafc' }}>
-    <Loader2 size={48} className="spinner" style={{ color: 'var(--primary-color)' }} />
-    <h3 style={{ color: 'var(--text-color)', margin: 0 }}>Loading...</h3>
-  </div>
+  <LoadingScreen fullScreen />
 );
 
 export function AppRouter() {

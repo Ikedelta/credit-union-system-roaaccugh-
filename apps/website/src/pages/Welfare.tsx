@@ -35,7 +35,7 @@ export function Welfare() {
         title="Welfare Benefits" 
         description="Comprehensive support designed to provide peace of mind and financial security for you and your family."
         badge="Welfare"
-        bgImage="/slider1.jpg"
+        bgImage="/slider1.webp"
       />
       <main className="section container">
         <div className="premium-card form-wizard-card" style={{ maxWidth: '800px', margin: '0 auto' }}>

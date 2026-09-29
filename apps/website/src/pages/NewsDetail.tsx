@@ -50,7 +50,7 @@ export function NewsDetail() {
         document.title = 'ROAACCU | Republic of Accra Credit Union';
         setMetaTag('og:title', 'ROAACCU | Republic of Accra Credit Union');
         setMetaTag('og:description', 'Welcome to the Republic of Accra Credit Union');
-        setMetaTag('og:image', 'https://roaaccugh.com/assets/img/roaaccu-logo.png'); // Default logo
+        setMetaTag('og:image', 'https://roaaccugh.com/assets/img/roaaccu-logo.webp'); // Default logo
       };
     }
   }, [newsItem]);
@@ -78,7 +78,7 @@ export function NewsDetail() {
       <PageHeader 
         title={newsItem.title || "News Update"} 
         description={newsItem.date || ""}
-        bgImage={newsItem.image || "/slider1.jpg"}
+        bgImage={newsItem.image || "/slider1.webp"}
       />
       
       <main className="section container" style={{ maxWidth: '900px', margin: '0 auto', paddingTop: 'clamp(1.5rem, 5vw, 3rem)', paddingLeft: 'clamp(1.75rem, 6vw, 4rem)', paddingRight: 'clamp(1.75rem, 6vw, 4rem)' }}>

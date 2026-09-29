@@ -21,7 +21,7 @@ export function BoardAndManagement() {
       <PageHeader 
         title="Leadership" 
         description="Meet the dedicated leaders guiding ROAACCU towards a brighter financial future for all members."
-        bgImage="/slider3.jpg"
+        bgImage="/slider3.webp"
       />
       <main className="section container">
         <div style={{ marginTop: '2rem' }}>

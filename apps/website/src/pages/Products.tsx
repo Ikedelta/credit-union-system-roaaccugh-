@@ -65,7 +65,7 @@ export function Products() {
         title="Our Products" 
         description="Explore our comprehensive suite of tailored financial products designed to support your daily needs, grow your savings, and secure your future."
         badge="Products"
-        bgImage="/slider1.jpg"
+        bgImage="/slider1.webp"
       />
       
       <main className="section container">

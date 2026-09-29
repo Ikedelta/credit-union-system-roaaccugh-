@@ -26,7 +26,7 @@ export function Videos() {
         title="Video Gallery" 
         description="Watch our latest updates, tutorials, and community highlights."
         badge="Media"
-        bgImage="/slider3.jpg"
+        bgImage="/slider3.webp"
       />
       
       <main className="section container">

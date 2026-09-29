@@ -8,6 +8,7 @@ import path from "path";
 import fs from "fs";
 import nodemailer from "nodemailer";
 import { createClient } from '@supabase/supabase-js';
+import sharp from "sharp";
 import { authenticateAdmin, authenticateSuperAdmin, AuthRequest } from "../middleware/auth";
 
 const router = Router();
@@ -119,15 +120,29 @@ router.post("/upload", upload.single("image"), async (req, res) => {
 
     const adminReq = req as AuthRequest;
     
+    // Determine if the file is an image that should be converted
+    const isImage = req.file.mimetype.startsWith('image/') && !req.file.mimetype.includes('svg');
+    let uploadBuffer = req.file.buffer;
+    let uploadMimetype = req.file.mimetype;
+    let fileExt = path.extname(req.file.originalname);
+    
+    if (isImage) {
+      uploadBuffer = await sharp(req.file.buffer)
+        .webp({ quality: 80 })
+        .toBuffer();
+      uploadMimetype = 'image/webp';
+      fileExt = '.webp';
+    }
+    
     // Generate unique filename
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    const filename = 'cms-' + uniqueSuffix + path.extname(req.file.originalname);
+    const filename = 'cms-' + uniqueSuffix + fileExt;
 
     // Upload to Supabase Storage bucket named 'cms-media'
     const { data, error } = await supabase.storage
       .from('cms-media')
-      .upload(filename, req.file.buffer, {
-        contentType: req.file.mimetype,
+      .upload(filename, uploadBuffer, {
+        contentType: uploadMimetype,
         upsert: false
       });
 

@@ -10,7 +10,7 @@ interface PageHeaderProps {
 }
 
 export function PageHeader({ title, description, bgImage }: PageHeaderProps) {
-  const defaultBg = '/slider1.jpg';
+  const defaultBg = '/slider1.webp';
   const backgroundStyle = {
     backgroundImage: `linear-gradient(135deg, rgba(28, 16, 94, 0.92) 0%, rgba(28, 16, 94, 0.85) 100%), url(${bgImage || defaultBg})`
   };

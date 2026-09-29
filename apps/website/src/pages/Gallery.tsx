@@ -7,12 +7,12 @@ export function Gallery() {
   const code = searchParams.get('code') || 'General';
 
   const images = [
-    "/slider1.jpg",
-    "/slider2.jpg",
-    "/slider3.jpg",
-    "/slider1.jpg",
-    "/slider2.jpg",
-    "/slider3.jpg"
+    "/slider1.webp",
+    "/slider2.webp",
+    "/slider3.webp",
+    "/slider1.webp",
+    "/slider2.webp",
+    "/slider3.webp"
   ];
 
   return (
@@ -20,7 +20,7 @@ export function Gallery() {
       <PageHeader 
         title={`${code} Gallery`} 
         description={`A collection of moments from our ${code} archives.`}
-        bgImage="/slider2.jpg"
+        bgImage="/slider2.webp"
       />
       <main className="section container text-center" style={{ minHeight: '60vh' }}>
       

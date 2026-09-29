@@ -43,7 +43,7 @@ export function Navbar({ setActiveModal: _setActiveModal }: NavbarProps) {
         <header className="header modern-header">
           <div className="container flex justify-between items-center" style={{ width: '100%' }}>
             <Link to="/" className="logo" style={{ color: 'var(--secondary-color)', zIndex: 1001 }}>
-              <img src="/logo.png" alt="ROAACCU Logo" style={{ height: '48px', objectFit: 'contain' }} />
+              <img src="/logo.webp" alt="ROAACCU Logo" style={{ height: '48px', objectFit: 'contain' }} />
             </Link>
 
             <button 

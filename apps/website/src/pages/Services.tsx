@@ -27,7 +27,7 @@ export function Services() {
         title="Our Services" 
         description="Enjoy countless financial services designed specifically for your convenience and business growth."
         badge="What We Offer"
-        bgImage="/slider3.jpg"
+        bgImage="/slider3.webp"
       />
       <main className="section container">
         <RevealOnScroll>

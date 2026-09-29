@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { ShieldCheck, Loader2, Mail, Lock, Eye, EyeOff } from 'lucide-react';
-import logoUrl from '../assets/logo.png';
+import logoUrl from '../assets/logo.webp';
 import './Login.css';
 
 const Login: React.FC = () => {

@@ -15,7 +15,7 @@ export function ByLaw() {
         title="By-Laws" 
         description="Understanding the rules and cooperative principles that govern ROAACCU."
         badge="Governance"
-        bgImage="/slider2.jpg"
+        bgImage="/slider2.webp"
       />
       
       <main className="section container">

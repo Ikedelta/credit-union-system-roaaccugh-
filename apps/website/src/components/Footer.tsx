@@ -32,7 +32,7 @@ export function Footer({ setActiveModal: _setActiveModal }: FooterProps) {
           <div>
             <div className="logo" style={{ marginBottom: '1.25rem' }}>
               <img 
-                src="/logo.png" 
+                src="/logo.webp" 
                 alt="ROAACCU Logo" 
                 style={{ height: '44px', objectFit: 'contain', background: 'white', padding: '6px 10px', borderRadius: '10px' }} 
               />

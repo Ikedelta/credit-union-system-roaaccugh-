@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { LayoutDashboard, Users, CreditCard, HeartHandshake, MessageSquare, LogOut, FileText, UserCog, Send, Building, Menu, X, ShieldAlert, Moon, Sun, Image } from 'lucide-react';
 import './Layout.css';
 
-import logoUrl from '../assets/logo.png';
+import logoUrl from '../assets/logo.webp';
 
 const Layout: React.FC = () => {
   const { admin, logout } = useAuth();

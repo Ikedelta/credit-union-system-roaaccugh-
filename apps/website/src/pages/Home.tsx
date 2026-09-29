@@ -18,14 +18,14 @@ export function Home() {
   const slides = getJSON('home_slides', [
     {
       id: 1,
-      image: "/slider1.jpg",
+      image: "/slider1.webp",
       eyebrow: "Me Daakye Anidaso",
       title: "Your Future Starts Here",
       subtitle: "Ghana's trusted financial co-operative — built by members, for members. Join over 11,000 people growing together.",
     },
     {
       id: 2,
-      image: "/slider3.jpg",
+      image: "/slider3.webp",
       eyebrow: "Secure Your Finances",
       title: "Empowering Your Growth",
       subtitle: "Experience financial freedom with our low-interest loans and high-yield savings designed for you.",
@@ -166,7 +166,7 @@ export function Home() {
             <RevealOnScroll direction="right">
               <div className="home-split-image" style={{ background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'clamp(1rem, 5vw, 3rem)' }}>
                 <img
-                  src={get('about_logo', '/logo.png')}
+                  src={get('about_logo', '/logo.webp')}
                   alt="ROAACCU Logo"
                   style={{ objectFit: 'contain', width: '100%', height: '100%', maxHeight: '400px' }}
                 />
@@ -277,7 +277,7 @@ export function Home() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="home-cta-section" style={{ position: 'relative', padding: 'clamp(3rem, 8vw, 6rem) 0', backgroundImage: 'url(/slider2.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', marginTop: '0' }}>
+      <section className="home-cta-section" style={{ position: 'relative', padding: 'clamp(3rem, 8vw, 6rem) 0', backgroundImage: 'url(/slider2.webp)', backgroundSize: 'cover', backgroundPosition: 'center', marginTop: '0' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'rgba(28, 16, 94, 0.92)' }}></div>
         <div className="container" style={{ position: 'relative', zIndex: 1, textAlign: 'center' }}>
           <RevealOnScroll>

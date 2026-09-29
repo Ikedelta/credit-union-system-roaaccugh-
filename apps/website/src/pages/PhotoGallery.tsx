@@ -30,7 +30,7 @@ export function PhotoGallery() {
         title="Photo Gallery" 
         description="Explore moments and memories from our community events and gatherings in stunning detail."
         badge="Media"
-        bgImage="/slider1.jpg"
+        bgImage="/slider1.webp"
       />
       
       <main className="section container" style={{ paddingBottom: '6rem' }}>

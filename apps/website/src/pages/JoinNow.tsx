@@ -58,7 +58,7 @@ export function JoinNow() {
       <PageHeader 
         title="Join ROAACCU" 
         description="Become a member today and unlock a world of financial opportunities and growth." 
-        bgImage="/slider2.jpg"
+        bgImage="/slider2.webp"
       />
       <main className="section container">
         <RevealOnScroll>

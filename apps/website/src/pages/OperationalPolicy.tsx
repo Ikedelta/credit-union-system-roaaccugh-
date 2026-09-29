@@ -15,7 +15,7 @@ export function OperationalPolicy() {
         title="Operational Policy" 
         description="Understanding the policies that govern the day-to-day operations of ROAACCU."
         badge="Governance"
-        bgImage="/slider2.jpg"
+        bgImage="/slider2.webp"
       />
       
       <main className="section container">

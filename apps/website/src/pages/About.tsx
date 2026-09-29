@@ -18,7 +18,7 @@ export function About() {
       <PageHeader 
         title="About ROAACCU" 
         description="Learn about our history, our mission, and the core values that drive us to serve the Road Officers and Allies community."
-        bgImage="/slider2.jpg"
+        bgImage="/slider2.webp"
       />
       <main className="section container" style={{ paddingLeft: 'clamp(1.75rem, 6vw, 4rem)', paddingRight: 'clamp(1.75rem, 6vw, 4rem)' }}>
       

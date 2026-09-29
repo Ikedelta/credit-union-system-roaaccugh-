@@ -15,7 +15,7 @@ export function Events() {
         title="Upcoming Events" 
         description="Stay tuned for the latest events and updates from ROAACCU."
         badge="Media"
-        bgImage="/slider2.jpg"
+        bgImage="/slider2.webp"
       />
       
       <main className="section container">

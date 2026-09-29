@@ -14,7 +14,7 @@ export function Organogram() {
         title="Organogram" 
         description="Our Organizational Structure"
         badge="About Us"
-        bgImage="/slider2.jpg"
+        bgImage="/slider2.webp"
       />
       
       <main className="section container text-center">

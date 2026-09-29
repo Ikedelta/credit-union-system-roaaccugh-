@@ -10,19 +10,19 @@ export function NewsAndBlog() {
     {
       title: "Annual General Meeting 2026",
       date: "August 15, 2026",
-      image: "https://roaaccugh.com/assets/img/slider2.jpg",
+      image: "https://roaaccugh.com/assets/img/slider2.webp",
       content: "Join us for our upcoming AGM where we will discuss the financial performance of the past year and outline our strategic goals for the future. All registered members are encouraged to attend."
     },
     {
       title: "New Mobile Banking Features",
       date: "July 2, 2026",
-      image: "https://roaaccugh.com/assets/img/slider1.jpg",
+      image: "https://roaaccugh.com/assets/img/slider1.webp",
       content: "We are excited to announce new features to our mobile banking app, including instant loan approvals and improved security measures."
     },
     {
       title: "Community Outreach Program",
       date: "June 10, 2026",
-      image: "https://roaaccugh.com/assets/img/slider3.jpg",
+      image: "https://roaaccugh.com/assets/img/slider3.webp",
       content: "ROAACCU recently partnered with local farmers to provide financial literacy training and subsidized farming equipment to help boost local agriculture."
     }
   ]);
@@ -32,7 +32,7 @@ export function NewsAndBlog() {
       <PageHeader 
         title="News & Blog" 
         description="Stay updated with the latest announcements, community stories, and financial tips from ROAACCU."
-        bgImage="/slider1.jpg"
+        bgImage="/slider1.webp"
       />
       <main className="section container">
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8" style={{ marginTop: '3rem' }}>

@@ -52,7 +52,7 @@ export function Branches() {
       <PageHeader 
         title="Our Branches" 
         description="Find a ROAACCU branch near you. We have a network of branches ready to serve you with excellence."
-        bgImage="/slider3.jpg"
+        bgImage="/slider3.webp"
       />
       <main className="section container">
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">

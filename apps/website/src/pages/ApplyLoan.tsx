@@ -56,7 +56,7 @@ export function ApplyLoan() {
         title="Apply for a Loan"
         description="Experience flexible repayment terms and low-interest rates designed to help you succeed."
         badge="Member Loans"
-        bgImage="/slider3.jpg"
+        bgImage="/slider3.webp"
       />
       <main className="section container">
         <RevealOnScroll>

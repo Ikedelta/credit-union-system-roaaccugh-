@@ -23,7 +23,7 @@ export function Faq() {
         title="Frequently Asked Questions" 
         description="Find clear and quick answers to the most common questions about our services, membership, and policies."
         badge="Help Center"
-        bgImage="/slider3.jpg"
+        bgImage="/slider3.webp"
       />
       
       <main className="section container">

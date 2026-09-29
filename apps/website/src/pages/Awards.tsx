@@ -15,7 +15,7 @@ export function Awards() {
         title="Our Awards & Recognitions" 
         description="Celebrating our commitment to excellence, community service, and financial empowerment."
         badge="Media"
-        bgImage="/slider3.jpg"
+        bgImage="/slider3.webp"
       />
       
       <main className="section container" style={{ paddingBottom: '6rem' }}>
