@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
+import { customAlert } from '../utils/alert';
 import { Save, Loader2, Plus, Trash2, UploadCloud, Link as LinkIcon, Globe, Image as ImageIcon } from 'lucide-react';
 import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaYoutube, FaGithub } from 'react-icons/fa';
 import LoadingScreen from '../components/LoadingScreen';
@@ -57,17 +58,37 @@ const CMS: React.FC = () => {
     return content.find(c => c.key === key) || { key, value: defaultValue, type: defaultType };
   };
 
-  const handleUpdate = async (item: ContentItem) => {
+  const handleUpdate = async (item: ContentItem, skipAlert = false) => {
     setSavingKey(item.key);
     try {
       await axios.put(`/api/admin/content/${item.key}`, { value: item.value, type: item.type });
       if (!content.find(c => c.key === item.key)) {
-        setContent([...content, item]);
+        setContent(prev => {
+          if (!prev.find(c => c.key === item.key)) {
+            return [...prev, item];
+          }
+          return prev;
+        });
       }
-      alert("Updated successfully!");
+      if (!skipAlert) await customAlert("Updated successfully!");
     } catch (err) {
       console.error(err);
-      alert("Failed to update content");
+      if (!skipAlert) await customAlert("Failed to update content", "error");
+    } finally {
+      setSavingKey(null);
+    }
+  };
+
+  const handleBulkUpdate = async (items: ContentItem[]) => {
+    setSavingKey('bulk_update');
+    try {
+      for (const item of items) {
+        await handleUpdate(item, true);
+      }
+      await customAlert("Updated successfully!");
+    } catch (err) {
+      console.error(err);
+      await customAlert("Failed to update some content", "error");
     } finally {
       setSavingKey(null);
     }
@@ -161,7 +182,7 @@ const CMS: React.FC = () => {
       }
     } catch (err) {
       console.error(err);
-      alert('Failed to upload file. Ensure Supabase is configured and the file is not too large.');
+      await customAlert('Failed to upload file. Ensure Supabase is configured and the file is not too large.', 'error');
     } finally {
       setUploadingImageFor(null);
       if (fileInputRef.current) fileInputRef.current.value = '';
@@ -232,10 +253,10 @@ const CMS: React.FC = () => {
       try { currentList = JSON.parse(item.value); } catch(err) {}
       
       handleJsonChange('new_photo_gallery', [...currentList, ...newItems]);
-      alert(`Successfully uploaded and optimized ${newItems.length} images to WebP! Please review them and click 'Save Photo Gallery'.`);
+      await customAlert(`Successfully uploaded and optimized ${newItems.length} images to WebP! Please review them and click 'Save Photo Gallery'.`);
     } catch (err) {
       console.error(err);
-      alert('Failed during bulk upload. Ensure Supabase is configured properly.');
+      await customAlert('Failed during bulk upload. Ensure Supabase is configured properly.', 'error');
     } finally {
       setIsBulkUploading(false);
       if (bulkUploadInputRef.current) bulkUploadInputRef.current.value = '';
@@ -474,8 +495,8 @@ const CMS: React.FC = () => {
               <textarea rows={3} className="form-control" value={visionItem.value} onChange={(e) => handleChange('about_vision', e.target.value)} />
             </div>
             <div style={{ display: 'flex', gap: '1rem' }}>
-              <button className="btn btn-primary" onClick={() => { handleUpdate(textItem); handleUpdate(missionItem); handleUpdate(visionItem); handleUpdate(aboutImage1Item); handleUpdate(aboutImage2Item); }}>
-                <Save size={18} /> Save About Texts & Images
+              <button className="btn btn-primary" onClick={() => handleBulkUpdate([textItem, missionItem, visionItem, aboutImage1Item, aboutImage2Item])} disabled={savingKey === 'bulk_update'}>
+                {savingKey === 'bulk_update' ? <Loader2 size={18} className="spinner" /> : <Save size={18} />} Save About Texts & Images
               </button>
             </div>
           </div>
@@ -772,60 +793,126 @@ const CMS: React.FC = () => {
     const btnTextItem = getItem('popup_btn_text', 'TEXT', '');
     const btnLinkItem = getItem('popup_btn_link', 'TEXT', '');
 
+    const enabledItem2 = getItem('popup2_enabled', 'TEXT', 'false');
+    const titleItem2 = getItem('popup2_title', 'TEXT', 'Second Announcement');
+    const descItem2 = getItem('popup2_description', 'TEXT', '');
+    const imageItem2 = getItem('popup2_image', 'IMAGE', '');
+    const btnTextItem2 = getItem('popup2_btn_text', 'TEXT', '');
+    const btnLinkItem2 = getItem('popup2_btn_link', 'TEXT', '');
+
     return (
-      <div className="widget glass-panel">
-        <h3 style={{ marginBottom: '1.5rem' }}>Website Global Popup</h3>
-        <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>
-          Configure the popup banner that appears when users first visit the website. This is useful for important announcements. The popup will automatically show once per session for users.
-        </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+        <div className="widget glass-panel">
+          <h3 style={{ marginBottom: '1.5rem' }}>Website Global Popup 1</h3>
+          <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>
+            Configure the primary popup banner that appears when users first visit the website.
+          </p>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', background: 'var(--bg-white)', padding: '2rem', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', paddingBottom: '1.5rem', borderBottom: '1px solid var(--border-color)' }}>
-            <label className="form-label" style={{ margin: 0, fontSize: '1.1rem', color: 'var(--primary-color)' }}>Enable Global Popup</label>
-            <select className="form-control" style={{ width: 'auto' }} value={enabledItem.value} onChange={(e) => handleChange('popup_enabled', e.target.value)}>
-              <option value="true">Yes (Enabled)</option>
-              <option value="false">No (Disabled)</option>
-            </select>
-          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', background: 'var(--bg-white)', padding: '2rem', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', paddingBottom: '1.5rem', borderBottom: '1px solid var(--border-color)' }}>
+              <label className="form-label" style={{ margin: 0, fontSize: '1.1rem', color: 'var(--primary-color)' }}>Enable Global Popup 1</label>
+              <select className="form-control" style={{ width: 'auto' }} value={enabledItem.value} onChange={(e) => handleChange('popup_enabled', e.target.value)}>
+                <option value="true">Yes (Enabled)</option>
+                <option value="false">No (Disabled)</option>
+              </select>
+            </div>
 
-          <div>
-            <label className="form-label">Popup Image (Optional)</label>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center', background: '#f8fafc', padding: '0.75rem', borderRadius: '8px' }}>
-              {imageItem.value && <img src={imageItem.value} alt="Preview" style={{ width: '80px', height: '60px', objectFit: 'cover', borderRadius: '4px', border: '1px solid var(--border-color)' }} />}
-              <div style={{ display: 'flex', flex: '1 1 250px', gap: '0.5rem' }}>
-                <input type="text" className="form-control" value={imageItem.value} onChange={(e) => handleChange('popup_image', e.target.value, 'IMAGE')} placeholder="Image URL or click Upload..." style={{ flex: 1, minWidth: 0 }} />
-                <button className="btn btn-secondary" onClick={() => { setUploadingImageFor({key: 'popup_image'}); setIsMediaModalOpen(true); }} style={{ whiteSpace: 'nowrap' }}>
-                  <UploadCloud size={16} /> Upload
-                </button>
+            <div>
+              <label className="form-label">Popup 1 Image (Optional)</label>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center', background: '#f8fafc', padding: '0.75rem', borderRadius: '8px' }}>
+                {imageItem.value && <img src={imageItem.value} alt="Preview" style={{ width: '80px', height: '60px', objectFit: 'cover', borderRadius: '4px', border: '1px solid var(--border-color)' }} />}
+                <div style={{ display: 'flex', flex: '1 1 250px', gap: '0.5rem' }}>
+                  <input type="text" className="form-control" value={imageItem.value} onChange={(e) => handleChange('popup_image', e.target.value, 'IMAGE')} placeholder="Image URL or click Upload..." style={{ flex: 1, minWidth: 0 }} />
+                  <button className="btn btn-secondary" onClick={() => { setUploadingImageFor({key: 'popup_image'}); setIsMediaModalOpen(true); }} style={{ whiteSpace: 'nowrap' }}>
+                    <UploadCloud size={16} /> Upload
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div>
-            <label className="form-label">Popup Title</label>
-            <input type="text" className="form-control" value={titleItem.value} onChange={(e) => handleChange('popup_title', e.target.value)} placeholder="e.g., Important Announcement" />
-          </div>
-
-          <div>
-            <label className="form-label">Main Text / Description</label>
-            <textarea rows={4} className="form-control" value={descItem.value} onChange={(e) => handleChange('popup_description', e.target.value)} placeholder="Enter the main write up here..." />
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <label className="form-label">Action Button Text (Optional)</label>
-              <input type="text" className="form-control" value={btnTextItem.value} onChange={(e) => handleChange('popup_btn_text', e.target.value)} placeholder="e.g., Read More (Leave blank to hide)" />
+              <label className="form-label">Popup 1 Title</label>
+              <input type="text" className="form-control" value={titleItem.value} onChange={(e) => handleChange('popup_title', e.target.value)} placeholder="e.g., Important Announcement" />
             </div>
+
             <div>
-              <label className="form-label">Action Button Link (Optional)</label>
-              <input type="text" className="form-control" value={btnLinkItem.value} onChange={(e) => handleChange('popup_btn_link', e.target.value)} placeholder="e.g., /news or https://google.com" />
+              <label className="form-label">Main Text / Description</label>
+              <textarea rows={4} className="form-control" value={descItem.value} onChange={(e) => handleChange('popup_description', e.target.value)} placeholder="Enter the main write up here..." />
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <label className="form-label">Action Button Text (Optional)</label>
+                <input type="text" className="form-control" value={btnTextItem.value} onChange={(e) => handleChange('popup_btn_text', e.target.value)} placeholder="e.g., Read More (Leave blank to hide)" />
+              </div>
+              <div>
+                <label className="form-label">Action Button Link (Optional)</label>
+                <input type="text" className="form-control" value={btnLinkItem.value} onChange={(e) => handleChange('popup_btn_link', e.target.value)} placeholder="e.g., /news or https://google.com" />
+              </div>
+            </div>
+
+            <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'flex-end' }}>
+              <button className="btn btn-primary" onClick={() => handleBulkUpdate([enabledItem, titleItem, descItem, imageItem, btnTextItem, btnLinkItem])} disabled={savingKey === 'bulk_update'}>
+                {savingKey === 'bulk_update' ? <Loader2 size={18} className="spinner" /> : <Save size={18} />} Save Popup 1
+              </button>
             </div>
           </div>
+        </div>
 
-          <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'flex-end' }}>
-            <button className="btn btn-primary" onClick={() => { handleUpdate(enabledItem); handleUpdate(titleItem); handleUpdate(descItem); handleUpdate(imageItem); handleUpdate(btnTextItem); handleUpdate(btnLinkItem); }}>
-              <Save size={18} /> Save All Popup Settings
-            </button>
+        <div className="widget glass-panel">
+          <h3 style={{ marginBottom: '1.5rem' }}>Website Global Popup 2</h3>
+          <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>
+            Configure a secondary popup. If both are enabled, this will show after the user closes the first popup.
+          </p>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', background: 'var(--bg-white)', padding: '2rem', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', paddingBottom: '1.5rem', borderBottom: '1px solid var(--border-color)' }}>
+              <label className="form-label" style={{ margin: 0, fontSize: '1.1rem', color: 'var(--primary-color)' }}>Enable Global Popup 2</label>
+              <select className="form-control" style={{ width: 'auto' }} value={enabledItem2.value} onChange={(e) => handleChange('popup2_enabled', e.target.value)}>
+                <option value="true">Yes (Enabled)</option>
+                <option value="false">No (Disabled)</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="form-label">Popup 2 Image (Optional)</label>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center', background: '#f8fafc', padding: '0.75rem', borderRadius: '8px' }}>
+                {imageItem2.value && <img src={imageItem2.value} alt="Preview" style={{ width: '80px', height: '60px', objectFit: 'cover', borderRadius: '4px', border: '1px solid var(--border-color)' }} />}
+                <div style={{ display: 'flex', flex: '1 1 250px', gap: '0.5rem' }}>
+                  <input type="text" className="form-control" value={imageItem2.value} onChange={(e) => handleChange('popup2_image', e.target.value, 'IMAGE')} placeholder="Image URL or click Upload..." style={{ flex: 1, minWidth: 0 }} />
+                  <button className="btn btn-secondary" onClick={() => { setUploadingImageFor({key: 'popup2_image'}); setIsMediaModalOpen(true); }} style={{ whiteSpace: 'nowrap' }}>
+                    <UploadCloud size={16} /> Upload
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label className="form-label">Popup 2 Title</label>
+              <input type="text" className="form-control" value={titleItem2.value} onChange={(e) => handleChange('popup2_title', e.target.value)} placeholder="e.g., Second Announcement" />
+            </div>
+
+            <div>
+              <label className="form-label">Main Text / Description</label>
+              <textarea rows={4} className="form-control" value={descItem2.value} onChange={(e) => handleChange('popup2_description', e.target.value)} placeholder="Enter the main write up here..." />
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <label className="form-label">Action Button Text (Optional)</label>
+                <input type="text" className="form-control" value={btnTextItem2.value} onChange={(e) => handleChange('popup2_btn_text', e.target.value)} placeholder="e.g., Read More (Leave blank to hide)" />
+              </div>
+              <div>
+                <label className="form-label">Action Button Link (Optional)</label>
+                <input type="text" className="form-control" value={btnLinkItem2.value} onChange={(e) => handleChange('popup2_btn_link', e.target.value)} placeholder="e.g., /news or https://google.com" />
+              </div>
+            </div>
+
+            <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'flex-end' }}>
+              <button className="btn btn-primary" onClick={() => handleBulkUpdate([enabledItem2, titleItem2, descItem2, imageItem2, btnTextItem2, btnLinkItem2])} disabled={savingKey === 'bulk_update'}>
+                {savingKey === 'bulk_update' ? <Loader2 size={18} className="spinner" /> : <Save size={18} />} Save Popup 2
+              </button>
+            </div>
           </div>
         </div>
       </div>

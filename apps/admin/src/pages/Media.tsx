@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { Trash2, Copy, Loader2, UploadCloud, Image as ImageIcon, FileText, Eye } from 'lucide-react';
 import LoadingScreen from '../components/LoadingScreen';
+import { customAlert, customConfirm } from '../utils/alert';
 import { supabase } from '../utils/supabase';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -28,7 +29,7 @@ const Media: React.FC = () => {
       setFiles(res.data.files || []);
     } catch (err) {
       console.error(err);
-      alert('Failed to load media files.');
+      await customAlert('Failed to load media files.', 'error');
     } finally {
       setLoading(false);
     }
@@ -58,13 +59,13 @@ const Media: React.FC = () => {
       }
 
       if (successCount < filesToUpload.length) {
-        alert(`Successfully uploaded ${successCount} out of ${filesToUpload.length} files.`);
+        await customAlert(`Successfully uploaded ${successCount} out of ${filesToUpload.length} files.`);
       }
       
       fetchMedia(); // Refresh list after upload
     } catch (err) {
       console.error(err);
-      alert('An error occurred during upload.');
+      await customAlert('An error occurred during upload.', 'error');
     } finally {
       setUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
@@ -72,20 +73,21 @@ const Media: React.FC = () => {
   };
 
   const handleDelete = async (filename: string) => {
-    if (!window.confirm('Are you sure you want to delete this file? It may break images on your website if it is currently in use.')) return;
+    const confirmed = await customConfirm('Are you sure you want to delete this file? It may break images on your website if it is currently in use.');
+    if (!confirmed) return;
     
     try {
       await axios.delete(`/api/admin/media/${filename}`);
       setFiles(files.filter(f => f.name !== filename));
     } catch (err) {
       console.error(err);
-      alert('Failed to delete file.');
+      await customAlert('Failed to delete file.', 'error');
     }
   };
 
-  const copyToClipboard = (url: string) => {
-    navigator.clipboard.writeText(url);
-    alert('URL copied to clipboard!');
+  const copyToClipboard = async (url: string) => {
+    await navigator.clipboard.writeText(url);
+    await customAlert('URL copied to clipboard!');
   };
 
   if (loading && files.length === 0) return <LoadingScreen message="Loading Media Library..." />;

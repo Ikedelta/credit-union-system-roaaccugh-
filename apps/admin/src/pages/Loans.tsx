@@ -3,6 +3,7 @@ import axios from 'axios';
 import { format } from 'date-fns';
 import { Check, X, Search, Trash2 } from 'lucide-react';
 import LoadingScreen from '../components/LoadingScreen';
+import { customAlert, customConfirm } from '../utils/alert';
 
 const Loans: React.FC = () => {
   const [applications, setApplications] = useState<any[]>([]);
@@ -30,18 +31,19 @@ const Loans: React.FC = () => {
       setApplications(applications.map(app => app.id === id ? { ...app, status } : app));
     } catch (err) {
       console.error(err);
-      alert("Failed to update status");
+      await customAlert("Failed to update status", 'error');
     }
   };
 
   const handleDelete = async (id: number) => {
-    if (!window.confirm('Are you sure you want to delete this loan application?')) return;
+    const confirmed = await customConfirm('Are you sure you want to delete this loan application?');
+    if (!confirmed) return;
     try {
       await axios.delete(`/api/admin/loans/${id}`);
       fetchApplications();
     } catch (err: any) {
       console.error(err);
-      alert(err.response?.data?.error || 'Failed to delete application');
+      await customAlert(err.response?.data?.error || 'Failed to delete application', 'error');
     }
   };
 

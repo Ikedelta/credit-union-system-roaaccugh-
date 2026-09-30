@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { UserPlus, Trash2 } from 'lucide-react';
 import LoadingScreen from '../components/LoadingScreen';
+import { customAlert, customConfirm } from '../utils/alert';
 
 interface User {
   id: number;
@@ -43,20 +44,21 @@ const Users: React.FC = () => {
       fetchUsers();
     } catch (err: any) {
       console.error(err);
-      alert(err.response?.data?.error || 'Failed to create user');
+      await customAlert(err.response?.data?.error || 'Failed to create user', 'error');
     } finally {
       setSaving(false);
     }
   };
 
   const handleDelete = async (id: number) => {
-    if (!window.confirm('Are you sure you want to delete this user?')) return;
+    const confirmed = await customConfirm('Are you sure you want to delete this user?');
+    if (!confirmed) return;
     try {
       await axios.delete(`/api/admin/users/${id}`);
       fetchUsers();
     } catch (err: any) {
       console.error(err);
-      alert(err.response?.data?.error || 'Failed to delete user');
+      await customAlert(err.response?.data?.error || 'Failed to delete user', 'error');
     }
   };
 

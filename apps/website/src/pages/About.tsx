@@ -1,4 +1,4 @@
-import { ShieldCheck, Target, Globe } from 'lucide-react';
+import { ShieldCheck, Target, Globe, Phone, User } from 'lucide-react';
 import { PageHeader } from '../components/PageHeader';
 import { RevealOnScroll } from '../components/RevealOnScroll';
 import { useCMS } from '../context/CMSContext';
@@ -117,8 +117,8 @@ export function About() {
               <div className="branch-card" style={{ background: 'var(--bg-white)', borderRadius: 'var(--border-radius-lg)', overflow: 'hidden', boxShadow: 'var(--shadow-sm)', padding: '1.5rem', border: '1px solid var(--border-color)' }}>
                 <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', color: 'var(--primary-color)' }}>{branch.name}</h3>
                 <p style={{ color: 'var(--text-color)', fontSize: '0.95rem', fontWeight: 500, marginBottom: '0.5rem' }}>{branch.location}</p>
-                {branch.contact && <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '0.25rem' }}>📞 {branch.contact}</p>}
-                {branch.manager && <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>👤 {branch.manager}</p>}
+                {branch.contact && <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '0.25rem', display: 'flex', alignItems: 'center' }}><Phone size={14} style={{ marginRight: '6px', opacity: 0.7 }} /> {branch.contact}</p>}
+                {branch.manager && <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', display: 'flex', alignItems: 'center' }}><User size={14} style={{ marginRight: '6px', opacity: 0.7 }} /> {branch.manager}</p>}
               </div>
             </RevealOnScroll>
           ))}
