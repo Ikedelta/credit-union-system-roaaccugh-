@@ -3,6 +3,8 @@ import { RevealOnScroll } from '../components/RevealOnScroll';
 import { useCMS } from '../context/CMSContext';
 import { Link } from 'react-router-dom';
 
+const generateSlug = (text: string) => text ? text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') : '';
+
 export function NewsAndBlog() {
   const { get, getJSON } = useCMS();
       const newsItems = getJSON('news_list', [
@@ -58,14 +60,14 @@ export function NewsAndBlog() {
                     {news.content.length > 120 ? `${news.content.substring(0, 120)}...` : news.content}
                   </p>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto', borderTop: '1px solid var(--border-color)', paddingTop: '1rem' }}>
-                    <Link to={`/news/${news.id || i}`} className="btn btn-ghost" style={{ padding: 0, color: 'var(--secondary-color)', textDecoration: 'none', fontSize: '0.9rem' }}>
+                    <Link to={`/news/${generateSlug(news.title) || news.id || i}`} className="btn btn-ghost" style={{ padding: 0, color: 'var(--secondary-color)', textDecoration: 'none', fontSize: '0.9rem' }}>
                       Read Story &rarr;
                     </Link>
                     
                     <div style={{ display: 'flex', gap: '0.4rem' }}>
                       {/* WhatsApp */}
                       <a 
-                        href={`https://api.whatsapp.com/send?text=${encodeURIComponent(news.title)} ${encodeURIComponent(typeof window !== 'undefined' ? `${window.location.origin}/news/${news.id || i}` : '')}`}
+                        href={`https://api.whatsapp.com/send?text=${encodeURIComponent(news.title)} ${encodeURIComponent(typeof window !== 'undefined' ? `${window.location.origin}/news/${generateSlug(news.title) || news.id || i}` : '')}`}
                         target="_blank" rel="noopener noreferrer"
                         style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '28px', height: '28px', borderRadius: '50%', background: '#25D366', color: 'white', textDecoration: 'none' }}
                         title="Share on WhatsApp"
@@ -74,7 +76,7 @@ export function NewsAndBlog() {
                       </a>
                       {/* X (Twitter) */}
                       <a 
-                        href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(news.title)}&url=${encodeURIComponent(typeof window !== 'undefined' ? `${window.location.origin}/news/${news.id || i}` : '')}`}
+                        href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(news.title)}&url=${encodeURIComponent(typeof window !== 'undefined' ? `${window.location.origin}/news/${generateSlug(news.title) || news.id || i}` : '')}`}
                         target="_blank" rel="noopener noreferrer"
                         style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '28px', height: '28px', borderRadius: '50%', background: '#000000', color: 'white', textDecoration: 'none' }}
                         title="Share on X"
@@ -83,7 +85,7 @@ export function NewsAndBlog() {
                       </a>
                       {/* Facebook */}
                       <a 
-                        href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(typeof window !== 'undefined' ? `${window.location.origin}/news/${news.id || i}` : '')}`}
+                        href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(typeof window !== 'undefined' ? `${window.location.origin}/news/${generateSlug(news.title) || news.id || i}` : '')}`}
                         target="_blank" rel="noopener noreferrer"
                         style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '28px', height: '28px', borderRadius: '50%', background: '#1877F2', color: 'white', textDecoration: 'none' }}
                         title="Share on Facebook"
@@ -94,7 +96,7 @@ export function NewsAndBlog() {
                       <button 
                         onClick={(e) => {
                           e.preventDefault();
-                          const url = typeof window !== 'undefined' ? `${window.location.origin}/news/${news.id || i}` : '';
+                          const url = typeof window !== 'undefined' ? `${window.location.origin}/news/${generateSlug(news.title) || news.id || i}` : '';
                           navigator.clipboard.writeText(url);
                           alert("Link copied!");
                         }}

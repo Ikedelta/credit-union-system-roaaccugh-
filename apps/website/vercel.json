@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/news/:id",
+      "destination": "https://credit-union-system.vercel.app/news/:id"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

@@ -41,17 +41,29 @@ app.get("/news/:id", async (req, res) => {
     let newsItem = null;
     if (content && content.value) {
       const newsItems = JSON.parse(content.value);
-      newsItem = newsItems.find((item: any, index: number) => item.id?.toString() === id || index.toString() === id);
+      const generateSlug = (text: string) => text ? text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') : '';
+      newsItem = newsItems.find((item: any, index: number) => item.id?.toString() === id || index.toString() === id || generateSlug(item.title) === id);
     }
     
-    // Read the static index.html from public dir
-    const indexPath = path.join(process.cwd(), "public", "index.html");
-    let html = fs.readFileSync(indexPath, "utf8");
+    // Fetch the live frontend index.html
+    const frontendUrl = process.env.FRONTEND_URL || "https://www.roaaccugh.com";
+    let html = "";
+    try {
+      const response = await fetch(frontendUrl);
+      if (response.ok) {
+        html = await response.text();
+      } else {
+        throw new Error("Failed to fetch frontend");
+      }
+    } catch (e) {
+      console.error("Failed to fetch frontend html:", e);
+      // Fallback minimal HTML if fetch fails
+      html = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8" /><title>ROAACCU - Credit Union</title></head><body><div id="root"></div></body></html>`;
+    }
     
     if (newsItem) {
       let imageUrl = newsItem.image || "";
       if (imageUrl && imageUrl.startsWith("/uploads")) {
-        // Construct absolute URL for local/uploaded images
         imageUrl = `https://${req.get('host')}${imageUrl}`;
       } else if (imageUrl && !imageUrl.startsWith("http")) {
         imageUrl = `https://${req.get('host')}${imageUrl}`;
@@ -59,7 +71,7 @@ app.get("/news/:id", async (req, res) => {
 
       const ogTitle = `<meta property="og:title" content="${newsItem.title?.replace(/"/g, '&quot;') || 'News Update'}" />`;
       const ogDesc = `<meta property="og:description" content="${newsItem.content?.substring(0, 150).replace(/"/g, '&quot;') || ''}..." />`;
-      const ogImage = imageUrl ? `<meta property="og:image" content="${imageUrl}" />\n<meta name="twitter:image" content="${imageUrl}" />` : '';
+      const ogImage = imageUrl ? `<meta property="og:image" content="${imageUrl}" />\n<meta name="twitter:card" content="summary_large_image" />\n<meta name="twitter:image" content="${imageUrl}" />` : '';
       
       const customTags = `${ogTitle}\n${ogDesc}\n${ogImage}`;
       html = html.replace('</head>', `${customTags}\n</head>`);
@@ -68,13 +80,7 @@ app.get("/news/:id", async (req, res) => {
     res.send(html);
   } catch (err) {
     console.error("Error generating news preview:", err);
-    // Fallback to sending the raw index.html or letting Vercel handle it
-    const indexPath = path.join(process.cwd(), "public", "index.html");
-    if (fs.existsSync(indexPath)) {
-      res.sendFile(indexPath);
-    } else {
-      res.status(404).send("Not Found");
-    }
+    res.status(500).send("Internal Server Error");
   }
 });
 

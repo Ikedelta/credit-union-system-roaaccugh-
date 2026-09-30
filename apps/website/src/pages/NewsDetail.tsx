@@ -12,8 +12,9 @@ export function NewsDetail() {
   const newsItems: any[] = getJSON('news_list', []);
 
   // Find the news item either by ID or fallback to array index
+  const generateSlug = (text: string) => text ? text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') : '';
   const newsItem: any = newsItems.find((item: any, index: number) => 
-    item.id?.toString() === id || index.toString() === id
+    item.id?.toString() === id || index.toString() === id || generateSlug(item.title) === id
   );
 
   useEffect(() => {

@@ -90,28 +90,28 @@ export function GlobalPopup() {
 
   return (
     <div style={{
-      position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', background: 'rgba(15, 23, 42, 0.4)', backdropFilter: 'blur(6px)', padding: '1rem', overflowY: 'auto'
+      position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', background: 'rgba(15, 23, 42, 0.5)', backdropFilter: 'blur(8px)', padding: '1rem', overflowY: 'auto'
     }}>
       <div style={{
-        background: 'var(--bg-white)', width: 'fit-content', minWidth: '300px', maxWidth: 'min(90vw, 600px)', borderRadius: '24px', margin: 'auto', overflow: 'hidden', boxShadow: '0 20px 40px -10px rgba(0, 0, 0, 0.15)', border: '1px solid rgba(0,0,0,0.05)', position: 'relative', animation: 'modalSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
+        background: 'var(--bg-white)', width: 'fit-content', minWidth: 'min(92vw, 360px)', maxWidth: 'min(92vw, 550px)', borderRadius: '24px', margin: 'auto', overflow: 'hidden', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)', border: '1px solid rgba(0,0,0,0.05)', position: 'relative', animation: 'modalPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
       }}>
         <button 
           onClick={handleClose}
-          style={{ position: 'absolute', top: '12px', right: '12px', background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(4px)', color: '#334155', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 10, transition: 'all 0.2s ease', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}
-          onMouseEnter={(e) => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.transform = 'scale(1.05)'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.85)'; e.currentTarget.style.transform = 'scale(1)'; }}
+          style={{ position: 'absolute', top: '12px', right: '12px', background: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(4px)', color: '#334155', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 10, transition: 'all 0.2s ease', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+          onMouseEnter={(e) => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.transform = 'scale(1.1)'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.9)'; e.currentTarget.style.transform = 'scale(1)'; }}
         >
-          <X size={16} strokeWidth={2.5} />
+          <X size={18} strokeWidth={2.5} />
         </button>
 
         {currentPopup.image && (
           <div style={{ padding: '4px 4px 0 4px', display: 'flex', justifyContent: 'center' }}>
-            <img src={currentPopup.image.startsWith('http') ? currentPopup.image : `http://localhost:3000${currentPopup.image}`} alt="Popup" style={{ maxWidth: '100%', height: 'auto', maxHeight: '75vh', objectFit: 'contain', borderRadius: '20px', display: 'block', margin: '0 auto' }} />
+            <img src={currentPopup.image.startsWith('http') ? currentPopup.image : `http://localhost:3000${currentPopup.image}`} alt="Popup" style={{ maxWidth: '100%', height: 'auto', maxHeight: '65vh', objectFit: 'contain', borderRadius: '20px', display: 'block', margin: '0 auto' }} />
           </div>
         )}
         
-        <div style={{ padding: '1.5rem' }}>
-          {currentPopup.title && <h3 style={{ fontSize: '1.25rem', marginBottom: '0.75rem', color: 'var(--text-color)', fontWeight: 700, letterSpacing: '-0.01em', lineHeight: 1.3, paddingRight: currentPopup.image ? '0' : '2rem' }}>{currentPopup.title}</h3>}
+        <div style={{ padding: '1.5rem', textAlign: 'center' }}>
+          {currentPopup.title && <h3 style={{ fontSize: '1.3rem', marginBottom: '0.75rem', color: 'var(--text-color)', fontWeight: 800, letterSpacing: '-0.02em', lineHeight: 1.3 }}>{currentPopup.title}</h3>}
           {currentPopup.description && (
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6, marginBottom: currentPopup.btnText ? '1.5rem' : 0, whiteSpace: 'pre-wrap' }}>
               {currentPopup.description}
@@ -121,11 +121,11 @@ export function GlobalPopup() {
           {currentPopup.btnText && currentPopup.btnLink && (
             <div style={{ textAlign: 'center', marginTop: '1.25rem' }}>
               {currentPopup.btnLink.startsWith('http') ? (
-                <a href={currentPopup.btnLink} target="_blank" rel="noopener noreferrer" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', padding: '0.75rem', borderRadius: '12px', fontWeight: 600 }} onClick={handleClose}>
+                <a href={currentPopup.btnLink} target="_blank" rel="noopener noreferrer" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', padding: '0.85rem', borderRadius: '14px', fontWeight: 700, fontSize: '1rem', boxShadow: '0 4px 14px rgba(0,0,0,0.15)' }} onClick={handleClose}>
                   {currentPopup.btnText}
                 </a>
               ) : (
-                <Link to={currentPopup.btnLink} className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', padding: '0.75rem', borderRadius: '12px', fontWeight: 600 }} onClick={handleClose}>
+                <Link to={currentPopup.btnLink} className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', padding: '0.85rem', borderRadius: '14px', fontWeight: 700, fontSize: '1rem', boxShadow: '0 4px 14px rgba(0,0,0,0.15)' }} onClick={handleClose}>
                   {currentPopup.btnText}
                 </Link>
               )}
@@ -134,9 +134,9 @@ export function GlobalPopup() {
         </div>
       </div>
       <style>{`
-        @keyframes modalSlideUp {
-          from { opacity: 0; transform: translateY(30px) scale(0.95); }
-          to { opacity: 1; transform: translateY(0) scale(1); }
+        @keyframes modalPop {
+          0% { opacity: 0; transform: translateY(30px) scale(0.9); }
+          100% { opacity: 1; transform: translateY(0) scale(1); }
         }
       `}</style>
     </div>
