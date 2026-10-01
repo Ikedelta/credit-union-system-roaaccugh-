@@ -12,6 +12,7 @@ const multer_1 = __importDefault(require("multer"));
 const path_1 = __importDefault(require("path"));
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const supabase_js_1 = require("@supabase/supabase-js");
+const sharp_1 = __importDefault(require("sharp"));
 const auth_1 = require("../middleware/auth");
 const router = (0, express_1.Router)();
 const prisma = new client_1.PrismaClient();
@@ -117,14 +118,26 @@ router.post("/upload", upload.single("image"), async (req, res) => {
             return res.status(500).json({ error: "Supabase storage is not configured in .env" });
         }
         const adminReq = req;
+        // Determine if the file is an image that should be converted
+        const isImage = req.file.mimetype.startsWith('image/') && !req.file.mimetype.includes('svg');
+        let uploadBuffer = req.file.buffer;
+        let uploadMimetype = req.file.mimetype;
+        let fileExt = path_1.default.extname(req.file.originalname);
+        if (isImage) {
+            uploadBuffer = await (0, sharp_1.default)(req.file.buffer)
+                .webp({ quality: 80 })
+                .toBuffer();
+            uploadMimetype = 'image/webp';
+            fileExt = '.webp';
+        }
         // Generate unique filename
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        const filename = 'cms-' + uniqueSuffix + path_1.default.extname(req.file.originalname);
+        const filename = 'cms-' + uniqueSuffix + fileExt;
         // Upload to Supabase Storage bucket named 'cms-media'
         const { data, error } = await supabase.storage
             .from('cms-media')
-            .upload(filename, req.file.buffer, {
-            contentType: req.file.mimetype,
+            .upload(filename, uploadBuffer, {
+            contentType: uploadMimetype,
             upsert: false
         });
         if (error) {
@@ -246,10 +259,36 @@ router.patch("/memberships/:id/status", async (req, res) => {
                 const hashedPassword = await bcrypt_1.default.hash(randomPassword, 10);
                 await prisma.member.create({ data: { memberId, password: hashedPassword, initialPassword: randomPassword, firstName: application.firstName, lastName: application.lastName, email: application.email, telNo: application.telNo, balance: 0.0 } });
                 await createAuditLog(adminReq.adminId, `${status}_MEMBERSHIP`, `Membership ID: ${application.id}`);
+                // Send Welcome SMS Notification
+                if (application.telNo && process.env.KAIROS_API_KEY) {
+                    const formatted = normalizeGhanaNumber(application.telNo);
+                    try {
+                        let template = await (0, sms_1.getSmsTemplate)("sms_template_membership_approved", "Hello {name}, your ROAACCU membership is APPROVED. Your Member ID is: {memberId}. Please keep this safe for future reference.", prisma);
+                        const message = template
+                            .replace(/{name}/g, application.firstName)
+                            .replace(/{memberId}/g, memberId);
+                        await (0, sms_1.sendSms)(formatted, message);
+                    }
+                    catch (smsErr) {
+                        console.error("Failed to send membership approved SMS:", smsErr);
+                    }
+                }
                 return res.json({ ...application, generatedMemberId: memberId, generatedPassword: randomPassword });
             }
         }
         await createAuditLog(adminReq.adminId, `${status}_MEMBERSHIP`, `Membership ID: ${application.id}`);
+        // Send Generic Status Update SMS Notification
+        if (application.telNo && process.env.KAIROS_API_KEY) {
+            const formatted = normalizeGhanaNumber(application.telNo);
+            try {
+                let template = await (0, sms_1.getSmsTemplate)("sms_template_membership_status", "Hello {name}, your ROAACCU membership application status has been updated to: {status}.", prisma);
+                const message = template.replace(/{name}/g, application.firstName).replace(/{status}/g, status);
+                await (0, sms_1.sendSms)(formatted, message);
+            }
+            catch (smsErr) {
+                console.error("Failed to send membership status SMS:", smsErr);
+            }
+        }
         res.json(application);
     }
     catch (err) {
@@ -330,6 +369,18 @@ router.patch("/welfare/:id/status", async (req, res) => {
         const { status } = req.body;
         const application = await prisma.welfareApplication.update({ where: { id: parseInt(req.params.id) }, data: { status } });
         await createAuditLog(adminReq.adminId, `${status}_WELFARE`, `Welfare ID: ${application.id}`);
+        // Send Status Update SMS Notification
+        if (application.contact && process.env.KAIROS_API_KEY) {
+            const formatted = normalizeGhanaNumber(application.contact);
+            try {
+                let template = await (0, sms_1.getSmsTemplate)("sms_template_welfare_status", "Hello {name}, your ROAACCU welfare application status has been updated to: {status}.", prisma);
+                const message = template.replace(/{name}/g, application.name).replace(/{status}/g, status);
+                await (0, sms_1.sendSms)(formatted, message);
+            }
+            catch (smsErr) {
+                console.error("Failed to send welfare status SMS:", smsErr);
+            }
+        }
         res.json(application);
     }
     catch (err) {

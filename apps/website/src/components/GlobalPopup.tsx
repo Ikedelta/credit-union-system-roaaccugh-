@@ -106,7 +106,7 @@ export function GlobalPopup() {
 
         {currentPopup.image && (
           <div style={{ padding: '4px 4px 0 4px', display: 'flex', justifyContent: 'center' }}>
-            <img src={currentPopup.image.startsWith('http') ? currentPopup.image : `http://localhost:3000${currentPopup.image}`} alt="Popup" style={{ maxWidth: '100%', height: 'auto', maxHeight: '65vh', objectFit: 'contain', borderRadius: '20px', display: 'block', margin: '0 auto' }} />
+            <img loading="lazy" decoding="async" src={currentPopup.image.startsWith('http') ? currentPopup.image : `http://localhost:3000${currentPopup.image}`} alt="Popup" style={{ maxWidth: '100%', height: 'auto', maxHeight: '65vh', objectFit: 'contain', borderRadius: '20px', display: 'block', margin: '0 auto' }} />
           </div>
         )}
         

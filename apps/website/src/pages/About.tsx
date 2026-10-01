@@ -25,14 +25,14 @@ export function About() {
         <RevealOnScroll direction="right">
           <div style={{ position: 'relative', width: '100%', height: '100%', minHeight: '350px' }}>
             {/* Main large image stretching to fill the block, leaving room for the overlap */}
-            <img 
+            <img loading="lazy" decoding="async" 
               src={get('about_image_1', 'https://roaaccugh.com/assets/img/roaaccu4.jpg')} 
               alt="Corporate Team" 
               style={{ position: 'absolute', top: 0, left: 0, width: '90%', height: '85%', objectFit: 'cover', borderRadius: 'var(--border-radius-xl)', boxShadow: 'var(--shadow-lg)' }} 
             />
             
             {/* Overlapping smaller image filling the bottom right */}
-            <img 
+            <img loading="lazy" decoding="async" 
               src={get('about_image_2', 'https://roaaccugh.com/assets/img/roaaccu4.jpg')} 
               alt="Our Work" 
               style={{ position: 'absolute', bottom: '0', right: '0', width: '55%', height: '55%', objectFit: 'cover', borderRadius: 'var(--border-radius-xl)', boxShadow: '0 20px 40px rgba(0,0,0,0.15)', border: '10px solid var(--bg-white)', transition: 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)', cursor: 'pointer' }}

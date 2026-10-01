@@ -25,7 +25,7 @@ export function Organogram() {
 
             {organogramImage ? (
               <div className="card" style={{ padding: '2rem', display: 'inline-block', width: '100%' }}>
-                <img 
+                <img loading="lazy" decoding="async" 
                   src={organogramImage} 
                   alt="ROAACCU Organogram" 
                   style={{ width: '100%', height: 'auto', borderRadius: '8px', boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }} 

@@ -69,10 +69,9 @@ export function PhotoGallery() {
                     }}
                   >
                     {photo.image ? (
-                      <img 
+                      <img loading="lazy" decoding="async" 
                         src={photo.image} 
                         alt={photo.title || 'Gallery image'} 
-                        loading="lazy"
                         style={{ 
                           width: '100%', 
                           display: 'block', 

@@ -29,7 +29,7 @@ export function Gallery() {
       <div className="grid md:grid-cols-3 gap-6" style={{ marginTop: '3rem' }}>
         {images.map((url, i) => (
           <div key={i} className="card" style={{ padding: '0', overflow: 'hidden', height: '250px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f1f5f9' }}>
-            <img src={url} alt={`Gallery item ${i+1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            <img loading="lazy" decoding="async" src={url} alt={`Gallery item ${i+1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
         ))}
       </div>

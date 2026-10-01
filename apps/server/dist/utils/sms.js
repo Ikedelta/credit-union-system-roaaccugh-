@@ -89,7 +89,7 @@ const checkSmsBalance = async () => {
             success: data?.success || response.ok,
             statusCode: data?.statusCode || response.status,
             statusMessage: data?.statusMessage || response.statusText,
-            data: data?.data
+            data: data?.credit !== undefined ? data : data?.data
         };
     }
     catch (error) {

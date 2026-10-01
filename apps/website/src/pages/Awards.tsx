@@ -43,7 +43,7 @@ export function Awards() {
           </div>
         </RevealOnScroll>
 
-        <RevealOnScroll delay={200}>
+        <RevealOnScroll delay={0.2}>
           {awards.length === 0 ? (
              <div className="card text-center" style={{ padding: '4rem 2rem', background: 'var(--bg-white)', borderRadius: '24px', boxShadow: 'var(--shadow-md)' }}>
                <Star size={48} style={{ color: '#FFD700', margin: '0 auto 1rem auto', opacity: 0.5 }} />
@@ -87,7 +87,7 @@ export function Awards() {
                 >
                   <div style={{ position: 'relative', width: '140px', height: '100%', flexShrink: 0 }}>
                     {image ? (
-                      <img 
+                      <img loading="lazy" decoding="async" 
                         src={image} 
                         alt={title} 
                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}

@@ -11,7 +11,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ fullScreen = false, messa
     <div className={`loading-container ${fullScreen ? 'full-screen' : ''}`}>
       <div className="loading-logo-wrapper">
         <div className="loading-ring"></div>
-        <img src="/logo.webp" alt="Loading..." className="loading-logo" />
+        <img loading="lazy" decoding="async" src="/logo.webp" alt="Loading..." className="loading-logo" />
       </div>
       <div className="loading-text">{message}</div>
     </div>

@@ -42,7 +42,7 @@ export function NewsAndBlog() {
               <article className="news-card" style={{ background: 'var(--bg-white)', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', height: '100%', transition: 'transform 0.3s ease' }} onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-4px)'} onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}>
                 {news.image && (
                   <div style={{ height: '160px', overflow: 'hidden' }}>
-                    <img 
+                    <img loading="lazy" decoding="async" 
                       src={news.image.startsWith('http') ? news.image : (news.image.startsWith('/uploads') ? `http://localhost:3000${news.image}` : news.image)} 
                       alt={news.title} 
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }} 

@@ -8,13 +8,36 @@ export function NewsDetail() {
   const { getJSON } = useCMS();
     const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-    // Get all news items
-  const newsItems: any[] = getJSON('news_list', []);
+  // Get all news items with defaults
+  const newsItems: any[] = getJSON('news_list', [
+    {
+      title: "Annual General Meeting 2026",
+      date: "August 15, 2026",
+      image: "https://roaaccugh.com/assets/img/slider2.webp",
+      content: "Join us for our upcoming AGM where we will discuss the financial performance of the past year and outline our strategic goals for the future. All registered members are encouraged to attend."
+    },
+    {
+      title: "New Mobile Banking Features",
+      date: "July 2, 2026",
+      image: "https://roaaccugh.com/assets/img/slider1.webp",
+      content: "We are excited to announce new features to our mobile banking app, including instant loan approvals and improved security measures."
+    },
+    {
+      title: "Community Outreach Program",
+      date: "June 10, 2026",
+      image: "https://roaaccugh.com/assets/img/slider3.webp",
+      content: "ROAACCU recently partnered with local farmers to provide financial literacy training and subsidized farming equipment to help boost local agriculture."
+    }
+  ]);
 
   // Find the news item either by ID or fallback to array index
   const generateSlug = (text: string) => text ? text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') : '';
+  const decodedId = id ? decodeURIComponent(id) : '';
   const newsItem: any = newsItems.find((item: any, index: number) => 
-    item.id?.toString() === id || index.toString() === id || generateSlug(item.title) === id
+    item.id?.toString() === id || 
+    index.toString() === id || 
+    generateSlug(item.title) === id ||
+    generateSlug(item.title) === generateSlug(decodedId)
   );
 
   useEffect(() => {
@@ -106,7 +129,7 @@ export function NewsDetail() {
         {/* Main Image */}
         {newsItem.image && (
           <div style={{ width: '100%', borderRadius: '16px', overflow: 'hidden', marginBottom: '3rem', boxShadow: 'var(--shadow-md)' }}>
-            <img 
+            <img loading="lazy" decoding="async" 
               src={formatImageUrl(newsItem.image)} 
               alt={newsItem.title} 
               style={{ width: '100%', maxHeight: '500px', objectFit: 'cover', display: 'block' }}
@@ -211,7 +234,7 @@ export function NewsDetail() {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {newsItem.gallery.map((img: string, idx: number) => (
                 <div key={idx} style={{ borderRadius: '12px', overflow: 'hidden', boxShadow: 'var(--shadow-sm)', aspectRatio: '4/3' }}>
-                  <img 
+                  <img loading="lazy" decoding="async" 
                     src={formatImageUrl(img)} 
                     alt={`Gallery ${idx + 1}`} 
                     style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} 

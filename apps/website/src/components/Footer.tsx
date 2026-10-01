@@ -31,7 +31,7 @@ export function Footer({ setActiveModal: _setActiveModal }: FooterProps) {
           {/* Brand Column */}
           <div>
             <div className="logo" style={{ marginBottom: '1.25rem' }}>
-              <img 
+              <img loading="lazy" decoding="async" 
                 src="/logo.webp" 
                 alt="ROAACCU Logo" 
                 style={{ height: '44px', objectFit: 'contain', background: 'white', padding: '6px 10px', borderRadius: '10px' }} 
